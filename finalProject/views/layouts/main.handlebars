@@ -4,54 +4,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile</title>
-    <link rel="stylesheet" href="profile.css">
-    <link rel="stylesheet" href="../basics.css" />
+    <title>{{{title}}}</title>
+    {{!-- how to get different stylesheets for diff pages --}}
+    <link rel="stylesheet" href={{{otherCss}}} />
+    <link rel="stylesheet" href="./layouts/main.css" />
 </head>
+
 
 <body>
     <nav id="navbar">
         <ul class="navbar-items flexbox-col">
             <li class="navbar-logo ">
-                <a class=" flexbox-left" href="../homepage/index.html">
+                <a class=" flexbox-left" href="../homepage/home.handlebars">
                     <span class="logo-text">RACE DAY READY</span>
                 </a>
             </li>
             <li class="navbar-item flexbox-left">
-                <a class="navbar-item-inner flexbox-left" href="../homepage/index.html">
+                <a class="navbar-item-inner flexbox-left" href="../homepage/home.handlebars">
 
                     <span class="link-text">SEARCH</span>
                 </a>
             </li>
             <li class="navbar-item flexbox-left">
-                <a class="navbar-item-inner flexbox-left" href="../trainingDash/training.html">
+                <a class="navbar-item-inner flexbox-left" href="../trainingDash/training.handlebars">
 
                     <span class="link-text">TRAINING</span>
                 </a>
             </li>
             <li class="navbar-item flexbox-left">
-                <a class="navbar-item-inner flexbox-left" href="../countdown/countdown.html">
+                <a class="navbar-item-inner flexbox-left" href="../countdown/countdown.handlebars">
 
                     <span class="link-text">COUNTDOWN</span>
                 </a>
             </li>
             <li class="navbar-item flexbox-left">
-                <a class="navbar-item-inner flexbox-left" href="../profile/profile.html">
+                <a class="navbar-item-inner flexbox-left" href="../profile/profile.handlebars">
 
                     <span class="link-text">PROFILE</span>
                 </a>
             </li>
             <li class="navbar-item flexbox-left">
-                <a class="navbar-item-inner flexbox-left" href="../settings/settings.html">
+                <a class="navbar-item-inner flexbox-left" href="../settings/settings.handlebars">
 
                     <span class="link-text">SETTINGS</span>
+                </a>
+            </li>
+            <li class="navbar-item flexbox-left">
+                <a class="navbar-item-inner flexbox-left" href="../createProfile/createProfile.handlebars">
+
+                    <span class="link-text">LOG IN</span>
                 </a>
             </li>
         </ul>
     </nav>
 
-
-
+    {{!-- injected from other handlebars files --}}
+    {{{main}}}
 </body>
+
 
 </html>

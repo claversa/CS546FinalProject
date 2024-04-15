@@ -1,9 +1,6 @@
-export let exists = (input, undef) => {
-    if (!input) throw `Error: ${undef} is undefined`;
-}
-
 
 export let notStringOrEmpty = (val, undef) => {
+    if (!val) throw `Error: ${undef} is undefined`;
     if (typeof val !== "string") throw `Error: input for ${undef} must be a string`;
     if (val.trim().length === 0) throw "Error: input must not be empty or just spaces";
     return val.trim(); // trims whitespace
@@ -20,17 +17,11 @@ export let validDate = (date) => { // got this function from https://www.freecod
     if (Date.now() - new Date(date) < 0) throw "Error: release date can not be after today"
 }
 
-export let validWebsite = (val) => {
-    if (val.length < 11) throw "Error: invalid website url";
-    if (val.slice(0, 11) !== "http://www.") throw "Error: manufacturer website must begin with http://www.";
-    if (val.slice(-4) !== ".com") throw "Error: manufacturer website must end with .com";
-    if (val.length < 20) throw "Error: manufacturer website must have at least 5 characters between http://www. and .com";
-    val = val.toLowerCase().slice(11, -4);
-    let validChars = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '.', '_', '\u002D'];
-    // regular dash = \u002D
-    for (let letter of val) {
-        if (!(validChars.includes(letter))) throw `Error: ${letter} is an invalid URL character`;
-    }
+
+export let validURL = (val) => {
+    // regex for allowed url patterns
+    const urlRegex = /^(?:https?:\/\/)?(?:www\.)?[\w.-]+\.[a-zA-Z]{2,}(?:\/[\w-./?=&%+]*)?$/;
+    if(!urlRegex.test(val)) throw `Error: ${val} is an invalid website URL`;
 }
 
 export let validState = (state) => {
@@ -47,6 +38,7 @@ export let validRaceTime = (hour, min) => {
 }
 
 export let arraysWithStringElem = (val, error) => {
+    if (!val) throw `Error: ${error} is undefined`;
     if (!Array.isArray(val)) throw `Error: ${error} must be of type array`;
     if (val.length === 0) throw `Error: ${error} must have at least one string element in it`
     for (let i = 0; i < val.length; i++) {

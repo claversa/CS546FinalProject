@@ -1,6 +1,6 @@
-import { races } from '../mongoCollections.js'
+import { races } from '../config/mongoCollections.js'
 import { ObjectId } from 'mongodb';
-import * as help from '../../../helpers.js';
+import * as help from '../helpers/helpers.js';
 
 
 const create = async (
@@ -14,14 +14,25 @@ const create = async (
     terrain,
     raceUrl
 ) => {
-    // exists
-    let args = [raceName, raceCity, raceState, raceDate, raceTimeHr, raceTimeMin, terrain, raceUrl];
-    args.map((arg) => help.exists(arg, arg));
-    // not string or empty, trims all input as well
-    let strs = [raceName, raceCity, raceState, raceDate, raceTimeHr, raceTimeMin, raceUrl];
-    strs = strs.map((str) => help.notStringOrEmpty(str, str));
-    //split strs back into individual vars
-    let { raceName, raceCity, raceState, raceDate, raceTimeHr, raceTimeMin, raceUrl } = strs;
+    //SPLIT UP
+    raceName = help.notStringOrEmpty(raceName, "race name");
+    raceCity = help.notStringOrEmpty(raceCity, "raceCity");
+    raceState = help.notStringOrEmpty(raceState, "raceState");
+    raceTimeHr = help.notStringOrEmpty(raceTimeHr, "raceTimeHr");
+    raceTimeMin = help.notStringOrEmpty(raceTimeMin, "raceTimeMin");
+    distance = help.notStringOrEmpty(distance, "distance");
+    terrain = help.arraysWithStringElem(terrain, "terrain");
+    raceUrl = help.notStringOrEmpty(raceUrl, "raceUrl");
+
+    // validate url
+    help.validURL(raceUrl);
+
+
+    // // not string or empty, trims all input as well
+    // let strs = [raceName, raceCity, raceState, raceDate, raceTimeHr, raceTimeMin, raceUrl];
+    // strs = strs.map((str) => help.notStringOrEmpty(str, str));
+    // //split strs back into individual vars
+    // let { raceName, raceCity, raceState, raceDate, raceTimeHr, raceTimeMin, raceUrl } = strs;
     // website
     help.validWebsite(raceUrl);
     // date
