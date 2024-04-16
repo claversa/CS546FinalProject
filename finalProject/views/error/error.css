@@ -1,16 +1,7 @@
-<<<<<<< HEAD
 .error,
 .not-found {
     background-color: red;
     color: #14213D;
     display: block;
     text-align: center;
-=======
-.error,
-.not-found {
-    background-color: red;
-    color: #14213D;
-    display: block;
-    text-align: center;
->>>>>>> dac752c (countdown works now)
 }

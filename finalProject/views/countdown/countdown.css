@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 @font-face {
     font-family: "faster";
     src: url(../../fonts/Faster_One/FasterOne-Regular.ttf);
@@ -35,42 +34,4 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
-=======
-@font-face {
-    font-family: "faster";
-    src: url(../../fonts/Faster_One/FasterOne-Regular.ttf);
-}
-
-@font-face {
-    font-family: 'martian';
-    src: url(../../fonts/martian/MartianMono-VariableFont_wdth\,wght.ttf);
-}
-
-.count {
-    font-size: 100px;
-    font-weight: 100;
-    color: #FCA311;
-    font-family: 'faster';
-}
-
-
-.confetti-btn {
-    background-color: #FCA311;
-    padding: 10px 30px;
-    cursor: grab;
-    font-size: 70px;
-    border: 0;
-    font-family: 'martian';
-    font-weight: bold;
-    color: #233A6A;
-}
-
-.countdown-content {
-    text-align: center;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
->>>>>>> dac752c (countdown works now)
 }
