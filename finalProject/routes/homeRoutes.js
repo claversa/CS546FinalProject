@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { Router } from 'express';
 const router = Router();
 // Data file for the data functions
@@ -11,4 +12,19 @@ router.route('/').get(async (req, res) => {
 
 
 //export router
+=======
+import { Router } from 'express';
+const router = Router();
+// Data file for the data functions
+import * as data from '../data/races.js'; // need stuff from race db
+import path from 'path';
+
+router.route('/').get(async (req, res) => {
+    //render the home handlebars file
+    res.render('./homepage/home', { title: "Homepage", otherCss: "./home.css" });
+});
+
+
+//export router
+>>>>>>> dac752c (countdown works now)
 export default router;
