@@ -6,7 +6,7 @@ import * as help from '../helpers/helpers.js'
 
 router.route('/login').get(async (req, res) => {
   //render the home handlebars file
-  res.render('./login', { title: "Login", otherCss: "./public/login.css" });
+  res.render('./login/login', { title: "Login", otherCss: "./login.css" });
 });
 router.route('/createProfile')
 .get(async (req, res) => {
@@ -68,16 +68,16 @@ router.route('/:id').get(async (req, res) => {
     userId = help.checkString(userId, 'user id'); // checks id, trims
   }
   catch (e) {
-    res.status(404).render('error', { otherCss: './public/error.css', title: "Error", class: "error", error: "Id must be present and must be of proper format" });
+    res.status(404).render('error', { otherCss: './error.css', title: "Error", class: "error", error: "Id must be present and must be of proper format" });
   }
   try {
     let user = await data.get(userId);
     if (user) {
-      res.render("./profile", { title: 'Profile', first: user.firstName.toUpperCase(), last: user.lastName.toUpperCase(), username: user.username, email: user.email.toUpperCase(), gender: user.gender.toUpperCase(), system: user.system.toUpperCase(), state: user.state.toUpperCase(), city: user.city.toUpperCase(), age: user.age, socialHandle: user.socialHandle, socialPlatform: user.socialPlatform.toUpperCase(), password: user.password })
+      res.render("./profile/profile", { title: 'Profile', first: user.firstName.toUpperCase(), last: user.lastName.toUpperCase(), username: user.username, email: user.email.toUpperCase(), gender: user.gender.toUpperCase(), system: user.system.toUpperCase(), state: user.state.toUpperCase(), city: user.city.toUpperCase(), age: user.age, socialHandle: user.socialHandle, socialPlatform: user.socialPlatform.toUpperCase(), password: user.password })
     }
   }
   catch (e) {
-    res.status(404).render('error', { otherCss: './public/error.css', title: "Error", class: "not-found", error: e.toString() });
+    res.status(404).render('error', { otherCss: './error.css', title: "Error", class: "not-found", error: e.toString() });
   }
 });
 

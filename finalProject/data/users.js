@@ -74,7 +74,6 @@ const create = async (
     const newId = insertInfo.insertedId.toString();
     console.log(newId);
     const user = await get(newId);
-    console.log("here");
     return user;
 };
 
@@ -356,5 +355,6 @@ const addTrainingPlan = async (id, raceId) => {
     updatedInfo._id = updatedInfo._id.toString();
     return updatedInfo;
 };
+
 
 export { create, getAll, get, updateEmail, updateCity, updateState, updateGender, updateSocial, updateSystem, updatePassword, registerRace, addTrainingPlan };
