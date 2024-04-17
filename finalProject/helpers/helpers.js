@@ -1,4 +1,3 @@
-
 export let notStringOrEmpty = (val, undef) => {
     if (!val) throw `Error: ${undef} is undefined`;
     if (typeof val !== "string") throw `Error: input for ${undef} must be a string`;
