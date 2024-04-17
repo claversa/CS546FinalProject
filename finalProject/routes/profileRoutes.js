@@ -6,61 +6,9 @@ import * as help from '../helpers/helpers.js'
 
 router.route('/login').get(async (req, res) => {
   //render the home handlebars file
-  res.render('./login', { title: "Login", otherCss: "./login.css" });
+  res.render('./login', { title: "Login", otherCss: "./public/login.css" });
 });
 router.route('/createProfile')
-<<<<<<< HEAD
-  .get(async (req, res) => {
-    //render the home handlebars file
-    res.render('./createProfile', { title: "createProfile", otherCss: "./createProfile.css" });
-  })
-  .post(async (req, res) => {
-    //code here for POST this is where profile form will be submitting new user and then call your data function passing in the profile info   and then rendering the search results of up to 20 Movies.
-    const profileInfo = req.body; // form info!
-    let first = profileInfo.firstName;
-    let last = profileInfo.lastName;
-    let username = profileInfo.username;
-    let email = profileInfo.email;
-    let age = profileInfo.age;
-    let city = profileInfo.city;
-    let state = profileInfo.state;
-    let gender = profileInfo.gender;
-    let system = profileInfo.system;
-    let socialPlatform = profileInfo.social_platform;
-    let socialHandle = profileInfo.social_handle;
-    let password = profileInfo.password;
-    console.log(req.body)
-    // CHECK ALL THESE ^^^^^^^^^^^^^^66
-    // -------------------- check
-    // try {
-    //   help.checkString(movieName, "movie name");
-    // }
-    // catch (e) {
-    //   res.status(400).render('error', { title: "Error", class: "error", error: e.toString() });
-    // }
-    try {
-      let newUser = await data.create(first,
-        last,
-        username,
-        email,
-        city,
-        state,
-        gender,
-        age,
-        socialPlatform,
-        socialHandle,
-        system,
-        password); // create user
-      console.log("here")
-      console.log(newUser)
-      // take user to homepage but now logged in
-      res.render("./home", { title: "Homepage", otherCss: './home.css' });
-    }
-    catch (e) {
-      res.status(404).render('error', { title: "Error", class: "not-found", error: e.toString() });
-    }
-  });
-=======
 .get(async (req, res) => {
   //render the home handlebars file
   res.render('./createProfile/createProfile', { title: "createProfile", otherCss: "./createProfile.css" });
@@ -109,7 +57,6 @@ router.route('/createProfile')
     res.status(404).render('error', { title: "Error", class: "not-found", error: e.toString() });
   }
 });
->>>>>>> fd0b865d3bf7e24793747701998fe7427ce229a2
 
 // default, get profile for given id
 router.route('/:id').get(async (req, res) => {
@@ -121,7 +68,7 @@ router.route('/:id').get(async (req, res) => {
     userId = help.checkString(userId, 'user id'); // checks id, trims
   }
   catch (e) {
-    res.status(404).render('error', { otherCss: './error.css', title: "Error", class: "error", error: "Id must be present and must be of proper format" });
+    res.status(404).render('error', { otherCss: './public/error.css', title: "Error", class: "error", error: "Id must be present and must be of proper format" });
   }
   try {
     let user = await data.get(userId);
@@ -130,7 +77,7 @@ router.route('/:id').get(async (req, res) => {
     }
   }
   catch (e) {
-    res.status(404).render('error', { otherCss: './error.css', title: "Error", class: "not-found", error: e.toString() });
+    res.status(404).render('error', { otherCss: './public/error.css', title: "Error", class: "not-found", error: e.toString() });
   }
 });
 

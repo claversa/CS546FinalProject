@@ -357,5 +357,4 @@ const addTrainingPlan = async (id, raceId) => {
     return updatedInfo;
 };
 
-
 export { create, getAll, get, updateEmail, updateCity, updateState, updateGender, updateSocial, updateSystem, updatePassword, registerRace, addTrainingPlan };
