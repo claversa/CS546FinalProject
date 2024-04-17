@@ -6,12 +6,12 @@ import * as help from '../helpers/helpers.js'
 
 router.route('/login').get(async (req, res) => {
   //render the home handlebars file
-  res.render('./login', { title: "Login", otherCss: "./login.css" });
+  res.render('./login', { title: "Login", otherCss: "./public/login.css" });
 });
 router.route('/createProfile')
   .get(async (req, res) => {
     //render the home handlebars file
-    res.render('./createProfile', { title: "createProfile", otherCss: "./createProfile.css" });
+    res.render('./createProfile', { title: "Create Profile", otherCss: "./public/createProfile.css" });
   })
   .post(async (req, res) => {
     //code here for POST this is where profile form will be submitting new user and then call your data function passing in the profile info   and then rendering the search results of up to 20 Movies.
@@ -53,7 +53,7 @@ router.route('/createProfile')
       console.log("here")
       console.log(newUser)
       // take user to homepage but now logged in
-      res.render("./home", { title: "Homepage", otherCss: './home.css' });
+      res.render("./home", { title: "Homepage", otherCss: './public/home.css' });
     }
     catch (e) {
       res.status(404).render('error', { title: "Error", class: "not-found", error: e.toString() });
@@ -70,7 +70,7 @@ router.route('/:id').get(async (req, res) => {
     userId = help.checkString(userId, 'user id'); // checks id, trims
   }
   catch (e) {
-    res.status(404).render('error', { otherCss: './error.css', title: "Error", class: "error", error: "Id must be present and must be of proper format" });
+    res.status(404).render('error', { otherCss: './public/error.css', title: "Error", class: "error", error: "Id must be present and must be of proper format" });
   }
   try {
     let user = await data.get(userId);
@@ -79,7 +79,7 @@ router.route('/:id').get(async (req, res) => {
     }
   }
   catch (e) {
-    res.status(404).render('error', { otherCss: './error.css', title: "Error", class: "not-found", error: e.toString() });
+    res.status(404).render('error', { otherCss: './public/error.css', title: "Error", class: "not-found", error: e.toString() });
   }
 });
 

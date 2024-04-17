@@ -12,7 +12,7 @@ router.route('/').get(async (req, res) => {
     // the otherCss is the other stylesheet that that page specifically uses so it should be IN THAT SAME FOLDER since it will be injected into the
     // handlebars file in that folder
 
-    res.render("./countdown", { otherCss: "./countdown.css", title: "Race Day Countdown" });
+    res.render("./countdown", { otherCss: "./public/countdown.css", title: "Race Day Countdown" });
 });
 
 
