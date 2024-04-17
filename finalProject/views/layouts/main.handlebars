@@ -5,8 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{{title}}}</title>
-    {{!-- how to get different stylesheets for diff pages --}}
-    <link rel="stylesheet" href={{{otherCss}}} />
     <link rel="stylesheet" href="/public/main.css" />
 </head>
 
@@ -20,13 +18,13 @@
                 </a>
             </li>
             <li class="navbar-item flexbox-left">
-                <a class="navbar-item-inner flexbox-left" href="../homepage/home.handlebars">
+                <a class="navbar-item-inner flexbox-left" href="/">
 
                     <span class="link-text">SEARCH</span>
                 </a>
             </li>
             <li class="navbar-item flexbox-left">
-                <a class="navbar-item-inner flexbox-left" href="../trainingDash/training.handlebars">
+                <a class="navbar-item-inner flexbox-left" href="/training">
 
                     <span class="link-text">TRAINING</span>
                 </a>
@@ -44,7 +42,7 @@
                 </a>
             </li>
             <li class="navbar-item flexbox-left">
-                <a class="navbar-item-inner flexbox-left" href="../settings/settings.handlebars">
+                <a class="navbar-item-inner flexbox-left" href="/settings">
 
                     <span class="link-text">SETTINGS</span>
                 </a>

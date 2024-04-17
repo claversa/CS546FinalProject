@@ -4,7 +4,7 @@ const router = Router();
 import * as data from '../data/home.js'; // need stuff from users db
 
 router.route('/').get(async (req, res) => {
-    res.render("./settings", { otherCss: "./countdown.css", title: "SETTINGS" });
+    res.render("./settings", { title: "Settings" });
 });
 
 
