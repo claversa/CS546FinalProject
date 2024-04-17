@@ -1,0 +1,26 @@
+#main {
+    margin: 0 0 0 5em;
+    min-height: 100vh;
+
+}
+
+#main>h2 {
+    width: 80%;
+    max-width: 80%;
+}
+
+#main>p {
+    width: 80%;
+    max-width: 80%;
+
+}
+
+.start-searching {
+    text-align: center;
+    font-family: 'martian';
+    font-size: 20px;
+    background-color: #FCA311;
+    color: #233A6A;
+    padding: 5px;
+    width: 60%;
+}
