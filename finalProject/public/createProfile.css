@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 @font-face {
     font-family: 'martian';
     src: url(../fonts/martian/MartianMono-VariableFont_wdth\,wght.ttf);
@@ -98,4 +99,118 @@ input[type=text]:hover,
 select:hover {
     background-color: var(--hover);
     color: var(--hoverText);
+=======
+@font-face {
+    font-family: 'martian';
+    src: url(../fonts/martian/MartianMono-VariableFont_wdth\,wght.ttf);
+}
+
+:root {
+    --input: #F39803;
+    --labels: #FCA311;
+    --bg: #2F4D8A;
+    --inputText: #2F4D8A;
+    --hover: #213358;
+    --hoverText: #FCA311;
+}
+
+body {
+    margin: 0;
+    /* color: #FCA311; */
+    background-color: var(--bg);
+    scroll-behavior: smooth;
+    line-height: 30px;
+}
+
+h2 {
+    font-family: 'martian';
+    font-size: 40px;
+}
+
+
+input[type=text] {
+    font-family: 'martian';
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    border: none;
+    background-color: var(--input);
+    color: var(--bg);
+    font-size: 16px;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.flex_container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+option,
+select {
+    font-family: 'martian';
+    padding: 12px 20px;
+    margin: 8px 0;
+    margin: 8px 0;
+    background-color: var(--input);
+    color: var(--inputText);
+    font-size: 16px;
+    border-radius: 4px;
+}
+
+
+option:hover {
+    outline-color: #FEC0AA;
+}
+
+input[type=password] {
+    padding: 12px 20px;
+    margin: 8px 0;
+    background-color: var(--input);
+    color: var(--inputText);
+    font-size: 16px;
+    border-radius: 4px;
+}
+
+input[type=email] {
+    font-family: 'martian';
+    font-size: 16px;
+    padding: 12px 20px;
+    margin: 8px 0;
+    background-color: var(--input);
+    color: var(--inputText);
+    border-radius: 4px;
+}
+
+label {
+    font-family: 'martian';
+    font-size: 20px;
+    padding: 12px 20px;
+    margin: 8px 0;
+    background-color: var(--labels);
+    color: var(--inputText);
+    width: fit-content;
+    border-radius: 4px;
+}
+
+input[type=email]:hover,
+input[type=password]:hover,
+input[type=text]:hover,
+select:hover {
+    background-color: var(--hover);
+    color: var(--hoverText);
+}
+
+h1 {
+    font-family: 'martian';
+    font-size: 30px;
+    padding: 12px 20px;
+    margin: 8px 0;
+    background-color: var(--labels);
+    color: var(--inputText);
+    width: fit-content;
+    border-radius: 4px;
+
+>>>>>>> Stashed changes
 }

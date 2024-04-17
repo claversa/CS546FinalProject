@@ -1,1 +1,30 @@
 <h2>{{{name}}}</h2>
+<h4>LOCATION: {{{location}}}</h4>
+<h4>DATE: {{{date}}}</h4>
+<h4>TIME: {{{time}}}</h4>
+<h4>DISTANCE: {{{distance}}}</h4>
+<h4>TERRAIN: {{{terrain}}}</h4>
+<h5>VISIT {{{URL}}} FOR REGISTRATION AND MORE INFO!</h5>
+<button type="submit">REGISTER HERE</button>
+
+{{!-- Review sections --}}
+<form action="/???" method="POST" class="reviewRace">
+    <label for="review">REVIEW THIS RACE:</label><br>
+    <input type="text" id="review" name="review"><br>
+    <label for="rating">RATING:</label><br>
+    <input type="range" id="rating" class="rating" max="5" min="1"><br>
+    <button type="submit">POST</button>
+</form>
+
+
+{{!-- Registrants list --}}
+{{!-- Style with CSS to make it trail off (show more?) --}}
+<p>{{{registrants}}}</p>
+
+
+{{!-- Comments section -- for users to interact, should use @ ? --}}
+<form action="/???" method="POST" class="raceComment">
+    <label for="comment">LEAVE A COMMENT:</label><br>
+    <input type="text" id="comment" name="comment"><br>
+    <button type="submit">POST</button>
+</form>
