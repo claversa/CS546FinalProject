@@ -1,18 +1,18 @@
-<form method="POST" class='flex_container' action="../routes/profileRoutes.js">
+<form method="POST" class='flex_container' action="/profile/createProfile">
     <!--Name-->
     <label for="firstName" class="firstName">FIRST NAME:</label>
-    <input type="text" id="firstName" class="firstName">
+    <input type="text" name="firstName" id="firstName" class="firstName">
     <label for="lastName" class="lastName">LAST NAME:</label>
-    <input type="text" id="lastName" class="lastName">
+    <input type="text" name="lastName" id="lastName" class="lastName">
     <!--username-->
     <label for="username" class="username">USERNAME:</label>
-    <input type="text" id="username" class="username">
+    <input type="text" name="username" id="username" class="username">
     <!--email-->
     <label for="email" id="email">EMAIL:</label>
-    <input type="email" name="email" id="email">
+    <input type="email" name="email" id="email" class="email">
     <!--Gender drop down-->
     <label for="gender">GENDER:</label>
-    <select id="gender" class="gender">
+    <select name ="gender" id="gender" class="gender">
         <option value="placeholder" selected>CLICK TO SELECT</option>
         <option value="male">MALE</option>
         <option value="female">FEMALE</option>
@@ -21,22 +21,22 @@
     <label for="social_platform">SOCIAL MEDIA PLATFORM</label>
     <select name="social_platform" id="social_platform" class="social_platform">
         <option value="placeholder" selected>CLICK TO SELECT</option>
-        <option value="male">INSTAGRAM</option>
-        <option value="female">FACEBOOK</option>
-        <option value="preferNot">TWITTER</option>
+        <option value="instagram">INSTAGRAM</option>
+        <option value="facebook">FACEBOOK</option>
+        <option value="twitter">TWITTER</option>
     </select>
     <label for="social_handle">SOCIAL MEDIA HANDLE</label>
-    <input type="text" id="social_handle" class="social_handle">
+    <input type="text" name="social_handle" id="social_handle" class="social_handle">
     <!--Measurement System Dropdown-->
     <label for="system">MEASUREMENT SYSTEM:</label>
-    <select id="system" class="system">
+    <select name="system" id="system" class="system">
         <option value="placeholder" selected>CLICK TO SELECT</option>
         <option value="metric">METRIC</option>
         <option value="imperial">IMPERIAL</option>
     </select>
     <!--State DropDown-->
     <label for="state">HOMESTATE:</label>
-    <select id="state" class="state">
+    <select name="state" id="state" class="state">
         <option value="placeholder" selected>CLICK TO SELECT</option>
         <option value="AL">AL</option>
         <option value="AK">AK</option>
@@ -204,6 +204,7 @@
         <option value="117">117</option>
     </select>
     <label for="password">PASSWORD:</label>
-    <input type="password" id="password" class="password" onmousedown="this.type='text'"
+    <input name="password" type="password" id="password" class="password" onmousedown="this.type='text'"
         onmouseup="this.type='password'" onmousemove="this.type='password'">
+    <button type="create">Create Profile</button>
 </form>
