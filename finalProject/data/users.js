@@ -41,7 +41,7 @@ const create = async (
     // HOW DO I VALIDATE !!!!!!!!!!!!!!!
 
     // password
-    let hashedPW = pw.hashPassword(password);
+    let hashedPW = await pw.hashPassword(password);
 
     //make empty arrays for registered races and training plans that will be filled in later
     let registeredRaces = [];
@@ -71,10 +71,10 @@ const create = async (
     const insertInfo = await userCollection.insertOne(newUser);
     if (!insertInfo.acknowledged || !insertInfo.insertedId)
         throw 'Could not add user';
-
     const newId = insertInfo.insertedId.toString();
-
+    console.log(newId);
     const user = await get(newId);
+    console.log("here");
     return user;
 };
 
@@ -92,10 +92,8 @@ const getAll = async () => {
 
 // get specific user
 const get = async (id) => {
-    let x = new ObjectId();
-    exists(id, 'id');
-    id = notStringOrEmpty(id, 'id');
-    if (!ObjectId.isValid(id)) throw 'invalid object ID'; // check for valid id
+    id = help.notStringOrEmpty(id, 'id');
+    if (!ObjectId.isValid(id)) throw 'invalid object ID';
     const userCollection = await users();
     const user = await userCollection.findOne({ _id: new ObjectId(id) });
     if (user === null) throw 'No user with that id';

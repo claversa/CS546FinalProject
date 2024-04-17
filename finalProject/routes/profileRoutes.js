@@ -28,7 +28,6 @@ router.route('/createProfile')
   let socialPlatform = profileInfo.social_platform;
   let socialHandle = profileInfo.social_handle;
   let password = profileInfo.password;
-  console.log(req.body)
   // CHECK ALL THESE ^^^^^^^^^^^^^^66
   // -------------------- check
   // try {
@@ -50,10 +49,9 @@ router.route('/createProfile')
       socialHandle,
       system,
       password); // create user
-      console.log("here")
-    console.log(newUser)
+      console.log(newUser)
     // take user to homepage but now logged in
-    res.render(".homepage/home", { title: "Homepage", otherCss: './home.css' });
+    res.redirect('./homepage/home');
   }
   catch (e) {
     res.status(404).render('error', { title: "Error", class: "not-found", error: e.toString() });
