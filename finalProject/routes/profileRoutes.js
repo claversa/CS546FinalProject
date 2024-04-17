@@ -9,6 +9,7 @@ router.route('/login').get(async (req, res) => {
   res.render('./login', { title: "Login", otherCss: "./login.css" });
 });
 router.route('/createProfile')
+<<<<<<< Updated upstream
   .get(async (req, res) => {
     //render the home handlebars file
     res.render('./createProfile', { title: "createProfile", otherCss: "./createProfile.css" });
@@ -49,6 +50,48 @@ router.route('/createProfile')
         socialHandle,
         system,
         password); // create user
+=======
+.get(async (req, res) => {
+  //render the home handlebars file
+  res.render('./createProfile', { title: "createProfile", otherCss: "./createProfile.css" });
+})
+.post(async (req, res) => {
+  //code here for POST this is where profile form will be submitting new user and then call your data function passing in the profile info   and then rendering the search results of up to 20 Movies.
+  const profileInfo = req.body; // form info!
+  let first = profileInfo.firstName;
+  let last = profileInfo.lastName;
+  let username = profileInfo.username;
+  let email = profileInfo.email;
+  let age = profileInfo.age;
+  let city = profileInfo.city;
+  let state = profileInfo.state;
+  let gender = profileInfo.gender;
+  let system = profileInfo.system;
+  let socialPlatform = profileInfo.social_platform;
+  let socialHandle = profileInfo.social_handle;
+  let password = profileInfo.password;
+  // CHECK ALL THESE ^^^^^^^^^^^^^^66
+  // -------------------- check
+  // try {
+  //   help.checkString(movieName, "movie name");
+  // }
+  // catch (e) {
+  //   res.status(400).render('error', { title: "Error", class: "error", error: e.toString() });
+  // }
+  try {
+    let newUser = await data.create(first,
+      last,
+      username,
+      email,
+      city,
+      state,
+      gender,
+      age,
+      socialPlatform,
+      socialHandle,
+      system,
+      password); // create user
+>>>>>>> Stashed changes
       console.log(newUser)
       // take user to homepage but now logged in
       res.redirect('./home');
