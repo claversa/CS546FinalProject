@@ -8,5 +8,4 @@ router.route('/').get(async (req, res) => {
 });
 
 
-//export router
 export default router;
