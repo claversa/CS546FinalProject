@@ -4,7 +4,7 @@ const router = Router();
 import * as data from '../data/users.js'; // need stuff from users db
 
 router.route('/').get(async (req, res) => {
-    res.render("./countdown", { title: "Race Day Countdown" });
+    res.render("./countdown", { title: "Race Day Countdown", user: req.session.user});
 });
 
 export default router;

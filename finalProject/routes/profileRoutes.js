@@ -6,7 +6,7 @@ import * as help from '../helpers/helpers.js'
 
 router.route('/login').get(async (req, res) => {
   //render the home handlebars file
-  res.render('./login', { title: "Login" });
+  res.render('./login', { title: "Login", user: req.session.user});
 });
 router.route('/logout').get(async (req, res) => {
   delete req.session.user
@@ -15,7 +15,7 @@ router.route('/logout').get(async (req, res) => {
 router.route('/login/login')
   .get(async (req, res) => {
     //render the home handlebars file
-    res.render('./loginPage', { title: "LoginPage" });
+    res.render('./loginPage', { title: "LoginPage", user: req.session.user });
   })
   .post(async (req, res) => {
     const loginInfo = req.body; // form info!
@@ -38,7 +38,7 @@ router.route('/login/login')
 router.route('/createProfile')
   .get(async (req, res) => {
     //render the home handlebars file
-    res.render('./createProfile', { title: "Create Profile" });
+    res.render('./createProfile', { title: "Create Profile", user: req.session.user });
   })
   .post(async (req, res) => {
     //code here for POST this is where profile form will be submitting new user and then call your data function passing in the profile info   and then rendering the search results of up to 20 Movies.
@@ -100,7 +100,7 @@ router.route('/profile/:id').get(async (req, res) => {
   try {
     let user = await data.get(username)
     if (user) {
-      res.render("./profile", { title: 'Profile', first: user.firstName.toUpperCase(), last: user.lastName.toUpperCase(), username: user.username, email: user.email.toUpperCase(), gender: user.gender.toUpperCase(), system: user.system.toUpperCase(), state: user.state.toUpperCase(), city: user.city.toUpperCase(), age: user.age, socialHandle: user.socialHandle, socialPlatform: user.socialPlatform.toUpperCase(), password: user.password })
+      res.render("./profile", { title: 'Profile', first: user.firstName.toUpperCase(), last: user.lastName.toUpperCase(), username: user.username, email: user.email.toUpperCase(), gender: user.gender.toUpperCase(), system: user.system.toUpperCase(), state: user.state.toUpperCase(), city: user.city.toUpperCase(), age: user.age, socialHandle: user.socialHandle, socialPlatform: user.socialPlatform.toUpperCase(), password: user.password, user: req.session.user })
     }
   }
   catch (e) {

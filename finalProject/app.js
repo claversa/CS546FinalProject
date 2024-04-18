@@ -26,7 +26,8 @@ app.use(rewriteUnsupportedBrowserMethods);
 app.use(session({
     secret: 'test', // Change this to a random string
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    cookie: { secure: false, maxAge: 30 * 24 * 60 * 60 * 1000 }
 }));
 
 app.engine('handlebars', exphbs.engine({ defaultLayout: 'main' }));
