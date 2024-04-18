@@ -59,19 +59,23 @@ router.route('/createProfile')
   });
 
 // default, get profile for given id
-router.route('/:id').get(async (req, res) => {
+router.route('/profile/:id').get(async (req, res) => {
   //code here for GET will render the home handlebars file
   //CHECK ID
 
-  let userId = req.params.id;
+  let username = req.params.id;
   try {
-    userId = help.checkString(userId, 'user id'); // checks id, trims
+    username = help.notStringOrEmpty(username, 'username'); // checks id, trims
   }
   catch (e) {
+<<<<<<< Updated upstream
     res.status(404).render('error', { title: "Error", class: "error", error: "Id must be present and must be of proper format" });
+=======
+    res.status(404).render('error', { title: "Error", class: "error", error: "Not valid username" });
+>>>>>>> Stashed changes
   }
   try {
-    let user = await data.get(userId);
+    let user = await data.get(username)
     if (user) {
       res.render("./profile", { title: 'Profile', first: user.firstName.toUpperCase(), last: user.lastName.toUpperCase(), username: user.username, email: user.email.toUpperCase(), gender: user.gender.toUpperCase(), system: user.system.toUpperCase(), state: user.state.toUpperCase(), city: user.city.toUpperCase(), age: user.age, socialHandle: user.socialHandle, socialPlatform: user.socialPlatform.toUpperCase(), password: user.password })
     }

@@ -20,6 +20,7 @@ const create = async (
     password
 ) => {
     // exists, not string or empty, trims all input as well
+    username = help.notStringOrEmpty(username, "username");
     firstName = help.notStringOrEmpty(firstName, "firstName");
     lastName = help.notStringOrEmpty(lastName, "lastName");
     email = help.notStringOrEmpty(email, "email");
@@ -68,12 +69,14 @@ const create = async (
         trainingPlans
     };
     const userCollection = await users();
+    const exist = await userCollection.findOne({ username: username });
+    if (exist) {
+        throw 'username taken';
+    }
     const insertInfo = await userCollection.insertOne(newUser);
     if (!insertInfo.acknowledged || !insertInfo.insertedId)
         throw 'Could not add user';
-    const newId = insertInfo.insertedId.toString();
-    console.log(newId);
-    const user = await get(newId);
+    const user = await get(username);
     return user;
 };
 
@@ -90,13 +93,12 @@ const getAll = async () => {
 };
 
 // get specific user
-const get = async (id) => {
-    id = help.notStringOrEmpty(id, 'id');
-    if (!ObjectId.isValid(id)) throw 'invalid object ID';
+const get = async (username) => {
+    username = help.notStringOrEmpty(username, 'username');
+    //if (!ObjectId.isValid(id)) throw 'invalid object ID';
     const userCollection = await users();
-    const user = await userCollection.findOne({ _id: new ObjectId(id) });
-    if (user === null) throw 'No user with that id';
-    user._id = user._id.toString();
+    const user = await userCollection.findOne({ username: username });
+    if (user === null) throw `No user named ${username}`;
     return user;
 };
 
