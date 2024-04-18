@@ -68,11 +68,7 @@ router.route('/profile/:id').get(async (req, res) => {
     username = help.notStringOrEmpty(username, 'username'); // checks id, trims
   }
   catch (e) {
-<<<<<<< Updated upstream
-    res.status(404).render('error', { title: "Error", class: "error", error: "Id must be present and must be of proper format" });
-=======
     res.status(404).render('error', { title: "Error", class: "error", error: "Not valid username" });
->>>>>>> Stashed changes
   }
   try {
     let user = await data.get(username)
