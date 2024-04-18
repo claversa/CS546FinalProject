@@ -20,12 +20,12 @@ export let checkPassword = async (inputPassword, hash) => {
     try {
         compare = await bcrypt.compare(inputPassword, hash);
     } catch (e) {
-        //no op
+        throw "error checking password"
     }
     if (compare) {
-        //LET IN
+        return true
     }
     else {
-        //DONT LET IN
+        return false
     }
 }

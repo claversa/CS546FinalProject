@@ -6,7 +6,7 @@ import path from 'path';
 
 router.route('/').get(async (req, res) => {
     //render the home handlebars file
-    res.render('./home', { title: "Homepage" });
+    res.render('./home', { title: "Homepage", user: req.session.user });
 });
 
 

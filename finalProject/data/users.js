@@ -358,4 +358,19 @@ const addTrainingPlan = async (id, raceId) => {
     return updatedInfo;
 };
 
-export { create, getAll, get, updateEmail, updateCity, updateState, updateGender, updateSocial, updateSystem, updatePassword, registerRace, addTrainingPlan };
+const check = async (username, password) => {
+    username = help.notStringOrEmpty(username, 'username');
+    password = help.notStringOrEmpty(password, 'password');
+    const userCollection = await users();
+    const user = await userCollection.findOne({ username: username });
+    if (!user) {
+        return false;
+    }
+    let correctPassword = await pw.checkPassword(password, user.hashedPW);
+    if (correctPassword) {
+        return true;
+    } 
+    return false;
+}
+
+export { create, getAll, get, updateEmail, updateCity, updateState, updateGender, updateSocial, updateSystem, updatePassword, registerRace, addTrainingPlan, check };
