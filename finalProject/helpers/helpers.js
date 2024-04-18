@@ -47,3 +47,25 @@ export let arraysWithStringElem = (val, error) => {
     }
     return val // return new array
 }
+
+export let metricToImperial = (x, type) => {
+    switch (type) {
+        case "Kilometer":
+            return x*0.621371;
+        case "Kilogram":
+            return x*2.20462;
+        default:
+            throw "unknown unit";
+    }
+}
+
+export let imperialToMetric = (x, type) => {
+    switch (type) {
+        case "Mile":
+            return x/0.621371;
+        case "Pound":
+            return x/2.20462;
+        default:
+            throw "unknown unit";
+    }
+}
