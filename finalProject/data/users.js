@@ -66,7 +66,9 @@ const create = async (
         hashedPW,
         oldPWs,
         registeredRaces,
-        trainingPlans
+        trainingPlans,
+        colorblind: false,
+        darkmode: false
     };
     const userCollection = await users();
     const exist = await userCollection.findOne({ username: username });
@@ -101,6 +103,20 @@ const get = async (username) => {
     if (user === null) throw `No user named ${username}`;
     return user;
 };
+
+const updateDarkmode = async (username) => {
+    username = help.notStringOrEmpty(username, 'username)');
+    const userCollection = await users();
+    const updatedInfo = await userCollection.findOneAndUpdate(
+        { username: username },
+        { $set: { darkmode: { $not: "$darkmode" } } },
+        { returnDocument: 'after' }
+    );
+    if (!updatedInfo) {
+        throw 'could not update user successfully';
+    }
+    return updatedInfo;
+}
 
 
 // remove user ????
@@ -364,13 +380,13 @@ const check = async (username, password) => {
     const userCollection = await users();
     const user = await userCollection.findOne({ username: username });
     if (!user) {
-        return false;
+        return null;
     }
     let correctPassword = await pw.checkPassword(password, user.hashedPW);
     if (correctPassword) {
-        return true;
+        return user;
     } 
-    return false;
+    return null;
 }
 
-export { create, getAll, get, updateEmail, updateCity, updateState, updateGender, updateSocial, updateSystem, updatePassword, registerRace, addTrainingPlan, check };
+export { create, getAll, get, updateDarkmode, updateEmail, updateCity, updateState, updateGender, updateSocial, updateSystem, updatePassword, registerRace, addTrainingPlan, check };

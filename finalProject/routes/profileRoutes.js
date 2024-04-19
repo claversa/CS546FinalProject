@@ -24,7 +24,8 @@ router.route('/login/login')
     try {
       let validation = await data.check(username, password)
       if (validation) {
-        req.session.user = { username: username };
+        console.log(validation.darkmode)
+        req.session.user = { username: username, coloblind: validation.coloblind, darkmode: validation.darkmode };
           // take user to homepage but now logged in
         res.redirect('./home');
       } else {
