@@ -38,8 +38,7 @@ const create = async (
 
 
     //validate email -- NO DUPLICATES EVEN WITH CAPS
-    email = email.toLowerCase();
-    // HOW DO I VALIDATE !!!!!!!!!!!!!!!
+    email = help.validEmail(email);
 
     // password
     let hashedPW = await pw.hashPassword(password);

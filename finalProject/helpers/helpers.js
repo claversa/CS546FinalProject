@@ -69,3 +69,9 @@ export let imperialToMetric = (x, type) => {
             throw "unknown unit";
     }
 }
+
+export let validEmail = (email) => {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(email)) {throw "Error: Please provide a valid email"};
+    return email.toLowerCase();
+}
