@@ -4,38 +4,6 @@ const router = Router();
 import * as data from '../data/users.js';
 import * as help from '../helpers/helpers.js'
 
-router.route('/login').get(async (req, res) => {
-  //render the home handlebars file
-  res.render('login', { title: "Login", user: req.session.user });
-});
-router.route('/logout').get(async (req, res) => {
-  delete req.session.user
-  res.redirect('./home');
-});
-router.route('/login/login')
-  .get(async (req, res) => {
-    //render the home handlebars file
-    res.render('loginPage', { title: "LoginPage", user: req.session.user });
-  })
-  .post(async (req, res) => {
-    const loginInfo = req.body; // form info!
-    let username = loginInfo.username;
-    let password = loginInfo.password;
-    try {
-      let validation = await data.check(username, password)
-      if (validation) {
-        console.log(validation.darkmode)
-        req.session.user = { username: username, coloblind: validation.coloblind, darkmode: validation.darkmode };
-        // take user to homepage but now logged in
-        res.redirect('./home');
-      } else {
-        throw "Username or Password is incorrect"
-      }
-    }
-    catch (e) {
-      res.status(404).render('error', { title: "Error", class: "not-found", error: e.toString() });
-    }
-  });
 router.route('/createProfile')
   .get(async (req, res) => {
     //render the home handlebars file
@@ -87,7 +55,7 @@ router.route('/createProfile')
   });
 
 // default, get profile for given id
-router.route('/profile/:id').get(async (req, res) => {
+router.route('/:id').get(async (req, res) => {
   //code here for GET will render the home handlebars file
   //CHECK ID
 

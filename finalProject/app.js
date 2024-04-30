@@ -35,7 +35,7 @@ app.set('view engine', 'handlebars');
 
 
 
-app.use(async (req, res, next) => {
+/*app.use(async (req, res, next) => {
     if (req.path === '/') {
         if (req.session.user) { // logged in
             if (req.path === "/login") return res.redirect("/home"); // back to home page but logged in now, idk what the path would be lol
@@ -208,7 +208,7 @@ app.use('/logout', (req, res, next) => {
         next()
     }
 });
-
+*/
 
 configRoutes(app);
 
