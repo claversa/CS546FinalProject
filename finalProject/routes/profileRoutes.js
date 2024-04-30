@@ -6,7 +6,7 @@ import * as help from '../helpers/helpers.js'
 
 router.route('/login').get(async (req, res) => {
   //render the home handlebars file
-  res.render('./login', { title: "Login", user: req.session.user});
+  res.render('login', { title: "Login", user: req.session.user });
 });
 router.route('/logout').get(async (req, res) => {
   delete req.session.user
@@ -15,7 +15,7 @@ router.route('/logout').get(async (req, res) => {
 router.route('/login/login')
   .get(async (req, res) => {
     //render the home handlebars file
-    res.render('./loginPage', { title: "LoginPage", user: req.session.user });
+    res.render('loginPage', { title: "LoginPage", user: req.session.user });
   })
   .post(async (req, res) => {
     const loginInfo = req.body; // form info!
@@ -26,7 +26,7 @@ router.route('/login/login')
       if (validation) {
         console.log(validation.darkmode)
         req.session.user = { username: username, coloblind: validation.coloblind, darkmode: validation.darkmode };
-          // take user to homepage but now logged in
+        // take user to homepage but now logged in
         res.redirect('./home');
       } else {
         throw "Username or Password is incorrect"
@@ -35,7 +35,7 @@ router.route('/login/login')
     catch (e) {
       res.status(404).render('error', { title: "Error", class: "not-found", error: e.toString() });
     }
-});
+  });
 router.route('/createProfile')
   .get(async (req, res) => {
     //render the home handlebars file
@@ -48,7 +48,7 @@ router.route('/createProfile')
     let last = profileInfo.lastName;
     let username = profileInfo.username;
     let email = profileInfo.email;
-    let age = profileInfo.age;
+    let birthday = profileInfo.birthday;
     let city = profileInfo.city;
     let state = profileInfo.state;
     let gender = profileInfo.gender;
@@ -72,7 +72,7 @@ router.route('/createProfile')
         city,
         state,
         gender,
-        age,
+        birthday,
         socialPlatform,
         socialHandle,
         system,
@@ -101,7 +101,7 @@ router.route('/profile/:id').get(async (req, res) => {
   try {
     let user = await data.get(username)
     if (user) {
-      res.render("./profile", { title: 'Profile', first: user.firstName.toUpperCase(), last: user.lastName.toUpperCase(), username: user.username, email: user.email.toUpperCase(), gender: user.gender.toUpperCase(), system: user.system.toUpperCase(), state: user.state.toUpperCase(), city: user.city.toUpperCase(), age: user.age, socialHandle: user.socialHandle, socialPlatform: user.socialPlatform.toUpperCase(), password: user.password, user: req.session.user })
+      res.render("profile", { title: 'Profile', first: user.firstName.toUpperCase(), last: user.lastName.toUpperCase(), username: user.username, email: user.email.toUpperCase(), gender: user.gender.toUpperCase(), system: user.system.toUpperCase(), state: user.state.toUpperCase(), city: user.city.toUpperCase(), birthday: user.birthday, socialHandle: user.socialHandle, socialPlatform: user.socialPlatform.toUpperCase(), password: user.password, user: req.session.user })
     }
   }
   catch (e) {

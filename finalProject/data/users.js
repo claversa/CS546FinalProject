@@ -13,7 +13,7 @@ const create = async (
     city,
     state,
     gender,
-    age,
+    birthday,
     socialPlatform,
     socialHandle,
     system,
@@ -32,7 +32,10 @@ const create = async (
     system = help.notStringOrEmpty(system, "system");
     password = help.notStringOrEmpty(password, "password");
 
-    if (!age) throw 'Error: age is undefined'
+    if (!birthday) throw 'Error: birthday is undefined'
+    // DO VALIDATION FOR AGE ABOVE 13
+
+
     // valid abbrev and makes uppercase
     state = help.validState(state);
 
@@ -58,7 +61,7 @@ const create = async (
         city,
         state,
         gender,
-        age,
+        birthday,
         socialPlatform,
         socialHandle,
         system,
@@ -384,7 +387,7 @@ const check = async (username, password) => {
     let correctPassword = await pw.checkPassword(password, user.hashedPW);
     if (correctPassword) {
         return user;
-    } 
+    }
     return null;
 }
 
