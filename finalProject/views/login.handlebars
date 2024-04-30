@@ -1,20 +1,16 @@
 <head>
-    <link rel="stylesheet" href="/public/login.css" />
+    <link rel="stylesheet" href="/public/createProfile.css" />
 </head>
-<body>
-    <nav id="navbar">
-        <ul class="navbar-items flexbox-col">
-            <li class="navbar-logo ">
-                <a class=" flexbox-left" href="/profile/login/login">
-                    <span class="logo-text">Login</span>
-                </a>
-            </li>
-            <li class="navbar-item flexbox-left">
-                <a class="navbar-item-inner flexbox-left" href="/profile/createProfile">
 
-                    <span class="link-text">Create profile</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
-</body>
+<h1>Login</h1>
+<form method="POST" id='flex_container' class=' flex_container' action="/login">
+    <!--Name-->
+    <label for="username" class="username">Username:</label>
+    <input type="text" name="username" id="username" class="username">
+    <label for="password" class="password">Password:</label>
+    <input name="password" type="password" id="password" class="password" onmousedown="this.type='text'"
+        onmouseup="this.type='password'" onmousemove="this.type='password'">
+    <button type="create">Log In</button>
+</form>
+<a href="/profile/createProfile">
+<span class="link-text">REGISTER</span>Don't have an account click here to create an account </a>

@@ -39,34 +39,30 @@
                     <span class="link-text">COUNTDOWN</span>
                 </a>
             </li>
-            {{#if user}}
-                <li class="navbar-item flexbox-left">
-                    <a class="navbar-item-inner flexbox-left" href="/profile/profile/{{ user.username }}">
+            <li class="navbar-item flexbox-left">
+                <a class="navbar-item-inner flexbox-left" href="/profile/{{ user.username }}">
 
-                        <span class="link-text">PROFILE</span>
-                    </a>
-                </li>
-            {{/if}}
-            {{#if user}}
-                <li class="navbar-item flexbox-left">
-                    <a class="navbar-item-inner flexbox-left" href="/settings">
-
-                        <span class="link-text">SETTINGS</span>
-                    </a>
-                </li>
-            {{/if}}
+                    <span class="link-text">PROFILE</span>
+                </a>
+            </li>
             {{#if user}}
                  <li class="navbar-item flexbox-left">
-                    <a class="navbar-item-inner flexbox-left" href="/profile/logout">
+                    <a class="navbar-item-inner flexbox-left" href="/logout">
 
                         <span class="link-text">LOG OUT</span>
                     </a>
                 </li>
             {{else}}
                  <li class="navbar-item flexbox-left">
-                    <a class="navbar-item-inner flexbox-left" href="/profile/login">
+                    <a class="navbar-item-inner flexbox-left" href="/login">
 
                         <span class="link-text">LOG IN</span>
+                    </a>
+                </li>
+                <li class="navbar-item flexbox-left">
+                    <a class="navbar-item-inner flexbox-left" href="/profile/createProfile">
+
+                        <span class="link-text">REGISTER</span>
                     </a>
                 </li>
             {{/if}}
