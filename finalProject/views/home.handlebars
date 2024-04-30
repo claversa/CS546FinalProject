@@ -8,6 +8,8 @@
         details about race opportunities and creating personalized
         training plans to facilitating engagement within the racing
         community, we're here from Day 1 to Race Day!</p>
-    <input type="text" class='start-searching' placeholder='START SEARCHING'>
+        {{#if loggedIn}}
+            <input type="text" class='start-searching' placeholder='START SEARCHING'>
+        {{/if}}
     <div class="error" id="error">{{error}}</div>
 </main>
