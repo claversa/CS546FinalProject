@@ -341,7 +341,7 @@ const check = async (username, password) => {
     return null;
 }
 
-export { create, getAll, get, updateDarkmode, updateColorblind, updateEmail, updateCity, updateState, updateGender, updateSocial, updateSystem, updatePassword, registerRace, addTrainingPlan, check };
+export { create, getAll, get, updateDarkmode, updateEmail, updateState, updateGender, updateSocial, updateSystem, updatePassword, registerRace, addTrainingPlan, check };
 
 // test create();
 // create("jasper", "tumbokon", "jaspertu", "jasperjay0628@gmail.com", "Hoboken", "NJ", "male", "06/28/2003", "twitter", "jsprjay", "metric", "YourMom2$")
@@ -353,13 +353,3 @@ export { create, getAll, get, updateDarkmode, updateColorblind, updateEmail, upd
 //         // This function will execute if the promise is rejected
 //         console.error("Error occurred:", error);
 //     });
-
-updateGender('jaspert', 'female')
-.then((result) => {
-        // This function will execute when the promise is resolved
-        console.log(result); // Print the resolved value
-    })
-    .catch((error) => {
-        // This function will execute if the promise is rejected
-        console.error("Error occurred:", error);
-    });
