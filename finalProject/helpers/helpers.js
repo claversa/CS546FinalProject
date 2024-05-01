@@ -75,3 +75,22 @@ export let validEmail = (email) => {
     if (!emailRegex.test(email)) {throw "Error: Please provide a valid email"};
     return email.toLowerCase();
 }
+
+export let calculateAge = (birthdate) => {
+    // given MM/DD/YYYY
+    const birthdateDate = new Date(birthdate);
+    const currentDate = new Date();
+    let age = currentDate.getFullYear() - birthdateDate.getFullYear();
+    const currentMonth = currentDate.getMonth();
+    const birthMonth = birthdateDate.getMonth();
+    if (currentMonth < birthMonth || (currentMonth === birthMonth && currentDate.getDate() < birthdateDate.getDate())) age--;
+    return age;
+}
+
+export function validBirthdate(dateString) {
+    const dateFormatRegex = /^\d{2}\/\d{2}\/\d{4}$/;
+    if (!dateFormatRegex.test(dateString)) throw "Error: Invalid birthdate format";
+    const [month, day, year] = dateString.split('/').map(Number);
+    const dateObject = new Date(year, month - 1, day);
+    return !isNaN(dateObject.getTime()) && dateObject.getFullYear() === year && dateObject.getMonth() === month - 1 && dateObject.getDate() === day;
+}

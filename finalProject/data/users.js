@@ -10,10 +10,9 @@ const create = async (
     lastName,
     username,
     email,
-    city,
     state,
     gender,
-    birthday,
+    birthdate,
     socialPlatform,
     socialHandle,
     system,
@@ -24,27 +23,33 @@ const create = async (
     firstName = help.notStringOrEmpty(firstName, "firstName");
     lastName = help.notStringOrEmpty(lastName, "lastName");
     email = help.notStringOrEmpty(email, "email");
-    city = help.notStringOrEmpty(city, "city");
     state = help.notStringOrEmpty(state, "state");
     gender = help.notStringOrEmpty(gender, "gender");
     socialPlatform = help.notStringOrEmpty(socialPlatform, "social platform");
     socialHandle = help.notStringOrEmpty(socialHandle, "social handle");
     system = help.notStringOrEmpty(system, "system");
     password = help.notStringOrEmpty(password, "password");
+    birthdate = help.notStringOrEmpty(birthdate, "birthdate");
 
-    if (!birthday) throw 'Error: birthday is undefined'
-    // DO VALIDATION FOR AGE ABOVE 13
-
+    if (gender != "male" && gender != "female" && gender != "other" && gender != "preferNot") throw 'Error: not a valid response (gender)!'
+    if (system != "metric" && system != "imperial") throw "Error: invalid measurement system";
+    
+    // validate birthdate
+    try {
+        help.validBirthdate(birthdate);
+    } catch(e) {
+        throw e;
+    };
 
     // valid abbrev and makes uppercase
     state = help.validState(state);
 
-
-    //validate email -- NO DUPLICATES EVEN WITH CAPS
+    // validate email -- NO DUPLICATES EVEN WITH CAPS
     email = help.validEmail(email);
 
     // password
     let hashedPW = await pw.hashPassword(password);
+    let age = help.calculateAge(birthdate);
 
     //make empty arrays for registered races and training plans that will be filled in later
     let registeredRaces = [];
@@ -58,7 +63,6 @@ const create = async (
         lastName,
         username,
         email,
-        city,
         state,
         gender,
         birthday,
@@ -66,11 +70,9 @@ const create = async (
         socialHandle,
         system,
         hashedPW,
-        oldPWs,
         registeredRaces,
         trainingPlans,
-        colorblind: false,
-        darkmode: false
+        darkmode: true
     };
     const userCollection = await users();
     const exist = await userCollection.findOne({ username: username });
@@ -109,9 +111,14 @@ const get = async (username) => {
 const updateDarkmode = async (username) => {
     username = help.notStringOrEmpty(username, 'username)');
     const userCollection = await users();
+    const user = await userCollection.findOne({ username: username });
+    if (!user) throw 'User not found' // checks if user is not found
+    const currentDarkmode = user.darkmode; // get curr val of darkmode
+    const newDarkmode = !currentDarkmode; // swap darkmode val
+
     const updatedInfo = await userCollection.findOneAndUpdate(
         { username: username },
-        { $set: { darkmode: { $not: "$darkmode" } } },
+        { $set: { darkmode: newDarkmode } },
         { returnDocument: 'after' }
     );
     if (!updatedInfo) {
@@ -119,6 +126,24 @@ const updateDarkmode = async (username) => {
     }
     return updatedInfo;
 }
+
+const updateSystem = async (username) => {
+    username = help.notStringOrEmpty(username, 'username)');
+    const userCollection = await users();
+    const user = await userCollection.findOne({ username: username });
+    if (!user) throw 'User not found' // checks if user is not found
+    let newSystem = (user.system === 'metric') ? 'imperial' : 'metric'; // swap system val
+
+    const updatedInfo = await userCollection.findOneAndUpdate(
+        { username: username },
+        { $set: { system: newSystem } },
+        { returnDocument: 'after' }
+    );
+    if (!updatedInfo) {
+        throw 'could not update user successfully';
+    }
+    return updatedInfo;
+};
 
 
 // remove user ????
@@ -139,25 +164,21 @@ const updateDarkmode = async (username) => {
 
 // UPDATE METHODS
 // can update email, city, state, gender, social, system, password, registeredRaces, trainingPlans
-// cant update name, username, age
-const updateEmail = async (id, newEmail) => {
-    exists(id, 'id');
-    exists(newEmail, 'email');
-    id = notStringOrEmpty(id, 'id');
-    if (!ObjectId.isValid(id)) throw 'invalid object ID'; // check for valid ID
-    newEmail = notStringOrEmpty(newEmail, 'email');
+// cant update name, username, birthdate
+const updateEmail = async (username, newEmail) => {
+    username = help.notStringOrEmpty(username, 'username');
+    newEmail = help.notStringOrEmpty(newEmail, 'new email');
+    newEmail = help.validEmail(newEmail);
     const userCollection = await users();
-    const user = await userCollection.findOne({ _id: new ObjectId(id) });
+    const user = await userCollection.findOne({ username: username });
+    if (!user) throw 'User not found' // checks if user is not found
     // CHECK IF UNIQUE!!
     // --------------------------------------------------
     // already set
-    if (newEmail.toLowerCase() === user.email.toLowerCase()) throw `Error: Email is already ${user.email}`
-    const updatedUser = {
-        email: newEmail
-    };
+    if (newEmail.toLowerCase() === user.email.toLowerCase()) throw `Error: Email is already ${user.email}` 
     const updatedInfo = await userCollection.findOneAndUpdate(
-        { _id: new ObjectId(id) },
-        { $set: updatedUser },
+        { username: username },
+        { $set: { email: newEmail } },
         { returnDocument: 'after' }
     );
     if (!updatedInfo) {
@@ -167,47 +188,17 @@ const updateEmail = async (id, newEmail) => {
     return updatedInfo;
 };
 
-const updateCity = async (id, newCity) => {
-    exists(id, 'id');
-    exists(newCity, 'city');
-    id = notStringOrEmpty(id, 'id');
-    if (!ObjectId.isValid(id)) throw 'invalid object ID'; // check for valid ID
-    newCity = notStringOrEmpty(newCity, 'city');
+const updateState = async (username, newState) => {
+    username = help.notStringOrEmpty(username, 'username');
+    newState = help.notStringOrEmpty(newState, 'new state');
     const userCollection = await users();
-    const user = await userCollection.findOne({ _id: new ObjectId(id) });
-    // already set
-    if (newCity.toLowerCase() === user.city.toLowerCase()) throw `Error: City is already ${user.city}`
-    const updatedUser = {
-        city: newCity
-    };
-    const updatedInfo = await userCollection.findOneAndUpdate(
-        { _id: new ObjectId(id) },
-        { $set: updatedUser },
-        { returnDocument: 'after' }
-    );
-    if (!updatedInfo) {
-        throw 'could not update user successfully';
-    }
-    updatedInfo._id = updatedInfo._id.toString();
-    return updatedInfo;
-};
-
-const updateState = async (id, newState) => {
-    exists(id, 'id');
-    exists(newState, 'state');
-    id = notStringOrEmpty(id, 'id');
-    if (!ObjectId.isValid(id)) throw 'invalid object ID'; // check for valid ID
-    newState = notStringOrEmpty(newState, 'state');
-    const userCollection = await users();
-    const user = await userCollection.findOne({ _id: new ObjectId(id) });
+    const user = await userCollection.findOne({ username: username });
+    if (!user) throw 'User not found' // checks if user is not found
     // already set
     if (newState.toLowerCase() === user.state.toLowerCase()) throw `Error: State is already ${user.state}`
-    const updatedUser = {
-        state: newState
-    };
     const updatedInfo = await userCollection.findOneAndUpdate(
-        { _id: new ObjectId(id) },
-        { $set: updatedUser },
+        { username: username },
+        { $set: { state: newState } },
         { returnDocument: 'after' }
     );
     if (!updatedInfo) {
@@ -217,22 +208,17 @@ const updateState = async (id, newState) => {
     return updatedInfo;
 };
 
-const updateGender = async (id, newGender) => {
-    exists(id, 'id');
-    exists(newGender, 'gender');
-    id = notStringOrEmpty(id, 'id');
-    if (!ObjectId.isValid(id)) throw 'invalid object ID'; // check for valid ID
-    newGender = notStringOrEmpty(newGender, 'gender');
+const updateGender = async (username, newGender) => {
+    username = help.notStringOrEmpty(username, 'username');
+    newGender = help.notStringOrEmpty(newGender, 'new gender');
     const userCollection = await users();
-    const user = await userCollection.findOne({ _id: new ObjectId(id) });
+    const user = await userCollection.findOne({ username: username });
+    if (!user) throw 'User not found' // checks if user is not found
     // already set
     if (newGender.toLowerCase() === user.gender.toLowerCase()) throw `Error: Gender is already ${user.gender}`
-    const updatedUser = {
-        gender: newGender
-    };
     const updatedInfo = await userCollection.findOneAndUpdate(
-        { _id: new ObjectId(id) },
-        { $set: updatedUser },
+        { username: username },
+        { $set: { gender: newGender } },
         { returnDocument: 'after' }
     );
     if (!updatedInfo) {
@@ -242,22 +228,17 @@ const updateGender = async (id, newGender) => {
     return updatedInfo;
 };
 
-const updateSocial = async (id, newSocial) => {
-    exists(id, 'id');
-    exists(newSocial, 'social');
-    id = notStringOrEmpty(id, 'id');
-    if (!ObjectId.isValid(id)) throw 'invalid object ID'; // check for valid ID
-    newSocial = notStringOrEmpty(newSocial, 'social');
+const updateSocial = async (username, newSocial) => {
+    username = help.notStringOrEmpty(username, 'username');
+    newSocial = help.notStringOrEmpty(newSocial, 'new social');
     const userCollection = await users();
-    const user = await userCollection.findOne({ _id: new ObjectId(id) });
+    const user = await userCollection.findOne({ username: username });
+    if (!user) throw 'User not found' // checks if user is not found
     // already set
     if (newSocial.toLowerCase() === user.social.toLowerCase()) throw `Error: Social is already ${user.social}`
-    const updatedUser = {
-        social: newSocial
-    };
     const updatedInfo = await userCollection.findOneAndUpdate(
-        { _id: new ObjectId(id) },
-        { $set: updatedUser },
+        { username: username },
+        { $set: { social: newSocial } },
         { returnDocument: 'after' }
     );
     if (!updatedInfo) {
@@ -266,53 +247,22 @@ const updateSocial = async (id, newSocial) => {
     updatedInfo._id = updatedInfo._id.toString();
     return updatedInfo;
 };
-
-const updateSystem = async (id, newSystem) => {
-    exists(id, 'id');
-    exists(newSystem, 'system');
-    id = notStringOrEmpty(id, 'id');
-    if (!ObjectId.isValid(id)) throw 'invalid object ID'; // check for valid ID
-    newSystem = notStringOrEmpty(newSystem, 'system');
-    const userCollection = await users();
-    const user = await userCollection.findOne({ _id: new ObjectId(id) });
-    // already set
-    if (newSystem.toLowerCase() === user.system.toLowerCase()) throw `Error: System is already ${user.system}`
-    const updatedUser = {
-        system: newSystem
-    };
-    const updatedInfo = await userCollection.findOneAndUpdate(
-        { _id: new ObjectId(id) },
-        { $set: updatedUser },
-        { returnDocument: 'after' }
-    );
-    if (!updatedInfo) {
-        throw 'could not update user successfully';
-    }
-    updatedInfo._id = updatedInfo._id.toString();
-    return updatedInfo;
-};
-
 
 const updatePassword = async (id, newPassword) => {
-    exists(id, 'id');
-    exists(newPassword, 'password');
-    id = notStringOrEmpty(id, 'id');
-    if (!ObjectId.isValid(id)) throw 'invalid object ID'; // check for valid ID
-    newPassword = notStringOrEmpty(newPassword, 'password');
+    username = help.notStringOrEmpty(username, 'username');
+    newPassword = help.notStringOrEmpty(newPassword, 'new password');
     const userCollection = await users();
-    const user = await userCollection.findOne({ _id: new ObjectId(id) });
+    const user = await userCollection.findOne({ username: username });
+    if (!user) throw 'User not found' // checks if user is not found
     // already set
-    let plainTextPassword = user.oldPWs[-1]; // get last password added, that is most recent
-    if (newPassword === plainTextPassword) throw `Error: Old passwords may not be reused.`
+    if (pw.checkPassword(newPassword)) throw `Error: Old passwords may not be reused.`
     let hash = pw.hashPassword(newPassword);
-    let updatedPWList = user.oldPWs.push(newPassword); // add new password to end of old passwords list
-    const updatedUser = { // update password and the password list
+    const updatedUser = {
         hashedPW: hash,
-        oldPWs: updatedPWList
     };
     const updatedInfo = await userCollection.findOneAndUpdate(
-        { _id: new ObjectId(id) },
-        { $set: updatedUser },
+        { username: username },
+        { $set: { hashedPW: hash } },
         { returnDocument: 'after' }
     );
     if (!updatedInfo) {
@@ -391,4 +341,25 @@ const check = async (username, password) => {
     return null;
 }
 
-export { create, getAll, get, updateDarkmode, updateEmail, updateCity, updateState, updateGender, updateSocial, updateSystem, updatePassword, registerRace, addTrainingPlan, check };
+export { create, getAll, get, updateDarkmode, updateColorblind, updateEmail, updateCity, updateState, updateGender, updateSocial, updateSystem, updatePassword, registerRace, addTrainingPlan, check };
+
+// test create();
+// create("jasper", "tumbokon", "jaspertu", "jasperjay0628@gmail.com", "Hoboken", "NJ", "male", "06/28/2003", "twitter", "jsprjay", "metric", "YourMom2$")
+//     .then((result) => {
+//         // This function will execute when the promise is resolved
+//         console.log(result); // Print the resolved value
+//     })
+//     .catch((error) => {
+//         // This function will execute if the promise is rejected
+//         console.error("Error occurred:", error);
+//     });
+
+updateGender('jaspert', 'female')
+.then((result) => {
+        // This function will execute when the promise is resolved
+        console.log(result); // Print the resolved value
+    })
+    .catch((error) => {
+        // This function will execute if the promise is rejected
+        console.error("Error occurred:", error);
+    });
