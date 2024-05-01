@@ -5,6 +5,7 @@ import * as help from '../helpers/helpers.js';
 
 const create = async (
     raceName,
+    creatorID,
     raceCity,
     raceState,
     raceDate,

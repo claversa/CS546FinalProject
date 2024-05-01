@@ -87,10 +87,22 @@ export let calculateAge = (birthdate) => {
     return age;
 }
 
-export function validBirthdate(dateString) {
+export let validBirthdate = (dateString) => {
     const dateFormatRegex = /^\d{2}\/\d{2}\/\d{4}$/;
     if (!dateFormatRegex.test(dateString)) throw "Error: Invalid birthdate format";
     const [month, day, year] = dateString.split('/').map(Number);
     const dateObject = new Date(year, month - 1, day);
     return !isNaN(dateObject.getTime()) && dateObject.getFullYear() === year && dateObject.getMonth() === month - 1 && dateObject.getDate() === day;
-}
+};
+
+export let validPassword = (password) => {
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*_+()=])[^\s]{8,}$/;
+    if (!passwordRegex.test(password)) {throw "Error: Please provide a valid password"};
+    return password.toLowerCase();
+};
+
+export let validUsername = (username) => {
+    const usernameRegex = /^[a-zA-Z]{5,10}$/;
+    if (!usernameRegex.test(username)) {throw "Error: Please provide a valid username"};
+    return username.toLowerCase();
+};

@@ -2,6 +2,7 @@ import { users } from '../config/mongoCollections.js'
 import { ObjectId } from 'mongodb';
 import * as help from '../helpers/helpers.js';
 import * as pw from '../helpers/bcrypt.js'
+import bcrypt from 'bcryptjs';
 
 
 // create new user
@@ -41,7 +42,11 @@ const create = async (
         throw e;
     };
 
-    // valid abbrev and makes uppercase
+    // validate username and PW
+    username = help.validUsername(username);
+    password = help.validPassword(password);
+
+    // validate abbrev and makes uppercase
     state = help.validState(state);
 
     // validate email -- NO DUPLICATES EVEN WITH CAPS
@@ -55,9 +60,6 @@ const create = async (
     let registeredRaces = [];
     let trainingPlans = [];
 
-    // make old passwords array to prevent old passwords being used, add current pw
-    let oldPWs = [hashedPW];
-
     let newUser = {
         firstName,
         lastName,
@@ -65,7 +67,7 @@ const create = async (
         email,
         state,
         gender,
-        birthday,
+        age,
         socialPlatform,
         socialHandle,
         system,
@@ -75,13 +77,12 @@ const create = async (
         darkmode: true
     };
     const userCollection = await users();
-    const exist = await userCollection.findOne({ username: username });
-    if (exist) {
-        throw 'username taken';
-    }
+    const existUsername = await userCollection.findOne({ username: username });
+    if (existUsername) throw 'username taken';
+    const existEmail = await userCollection.findOne({ email: email });
+    if (existEmail) throw 'email already in use';
     const insertInfo = await userCollection.insertOne(newUser);
-    if (!insertInfo.acknowledged || !insertInfo.insertedId)
-        throw 'Could not add user';
+    if (!insertInfo.acknowledged || !insertInfo.insertedId) throw 'Could not add user';
     const user = await get(username);
     return user;
 };
@@ -172,8 +173,8 @@ const updateEmail = async (username, newEmail) => {
     const userCollection = await users();
     const user = await userCollection.findOne({ username: username });
     if (!user) throw 'User not found' // checks if user is not found
-    // CHECK IF UNIQUE!!
-    // --------------------------------------------------
+    const existEmail = await userCollection.findOne({ email: email });
+    if (existEmail) throw 'email already in use';
     // already set
     if (newEmail.toLowerCase() === user.email.toLowerCase()) throw `Error: Email is already ${user.email}` 
     const updatedInfo = await userCollection.findOneAndUpdate(
@@ -191,6 +192,7 @@ const updateEmail = async (username, newEmail) => {
 const updateState = async (username, newState) => {
     username = help.notStringOrEmpty(username, 'username');
     newState = help.notStringOrEmpty(newState, 'new state');
+    newState = help.validState(newState);
     const userCollection = await users();
     const user = await userCollection.findOne({ username: username });
     if (!user) throw 'User not found' // checks if user is not found
@@ -211,6 +213,7 @@ const updateState = async (username, newState) => {
 const updateGender = async (username, newGender) => {
     username = help.notStringOrEmpty(username, 'username');
     newGender = help.notStringOrEmpty(newGender, 'new gender');
+    if (newGender != "male" && newGender != "female" && newGender != "other" && newGender != "preferNot") throw 'Error: not a valid response (gender)!'
     const userCollection = await users();
     const user = await userCollection.findOne({ username: username });
     if (!user) throw 'User not found' // checks if user is not found
@@ -248,18 +251,17 @@ const updateSocial = async (username, newSocial) => {
     return updatedInfo;
 };
 
-const updatePassword = async (id, newPassword) => {
+const updatePassword = async (username, newPassword) => {
     username = help.notStringOrEmpty(username, 'username');
     newPassword = help.notStringOrEmpty(newPassword, 'new password');
+    newPassword = help.validPassword(newPassword);
     const userCollection = await users();
     const user = await userCollection.findOne({ username: username });
     if (!user) throw 'User not found' // checks if user is not found
     // already set
-    if (pw.checkPassword(newPassword)) throw `Error: Old passwords may not be reused.`
-    let hash = pw.hashPassword(newPassword);
-    const updatedUser = {
-        hashedPW: hash,
-    };
+    let unhashedPassword = await bcrypt.compare(newPassword, user.hashedPW)
+    if (unhashedPassword) throw `Error: Old passwords may not be reused.`
+    let hash = await pw.hashPassword(newPassword);
     const updatedInfo = await userCollection.findOneAndUpdate(
         { username: username },
         { $set: { hashedPW: hash } },
@@ -341,10 +343,10 @@ const check = async (username, password) => {
     return null;
 }
 
-export { create, getAll, get, updateDarkmode, updateColorblind, updateEmail, updateCity, updateState, updateGender, updateSocial, updateSystem, updatePassword, registerRace, addTrainingPlan, check };
+export { create, getAll, get, updateDarkmode, updateEmail, updateState, updateGender, updateSocial, updateSystem, updatePassword, registerRace, addTrainingPlan, check };
 
-// test create();
-// create("jasper", "tumbokon", "jaspertu", "jasperjay0628@gmail.com", "Hoboken", "NJ", "male", "06/28/2003", "twitter", "jsprjay", "metric", "YourMom2$")
+
+// create("jasper", "tumbokon", "jaspert", "jasperjay0628@gmail.com", "NJ", "male", "06/28/2003", "twitter", "jsprjay", "metric", "YourMom2$")
 //     .then((result) => {
 //         // This function will execute when the promise is resolved
 //         console.log(result); // Print the resolved value
@@ -354,12 +356,12 @@ export { create, getAll, get, updateDarkmode, updateColorblind, updateEmail, upd
 //         console.error("Error occurred:", error);
 //     });
 
-updateGender('jaspert', 'female')
-.then((result) => {
-        // This function will execute when the promise is resolved
-        console.log(result); // Print the resolved value
-    })
-    .catch((error) => {
-        // This function will execute if the promise is rejected
-        console.error("Error occurred:", error);
-    });
+// updatePassword('jaspert', 'penis1')
+// .then((result) => {
+//         // This function will execute when the promise is resolved
+//         console.log(result); // Print the resolved value
+//     })
+//     .catch((error) => {
+//         // This function will execute if the promise is rejected
+//         console.error("Error occurred:", error);
+//     });
