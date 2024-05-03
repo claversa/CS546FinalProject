@@ -355,12 +355,12 @@ export { create, getAll, get, updateDarkmode, updateEmail, updateState, updateGe
 //         console.error("Error occurred:", error);
 //     });
 
-updateGender('jaspert', 'female')
-.then((result) => {
-        // This function will execute when the promise is resolved
-        console.log(result); // Print the resolved value
-    })
-    .catch((error) => {
-        // This function will execute if the promise is rejected
-        console.error("Error occurred:", error);
-    });
+// updateGender('jaspert', 'female')
+// .then((result) => {
+//         // This function will execute when the promise is resolved
+//         console.log(result); // Print the resolved value
+//     })
+//     .catch((error) => {
+//         // This function will execute if the promise is rejected
+//         console.error("Error occurred:", error);
+//     });

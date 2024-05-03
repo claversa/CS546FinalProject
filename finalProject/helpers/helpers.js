@@ -17,6 +17,7 @@ export let validDate = (date) => { // got this function from https://www.freecod
 }
 
 
+
 export let validURL = (val) => {
     // regex for allowed url patterns
     const urlRegex = /^(?:https?:\/\/)?(?:www\.)?[\w.-]+\.[a-zA-Z]{2,}(?:\/[\w-./?=&%+]*)?$/;
@@ -30,10 +31,19 @@ export let validState = (state) => {
     return state.toUpperCase();
 }
 
-export let validRaceTime = (hour, min) => {
-    if (hour < 0 || hour > 23) throw "Error: Please provide a valid time on the 24 hour scale";
-    if (min.length != 2) throw "Error: please provide a valid two digit minute value";
-    if (min[0] > 5 || min[0] < 0 || min[1] > 9 || min[1] < 0) throw "Error: please provide a valid minute value";
+export let validTime = (timeStr) => {
+    const timeFormat = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
+
+    if (!timeFormat.test(timeStr)) throw "Error: Please use HH:MM in military time.";
+
+    const [hours, minutes] = timeStr.split(':').map(numStr => parseInt(numStr, 10));
+
+    if (hours < 0 || hours > 23 || minutes < 0 || minutes > 59) throw "Error: Hours should be between 00-23 and minutes between 00-59."
+    
+    const formattedHours = hours.toString().padStart(2, '0');
+    const formattedMinutes = minutes.toString().padStart(2, '0');
+
+    return `${formattedHours}:${formattedMinutes}`;
 }
 
 export let arraysWithStringElem = (val, error) => {
