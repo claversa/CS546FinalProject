@@ -14,6 +14,11 @@ router.route('/').get(async (req, res) => {
     res.render('home', { title: "Homepage", user: req.session.user, error: "", loggedIn: loggedIn }); // NO ERROR
 });
 
+router.route('/error').get(async (req, res) => {
+  const error = req.query.message || 'Error';
+  res.status(403).render('error', { title: "Error", error, user: req.session.user});
+});
+
 router.route('/createProfile')
   .get(async (req, res) => {
     //render the home handlebars file
