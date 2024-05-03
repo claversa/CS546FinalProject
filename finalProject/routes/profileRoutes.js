@@ -54,6 +54,36 @@ router.route('/createProfile')
     }
   });
 
+// updating profile route
+router.route('/editProfile') // IDK WHAT ROUTE THSI IS SUPPOSED TO BE
+  .post('/update-profile', async (req, res) => {
+    try {
+      const updatedData = req.body;
+      const { username } = updatedData;
+
+      // Remove username, email, and birthday so don't change
+      delete updatedData.username;
+      delete updatedData.email;
+      delete updatedData.birthday;
+
+      // Perform the update using the request data
+      const result = await db.collection('profiles').updateOne(
+        { username },
+        { $set: updatedData } // change all other data
+      );
+
+      if (result.matchedCount > 0) {
+        res.json({ message: 'Profile updated successfully!' });
+      } else {
+        res.status(404).json({ message: 'Profile not found' });
+      }
+    } catch (err) {
+      // Handle errors during the update
+      console.error('Error updating profile:', err);
+      res.status(500).json({ message: 'Error updating profile' });
+    }
+  });
+
 // default, get profile for given id
 router.route('/:id').get(async (req, res) => {
   //code here for GET will render the home handlebars file
