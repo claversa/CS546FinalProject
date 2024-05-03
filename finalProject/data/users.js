@@ -345,7 +345,6 @@ const check = async (username, password) => {
 
 export { create, getAll, get, updateDarkmode, updateEmail, updateState, updateGender, updateSocial, updateSystem, updatePassword, registerRace, addTrainingPlan, check };
 
-
 // create("jasper", "tumbokon", "jaspert", "jasperjay0628@gmail.com", "NJ", "male", "06/28/2003", "twitter", "jsprjay", "metric", "YourMom2$")
 //     .then((result) => {
 //         // This function will execute when the promise is resolved
@@ -356,12 +355,12 @@ export { create, getAll, get, updateDarkmode, updateEmail, updateState, updateGe
 //         console.error("Error occurred:", error);
 //     });
 
-// updatePassword('jaspert', 'penis1')
-// .then((result) => {
-//         // This function will execute when the promise is resolved
-//         console.log(result); // Print the resolved value
-//     })
-//     .catch((error) => {
-//         // This function will execute if the promise is rejected
-//         console.error("Error occurred:", error);
-//     });
+updateGender('jaspert', 'female')
+.then((result) => {
+        // This function will execute when the promise is resolved
+        console.log(result); // Print the resolved value
+    })
+    .catch((error) => {
+        // This function will execute if the promise is rejected
+        console.error("Error occurred:", error);
+    });
