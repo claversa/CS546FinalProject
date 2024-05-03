@@ -1,0 +1,23 @@
+<head>
+    <link rel="stylesheet" href="/public/settings.css" />
+</head>
+
+<body>
+    <header>
+        <h1>Races Found</h1>
+    </header>
+    <main>
+        <h2>{{searchRacesByName}}</h2>
+        <ol>
+            {{#each races}}
+            <li>
+                <a href="/movie/{{imdbID}}">
+                    <span>{{Title}}<br></span>
+                    <img class="thumbnail" src="{{Poster}}" alt="{{Title}} Poster">
+                </a>
+            </li>
+            {{/each}}
+        </ol>
+        <a href="/">Search for Another Race</a>
+    </main>
+</body>
