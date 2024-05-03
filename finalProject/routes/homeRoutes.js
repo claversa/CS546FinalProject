@@ -99,7 +99,7 @@ router.route('/login')
     }
 });
 
-router.route('/:raceId').get(async (req, res) => { // specific race
+/*router.route('/:raceId').get(async (req, res) => { // specific race
     //render race page
     let raceId = req.params.id;
     try {
@@ -119,7 +119,7 @@ router.route('/:raceId').get(async (req, res) => { // specific race
         res.render("home", { title: "Homepage", user: req.session.user, error: "Race not found. Please add race." });
     }
 
-});
+});*/
 
 //export router
 export default router;
