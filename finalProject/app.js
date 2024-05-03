@@ -33,182 +33,43 @@ app.use(session({
 app.engine('handlebars', exphbs.engine({ defaultLayout: 'main' }));
 app.set('view engine', 'handlebars');
 
-
-
-/*app.use(async (req, res, next) => {
-    if (req.path === '/') {
-        if (req.session.user) { // logged in
-            if (req.path === "/login") return res.redirect("/home"); // back to home page but logged in now, idk what the path would be lol
-            next(); // ???
+app.use(async (req, res, next) => {
+    if (req.path !== '/login' && req.path !== '/createProfile' && req.path !== '/') {
+        if (!req.session.user) {
+            return res.redirect('/login');
         }
-        else {
-            if (req.path !== "/login" && req.path !== "/createProfile") {
-                return res.redirect('/login');// redirect to login route if not logged in
+    }
+    next();
+});
+
+app.use(async (req, res, next) => {
+    if (req.path == '/login') {
+        if (req.session.user) {
+            return res.redirect(`/profile/${req.session.user.username}`);
+        }
+    }
+    next();
+});
+
+app.use(async (req, res, next) => {
+    if (req.path == '/createProfile') {
+        if (req.session.user) {
+            return res.redirect(`/profile/${req.session.user.username}`);
+        }
+    }
+    next();
+});
+
+app.use(async (req, res, next) => {
+    if (req.path.startsWith('/profile/')) {
+        if (req.session.user) {
+            if (req.path !== `/profile/${req.session.user.username}`){
+                return res.redirect('/error?message=Access Denied');
             }
-            else {
-                next();
-            }
         }
     }
-    else {
-        next();
-    }
-
+    next();
 });
-
-app.use('/home', (req, res, next) => {
-    if (req.session.user) { // logged in
-        next(); // get to homepage
-    }
-    else {
-        if (req.path !== "/login" && req.path !== "/createProfile") {
-            return res.redirect('/login');// redirect to login route if not logged in and not already trying to get to login or createProfile
-        }
-        else {
-            next();
-        }
-    }
-});
-
-app.use('/{race', (req, res, next) => {
-    if (req.session.user) { // logged in
-        next(); // get to homepage
-    }
-    else {
-        if (req.path !== "/login" && req.path !== "/createProfile") {
-            return res.redirect('/login');// redirect to login route if not logged in and not already trying to get to login or createProfile
-        }
-        else {
-            next();
-        }
-    }
-});
-
-
-app.use('/login', (req, res, next) => {
-    if (req.method === "GET") {
-        if (req.session.user) { // logged in
-            return res.redirect("/home");
-        }
-        else { // not logged in
-            next(); // get through to the login
-        }
-    }
-    else {
-        next()
-    }
-}
-
-);
-
-app.use('/loginPage', (req, res, next) => {
-    if (req.method === "GET") {
-        if (req.session.user) { // logged in
-            return res.redirect("/home");
-        }
-        else { // not logged in
-            next(); // get through to the loginPage
-        }
-    }
-    else {
-        next()
-    }
-}
-
-);
-
-
-app.use('/createProfile', (req, res, next) => {
-    if (req.method === "GET") {
-        if (req.session.user) { // logged in
-            return res.redirect('/home') // send to home
-        }
-        else { // not logged in
-            next(); // get through to createProfile
-        }
-    }
-    else {
-        next()
-    }
-}
-
-);
-
-app.use('/profile', (req, res, next) => {
-    if (req.method === "GET") {
-        if (req.session.user) { // logged in
-            next();// send to profile page
-        }
-        else { // not logged in
-            return res.redirect("/login"); // go back to login
-        }
-    }
-    else {
-        next()
-    }
-}
-
-);
-
-
-app.use('/settings', (req, res, next) => {
-    if (req.method === "GET") {
-        if (req.session.user) { // logged in
-            next(); // "fall through"
-        }
-        else { // not logged in
-            return res.redirect('/login'); // redirect to login route
-        }
-    }
-    else {
-        next()
-    }
-}
-);
-
-app.use('/training', (req, res, next) => {
-    if (req.method === "GET") {
-        if (req.session.user) { // logged in
-            next(); // "fall through"
-        }
-        else { // not logged in
-            return res.redirect('/login'); // redirect to login route
-        }
-    }
-    else {
-        next()
-    }
-}
-);
-
-app.use('/countdown', (req, res, next) => {
-    if (req.session.user) { // logged in
-        next(); // "fall through"
-    }
-    else { // not logged in
-        return res.redirect('/login'); // redirect to login route
-    }
-}
-);
-
-
-
-
-
-app.use('/logout', (req, res, next) => {
-    if (req.method === "GET") {
-        if (req.session.user) { // logged in
-            next(); // fall through to next route
-        }
-        else { // not logged in
-            return res.redirect('/login'); // redirect to login
-        }
-    }
-    else {
-        next()
-    }
-});
-*/
 
 configRoutes(app);
 
