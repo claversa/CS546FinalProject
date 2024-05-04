@@ -5,7 +5,7 @@ import * as help from '../helpers/helpers.js';
 
 export const create = async (
     raceName, // string
-    userId, // string
+    username, // string
     raceCity, // string
     raceState, // string
     raceDate, // string
@@ -16,17 +16,15 @@ export const create = async (
 ) => {
     //SPLIT UP
     raceName = help.notStringOrEmpty(raceName, "race name");
-    userId = help.notStringOrEmpty(userId, "user id");
+    username = help.notStringOrEmpty(username, "username");
     raceCity = help.notStringOrEmpty(raceCity, "raceCity");
     raceState = help.notStringOrEmpty(raceState, "raceState");
     raceTime = help.notStringOrEmpty(raceTime, "raceTime");
     terrain = help.arraysWithStringElem(terrain, "terrain");
     raceUrl = help.notStringOrEmpty(raceUrl, "raceUrl");
 
-    const validId = /^[0-9a-fA-F]{24}$/;
-    if (!validId.test(userId)) throw "Error: Id is not valid." ;
     const userCollection = await users();
-    const user = await userCollection.findOne({ _id: new ObjectId(userId) });
+    const user = await userCollection.findOne({ username: username });
     if (!user) throw 'Error: User not found';
 
     // validate url
@@ -48,7 +46,7 @@ export const create = async (
     //make new race to be inserted
     let newRace = { 
         raceName,
-        userId, 
+        username, 
         raceCity, 
         raceState, 
         raceDate, 

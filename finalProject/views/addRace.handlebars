@@ -1,0 +1,43 @@
+<head>
+    <link rel="stylesheet" href="/public/addRace.css" />
+</head>
+
+
+<form method="POST" id='flex_container' class=' flex_container' action="/races/addrace">
+    <label for="flex_container" class='form_label'>ADDRACE</label>
+    <!--Name-->
+    <label for="raceName" class="raceName">RACE NAME</label>
+    <input type="text" name="raceName" id="raceName" class="raceName">
+    <!--city-->
+    <label for="raceCity" class="raceCity">RACE CITY</label>
+    <input type="text" name="raceCity" id="raceCity" class="raceCity">
+    <!--state-->
+    <label for="raceState" id="raceState">RACE STATE</label>
+    <input type="text" name="raceState" id="raceState" class="raceState">
+    <!--date-->
+    <label for="date" id="date">RACE DATE</label>
+    <input type="text" name="date" id="date" class="date">
+    <!--time-->
+    <label for="raceTime" id="raceTime">RACE TIME</label>
+    <input type="text" name="raceTime" id="raceTime" class="raceTime">
+    <!--distance-->
+    <label for="distance">DISTANCE</label>
+    <select name="distance" id="distance" class="distance">
+        <option value="placeholder" selected>CLICK TO SELECT</option>
+        <option value="5K">5K</option>
+        <option value="Half Marathon">Half Marathon</option>
+        <option value="Marathon">Marathon</option>
+    </select>  
+     <!--terrain-->
+    <label for="terrain" id="terrain">TERRAIN</label><br>
+    <input type="checkbox" name="terrain" value="Street"> Street<br>
+    <input type="checkbox" name="terrain" value="Grass"> Grass<br>
+    <input type="checkbox" name="terrain" value="Beach"> Beach<br>
+    <input type="checkbox" name="terrain" value="Rocky"> Rocky<br>
+    <input type="checkbox" name="terrain" value="Inclined"> Inclined<br>
+    <input type="checkbox" name="terrain" value="Muddy"> Muddy<br>
+     <!--url-->
+    <label for="raceUrl" id="raceUrl">RACE URL</label>
+    <input type="text" name="raceUrl" id="raceUrl" class="raceUrl">
+    <button type="create">CREATE PROFILE</button>
+</form>
