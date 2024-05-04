@@ -7,15 +7,20 @@ export let notStringOrEmpty = (val, undef) => {
 
 
 export let validDate = (date) => { // got this function from https://www.freecodecamp.org/news/how-to-validate-a-date-in-javascript/
-    let daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-    let split = date.split('/');
-    if (split.length !== 3) throw "Error: Invalid date. Must provide mm/dd/yy"
-    if (split[1] <= 0 || split[1] > daysInMonth[Number(split[0]) - 1]) throw "Error: invalid day given for date";
-    if (split[0] <= 0 || split[0] > 12) throw "Error: month must be between 1 and 12";
-    if (split[2] > 2024 || split[2] < 1000) throw "Error: invalid year"
-    if (Date.now() - new Date(date) < 0) throw "Error: release date can not be after today"
+    const dateFormatRegex = /^\d{4}-\d{2}-\d{2}$/;
+    if (!dateFormatRegex.test(date)) throw "Error: Invalid date format";
+    const [month, day, year] = date.split('/').map(Number);
+    const dateObject = new Date(year, month - 1, day);
+    return !isNaN(dateObject.getTime()) && dateObject.getFullYear() === year && dateObject.getMonth() === month - 1 && dateObject.getDate() === day;
 }
 
+export let isDateAfterToday = (date) => {
+    const today = new Date();
+    today.setUTCHours(0, 0, 0, 0);
+    const inputDate = new Date(date);
+    inputDate.setUTCHours(0, 0, 0, 0);
+    return inputDate > today;
+}
 
 
 export let validURL = (val) => {

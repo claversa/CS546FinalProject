@@ -20,10 +20,10 @@ body {
     line-height: 30px;
 }
 
-/* h2 {
+h2 {
     font-family: 'martian';
     font-size: 40px;
-} */
+}
 
 
 input[type=text] {
@@ -62,26 +62,6 @@ option:hover {
     outline-color: #FEC0AA;
 }
 
-input[type=password] {
-    text-align: center;
-    padding: 12px 20px;
-    margin: 8px 0;
-    background-color: var(--input);
-    color: var(--inputText);
-    font-size: 16px;
-    border-radius: 4px;
-}
-
-input[type=email],
-input[type=date] {
-    font-family: 'martian';
-    font-size: 16px;
-    padding: 12px 20px;
-    margin: 8px 0;
-    background-color: var(--input);
-    color: var(--inputText);
-    border-radius: 4px;
-}
 
 label,
 button {
@@ -94,23 +74,9 @@ button {
     width: fit-content;
     border-radius: 4px;
 }
-/* 
-.form_label {
-    font-family: 'martian';
-    font-size: 30px;
-    padding: 12px 20px;
-    margin: 8px 0;
-    background-color: var(--labels);
-    color: var(--inputText);
-    width: fit-content;
-    border-radius: 4px;
-} */
 
 
-input[type=email]:hover,
-input[type=password]:hover,
 input[type=text]:hover,
-input[type=date]:hover,
 select:hover,
 button:hover {
     background-color: var(--hover);

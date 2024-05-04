@@ -1,8 +1,5 @@
 <h1>Edit Profile</h1>
 
-<head>
-    <link rel="stylesheet" href="/public/createProfile.css" />
-</head>
 <form method="POST" class='flex_container' action="../routes/profileRoutes.js">
     <!--Gender drop down-->
     <label for="gender">GENDER:</label>
@@ -166,17 +163,17 @@
             if (!socialHandle) throw "Error: must provide socialHandle";
 
 
-                let formData = {
-                    first: first,
-                    last: last,
-                    username: username,
-                    email: email,
-                    gender: gender,
-                    system: system,
-                    state: state,
-                    birthday: birthday,
-                    socialHandle: socialHandle,
-                };
+            let formData = {
+                first: first,
+                last: last,
+                username: username,
+                email: email,
+                gender: gender,
+                system: system,
+                state: state,
+                birthday: birthday,
+                socialHandle: socialHandle,
+            };
 
 
             // Make an AJAX request to update the profile

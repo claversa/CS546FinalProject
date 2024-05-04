@@ -41,7 +41,7 @@ const create = async (
     } catch(e) {
         throw e;
     };
-
+    
     // validate username and PW
     username = help.validUsername(username);
     password = help.validPassword(password);
@@ -55,6 +55,7 @@ const create = async (
     // password
     let hashedPW = await pw.hashPassword(password);
     let age = help.calculateAge(birthdate);
+    if (age < 13) throw "Age must be above 13 to register" 
 
     //make empty arrays for registered races and training plans that will be filled in later
     let registeredRaces = [];

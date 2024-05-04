@@ -15,6 +15,9 @@ export const create = async (
     raceUrl // string
 ) => {
     //SPLIT UP
+    if (typeof terrain === 'string') {
+        terrain = [terrain]
+    }
     raceName = help.notStringOrEmpty(raceName, "race name");
     username = help.notStringOrEmpty(username, "username");
     raceCity = help.notStringOrEmpty(raceCity, "raceCity");
@@ -28,13 +31,12 @@ export const create = async (
     if (!user) throw 'Error: User not found';
 
     // validate url
-    help.validURL(raceUrl);
+    help.validURL(raceUrl)
 
     // date
-    help.validDate(raceDate);
-    
-    // distance
-    if (typeof distance !== 'number' || Number.isNaN(distance) || distance < 0) throw "Error: Distance must be a number"
+    help.validDate(raceDate)
+
+    if (!help.isDateAfterToday(raceDate)) throw "Error: Race date must be after today's date"
     
     // state 
     raceState = help.validState(raceState); // to upper case

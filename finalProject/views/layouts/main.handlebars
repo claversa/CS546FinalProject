@@ -6,10 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{{title}}}</title>
     {{#if user.darkmode}}
-        <link rel="stylesheet" href="/public/darkmain.css" />
+    <link rel="stylesheet" href="/public/darkmain.css">
     {{else}}
-        <link rel="stylesheet" href="/public/main.css" />
+    <link rel="stylesheet" href="/public/main.css">
     {{/if}}
+    <link rel="stylesheet" href="{{otherCSS}}">
 </head>
 
 
@@ -46,25 +47,25 @@
                 </a>
             </li>
             {{#if user}}
-                 <li class="navbar-item flexbox-left">
-                    <a class="navbar-item-inner flexbox-left" href="/logout">
+            <li class="navbar-item flexbox-left">
+                <a class="navbar-item-inner flexbox-left" href="/logout">
 
-                        <span class="link-text">LOG OUT</span>
-                    </a>
-                </li>
+                    <span class="link-text">LOG OUT</span>
+                </a>
+            </li>
             {{else}}
-                 <li class="navbar-item flexbox-left">
-                    <a class="navbar-item-inner flexbox-left" href="/login">
+            <li class="navbar-item flexbox-left">
+                <a class="navbar-item-inner flexbox-left" href="/login">
 
-                        <span class="link-text">LOG IN</span>
-                    </a>
-                </li>
-                <li class="navbar-item flexbox-left">
-                    <a class="navbar-item-inner flexbox-left" href="/createProfile">
+                    <span class="link-text">LOG IN</span>
+                </a>
+            </li>
+            <li class="navbar-item flexbox-left">
+                <a class="navbar-item-inner flexbox-left" href="/createProfile">
 
-                        <span class="link-text">REGISTER</span>
-                    </a>
-                </li>
+                    <span class="link-text">REGISTER</span>
+                </a>
+            </li>
             {{/if}}
         </ul>
     </nav>
