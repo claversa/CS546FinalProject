@@ -108,7 +108,8 @@ export let validBirthdate = (dateString) => {
 export let validPassword = (password) => {
     const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*_+()=])[^\s]{8,}$/;
     if (!passwordRegex.test(password)) { throw "Error: Please provide a valid password that is at least 8 characters with at least 1 uppercase letter, number, and special character" };
-    return password.toLowerCase();
+    // return password.toLowerCase();
+    return password;
 };
 
 export let validUsername = (username) => {

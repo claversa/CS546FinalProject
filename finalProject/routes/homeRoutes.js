@@ -6,17 +6,17 @@ import * as help from "../helpers/helpers.js"
 import * as data from '../data/users.js';
 
 router.route('/').get(async (req, res) => {
-    //render the home handlebars file
-    let loggedIn = false;
-    if (req.session.user) {
-      loggedIn = true;
-    }
-    res.render('home', { title: "Homepage", user: req.session.user, error: "", loggedIn: loggedIn }); // NO ERROR
+  //render the home handlebars file
+  let loggedIn = false;
+  if (req.session.user) {
+    loggedIn = true;
+  }
+  res.render('home', { title: "Homepage", user: req.session.user, error: "", loggedIn: loggedIn }); // NO ERROR
 });
 
 router.route('/error').get(async (req, res) => {
   const error = req.query.message || 'Error';
-  res.status(403).render('error', { title: "Error", error, user: req.session.user});
+  res.status(403).render('error', { title: "Error", error, user: req.session.user });
 });
 
 router.route('/createProfile')
@@ -68,8 +68,8 @@ router.route('/createProfile')
   });
 
 router.route('/logout').get(async (req, res) => {
-    delete req.session.user
-    res.redirect('./home');
+  delete req.session.user
+  res.redirect('./home');
 });
 
 router.route('/login')
@@ -82,6 +82,7 @@ router.route('/login')
     let username = loginInfo.username;
     let password = loginInfo.password;
     try {
+      // HERE
       let validation = await data.check(username, password)
       if (validation) {
         req.session.user = { username: username, coloblind: validation.coloblind, darkmode: validation.darkmode };
@@ -94,14 +95,14 @@ router.route('/login')
     catch (e) {
       res.status(404).render('error', { title: "Error", class: "not-found", error: e.toString() });
     }
-});
+  });
 
 router.route('/training').get(async (req, res) => {
   res.render("./training", { title: "Training Program", user: req.session.user });
 });
 
 router.route('/countdown').get(async (req, res) => {
-  res.render("./countdown", { title: "Race Day Countdown", user: req.session.user});
+  res.render("./countdown", { title: "Race Day Countdown", user: req.session.user });
 });
 
 //export router

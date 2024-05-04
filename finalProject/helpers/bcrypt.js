@@ -22,10 +22,5 @@ export let checkPassword = async (inputPassword, hash) => {
     } catch (e) {
         throw "error checking password"
     }
-    if (compare) {
-        return true
-    }
-    else {
-        return false
-    }
+    return compare;
 }
