@@ -99,27 +99,13 @@ router.route('/login')
     }
 });
 
-/*router.route('/:raceId').get(async (req, res) => { // specific race
-    //render race page
-    let raceId = req.params.id;
-    try {
-        raceId = help.notStringOrEmpty(raceId);
-    } catch (e) {
-        // RACE DOESN"T EXIST?? ADD IT OR THROW ERROR?
-        // ADDED ERROR ATTRIBUTE
-        res.render("home", { title: "Homepage", user: req.session.user, error: "Race ID must be present" });
-    }
-    try {
-        let raceData = await data.get(raceId);
-        if (raceData.data.Response === "False") throw `${raceId} id not found`;
-        res.render('racePage', { title: raceData.data.name, user: req.session.user, error: "", name: raceData.data.name, location: raceData.data.location, date: raceData.data.date, time: raceData.data.time, distance: raceData.data.distance, terrain: raceData.data.terrain, URL: raceData.data.URL, registrants: raceData.data.registrants });//? NO ERROR
-    } catch (e) {
-        // RACE DOESN"T EXIST?? ADD IT OR THROW ERROR?
-        // ADDED ERROR ATTRIBUTE
-        res.render("home", { title: "Homepage", user: req.session.user, error: "Race not found. Please add race." });
-    }
+router.route('/training').get(async (req, res) => {
+  res.render("./training", { title: "Training Program", user: req.session.user });
+});
 
-});*/
+router.route('/countdown').get(async (req, res) => {
+  res.render("./countdown", { title: "Race Day Countdown", user: req.session.user});
+});
 
 //export router
 export default router;

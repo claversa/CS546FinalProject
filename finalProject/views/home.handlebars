@@ -9,7 +9,11 @@
         training plans to facilitating engagement within the racing
         community, we're here from Day 1 to Race Day!</p>
     {{#if loggedIn}}
-    <input type="text" class='start-searching' placeholder='START SEARCHING'>
+    <form action="/race/searchraces" method="POST" class="Race">
+    <label for="search" class="search">Search Races</label>
+    <input type="text" id="search" name="search"><br>
+    <button type="submit">Search</button>
+    </form>
     {{/if}}
     <div class="error" id="error">{{error}}</div>
 </main>
