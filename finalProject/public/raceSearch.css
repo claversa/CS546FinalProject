@@ -1,0 +1,47 @@
+@font-face {
+    font-family: 'martian';
+    src: url(../fonts/martian/MartianMono-VariableFont_wdth\,wght.ttf);
+}
+
+:root {
+    --input: #F39803;
+    --labels: #FCA311;
+    --bg: #2F4D8A;
+    --inputText: #2F4D8A;
+    --hover: #213358;
+    --hoverText: #FCA311;
+}
+
+body {
+    margin: 0;
+    /* color: #FCA311; */
+    background-color: var(--bg);
+    scroll-behavior: smooth;
+    line-height: 30px;
+}
+
+.container {
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 20px;
+    text-align: center;
+}
+
+h1 {
+    font-family: 'martian';
+    font-size: 30px;
+}
+
+h2 {
+    font-family: 'martian';
+    font-size: 25px;
+    color: var(--input);
+}
+
+a {
+    font-family: 'martian';
+    font-size: 20px;
+    color: var(--input)
+}
+
+/* ol {} */

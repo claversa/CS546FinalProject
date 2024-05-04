@@ -1,3 +1,17 @@
+@font-face {
+    font-family: 'martian';
+    src: url(../fonts/martian/MartianMono-VariableFont_wdth\,wght.ttf);
+}
+
+:root {
+    --input: #F39803;
+    --labels: #FCA311;
+    --bg: #2F4D8A;
+    --inputText: #2F4D8A;
+    --hover: #213358;
+    --hoverText: #FCA311;
+}
+
 #main {
     margin: 0 0 0 5em;
     min-height: 100vh;
@@ -5,22 +19,50 @@
 }
 
 #main>h2 {
+    font-family: 'martian';
     width: 80%;
     max-width: 80%;
 }
 
 #main>p {
+    font-family: 'martian';
+
     width: 80%;
     max-width: 80%;
 
 }
 
 .start-searching {
-    text-align: center;
+    width: 80%;
+    max-width: 80%;
+}
+
+label {
+    width: 80%;
+    max-width: 80%;
     font-family: 'martian';
     font-size: 20px;
-    background-color: #FCA311;
-    color: #233A6A;
+    color: var(--input);
+}
+
+input[type=text] {
+    color: (var(--inputText));
+    background-color: var(--input);
+    padding: 10px;
+    width: 80%
+}
+
+button {
+    text-align: center;
+    color: var(--inputText);
+    /* border-radius: 4px; */
+    background-color: var(--input);
     padding: 5px;
-    width: 60%;
+    width: 100px;
+    cursor: grab;
+}
+
+button:hover {
+    color: var(--input);
+    background-color: var(--hover);
 }

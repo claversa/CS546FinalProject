@@ -16,13 +16,13 @@ router.route('/').get(async (req, res) => {
 
 router.route('/error').get(async (req, res) => {
   const error = req.query.message || 'Error';
-  res.status(403).render('error', { title: "Error", error, user: req.session.user , otherCSS: "/public/error.css"});
+  res.status(403).render('error', { title: "Error", error, user: req.session.user, otherCSS: "/public/error.css" });
 });
 
 router.route('/createProfile')
   .get(async (req, res) => {
     //render the home handlebars file
-    res.render('createProfile', { title: "Create Profile", user: req.session.user, otherCSS: "/public/createProfile.css" });
+    res.render('createProfile', { title: "Create Profile", user: req.session.user, error: "", otherCSS: "/public/createProfile.css" });
   })
   .post(async (req, res) => {
     //code here for POST this is where profile form will be submitting new user and then call your data function passing in the profile info   and then rendering the search results of up to 20 Movies.
@@ -63,7 +63,8 @@ router.route('/createProfile')
       res.redirect('./home');
     }
     catch (e) {
-      res.status(404).render('error', { title: "Error", class: "not-found", error: e.toString(), otherCSS: "/public/error.css" });
+      res.render('createProfile', { title: "Create Profile", user: req.session.user, error: e, otherCSS: "/public/createProfile.css" });
+      // res.status(404).render('error', { title: "Error", class: "not-found", error: e.toString(), otherCSS: "/public/error.css" });
     }
   });
 
@@ -93,7 +94,9 @@ router.route('/login')
       }
     }
     catch (e) {
-      res.status(404).render('error', { title: "Error", class: "not-found", error: e.toString(), otherCSS: "/public/error.css" });
+      res.render('login', { title: "Login", user: req.session.user, error: e, otherCSS: "/public/login.css" });
+
+      // res.status(404).render('error', { title: "Error", class: "not-found", error: e.toString(), otherCSS: "/public/error.css" });
     }
   });
 

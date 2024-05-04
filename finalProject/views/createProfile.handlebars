@@ -1,42 +1,42 @@
 <form method="POST" id='flex_container' class=' flex_container' action="/createProfile">
     <!--Name-->
-    <label for="firstName" class="firstName">FIRST NAME:</label>
-    <input type="text" name="firstName" id="firstName" class="firstName">
-    <label for="lastName" class="lastName">LAST NAME:</label>
-    <input type="text" name="lastName" id="lastName" class="lastName">
+    <label for="firstName" class="firstName">FIRST NAME:</label><br><br>
+    <input type="text" name="firstName" id="firstName" class="firstName"><br><br>
+    <label for="lastName" class="lastName">LAST NAME:</label><br><br>
+    <input type="text" name="lastName" id="lastName" class="lastName"><br><br>
     <!--username-->
-    <label for="username" class="username">USERNAME:</label>
-    <input type="text" name="username" id="username" class="username">
+    <label for="username" class="username">USERNAME:</label><br><br>
+    <input type="text" name="username" id="username" class="username"><br><br>
     <!--email-->
-    <label for="email">EMAIL:</label>
-    <input type="email" name="email" id="email" class="email">
+    <label for="email">EMAIL:</label><br><br>
+    <input type="email" name="email" id="email" class="email"><br><br>
     <!--Gender drop down-->
-    <label for="gender">GENDER:</label>
+    <label for="gender">GENDER:</label><br><br>
     <select name="gender" id="gender" class="gender">
         <option value="placeholder" selected>CLICK TO SELECT</option>
         <option value="male">MALE</option>
         <option value="female">FEMALE</option>
         <option value="other">OTHER</option>
         <option value="preferNot">PREFER NOT TO SAY</option>
-    </select>
-    <label for="social_platform">SOCIAL MEDIA PLATFORM</label>
+    </select><br><br>
+    <label for="social_platform">SOCIAL MEDIA PLATFORM</label><br><br>
     <select name="social_platform" id="social_platform" class="social_platform">
         <option value="placeholder" selected>CLICK TO SELECT</option>
         <option value="instagram">INSTAGRAM</option>
         <option value="facebook">FACEBOOK</option>
         <option value="twitter">TWITTER</option>
-    </select>
-    <label for="social_handle">SOCIAL MEDIA HANDLE</label>
-    <input type="text" name="social_handle" id="social_handle" class="social_handle">
+    </select><br><br>
+    <label for="social_handle">SOCIAL MEDIA HANDLE</label><br><br>
+    <input type="text" name="social_handle" id="social_handle" class="social_handle"><br><br>
     <!--Measurement System Dropdown-->
-    <label for="system">MEASUREMENT SYSTEM:</label>
+    <label for="system">MEASUREMENT SYSTEM:</label><br><br>
     <select name="system" id="system" class="system">
         <option value="placeholder" selected>CLICK TO SELECT</option>
         <option value="metric">METRIC</option>
         <option value="imperial">IMPERIAL</option>
-    </select>
+    </select><br><br>
     <!--State DropDown-->
-    <label for="state">HOMESTATE:</label>
+    <label for="state">HOMESTATE:</label><br><br>
     <select name="state" id="state" class="state">
         <option value="placeholder" selected>CLICK TO SELECT</option>
         <option value="AL">AL</option>
@@ -90,13 +90,14 @@
         <option value="WV">WV</option>
         <option value="WI">WI</option>
         <option value="WY">WY</option>
-    </select>
+    </select><br><br>
     <!--birthdate-->
 
-    <label for="birthday">BIRTHDAY:</label>
-    <input type="date" id="birthday" name="birthday">
-    <label for="password">PASSWORD:</label>
+    <label for="birthday">BIRTHDAY:</label><br><br>
+    <input type="date" id="birthday" name="birthday"><br><br>
+    <label for="password">PASSWORD:</label><br><br>
     <input name="password" type="password" id="password" class="password" onmousedown="this.type='text'"
-        onmouseup="this.type='password'" onmousemove="this.type='password'">
-    <button type="submit">CREATE PROFILE</button>
+        onmouseup="this.type='password'" onmousemove="this.type='password'"><br><br>
+    <button type="submit">CREATE PROFILE</button><br><br>
+    <div class="error" id="error">{{error}}</div>
 </form>

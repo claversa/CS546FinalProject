@@ -1,11 +1,12 @@
 <h1>Login</h1>
 <form method="POST" id='flex_container' class=' flex_container' action="/login">
     <!--Name-->
-    <label for="username" class="username">Username:</label>
-    <input type="text" name="username" id="username" class="username">
-    <label for="password" class="password">Password:</label>
-    <input name="password" type="password" id="password" class="password" onmousedown="this.type='text'"
-        onmouseup="this.type='password'" onmousemove="this.type='password'">
-    <button type="submit">Log In</button>
-    <a href="/createProfile">Don't have an account click here to create an account </a>
+    <label for="username" class="element">USERNAME:</label> <br><br>
+    <input type="text" name="username" id="username" class="element"><br><br>
+    <label for="password" class="element">PASSWORD:</label><br><br>
+    <input name="password" type="password" id="password" class="element" onmousedown="this.type='text'"
+        onmouseup="this.type='password'" onmousemove="this.type='password'"><br><br>
+    <button type="submit" class="button">LOG IN</button><br><br>
+    <div class="error" id="error">{{error}}</div><br><br>
+    <a href="/createProfile" class="element">REGISTER</a>
 </form>
