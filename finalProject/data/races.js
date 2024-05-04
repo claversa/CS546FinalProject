@@ -53,7 +53,8 @@ export const create = async (
         raceTime, 
         distance, 
         terrain, 
-        raceUrl 
+        raceUrl,
+        registeredUsers: []
     };
     const raceCollection = await races();
     const insertInfo = await raceCollection.insertOne(newRace);

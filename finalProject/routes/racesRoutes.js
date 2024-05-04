@@ -32,7 +32,7 @@ router.route('/addrace')
     //   res.status(400).render('error', { title: "Error", class: "error", error: e.toString() });
     // }
     try {
-      let newRace = await data.create(first,
+      let newRace = await data.create(
         raceName,
         req.session.user.username,
         raceCity,
@@ -41,9 +41,9 @@ router.route('/addrace')
         raceTime,
         distance,
         terrain,
-        raceUrl); // create user
+        raceUrl); // create race
       // take user to homepage but now logged in
-      res.redirect('./home');
+      res.redirect(`./race/${newRace._id}`);
     }
     catch (e) {
       res.status(404).render('error', { title: "Error", class: "not-found", error: e.toString() });
