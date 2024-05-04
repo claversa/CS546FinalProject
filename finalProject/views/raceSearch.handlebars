@@ -7,16 +7,17 @@
         <h1>Races Found</h1>
     </header>
     <main>
-        <h2>{{searchRacesByName}}</h2>
+        <h2>{{search}}</h2>
         <ol>
             {{#each races}}
             <li>
-                <a href="/races/{{_id}}">
-                    <span>{{Title}}<br></span>
+                <a href="/race/{{_id}}">
+                    <span>{{raceName}}<br></span>
                 </a>
             </li>
             {{/each}}
         </ol>
         <a href="/">Search for Another Race</a>
+        <a href="/">Can't find your race? Click here to add it.</a>
     </main>
 </body>

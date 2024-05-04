@@ -278,15 +278,15 @@ export const updateUrl = async (id, userId, newUrl) => {
     return updatedInfo;
 };
 
-create("ur dadadadadad", "66319e537426d060289178ec", "New York", "NY", "01/20/2024", "15:30", 100, ["rocky"], "www.apple.com")
-    .then((result) => {
-        // This function will execute when the promise is resolved
-        console.log(result); // Print the resolved value
-    })
-    .catch((error) => {
-        // This function will execute if the promise is rejected
-        console.error("Error occurred:", error);
-    });
+// create("ur dadadadadad", "6621885fabed8ccf023bea58", "New York", "NY", "01/20/2024", "15:30", 100, ["rocky"], "www.apple.com")
+//     .then((result) => {
+//         // This function will execute when the promise is resolved
+//         console.log(result); // Print the resolved value
+//     })
+//     .catch((error) => {
+//         // This function will execute if the promise is rejected
+//         console.error("Error occurred:", error);
+//     });
 
 // updateDistance('663452fbbc795a9b3e203939', 1)
 // .then((result) => {
