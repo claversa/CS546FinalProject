@@ -20,10 +20,10 @@ body {
     line-height: 30px;
 }
 
-h2 {
+/* h2 {
     font-family: 'martian';
     font-size: 40px;
-}
+} */
 
 
 input[type=text] {
@@ -94,7 +94,7 @@ button {
     width: fit-content;
     border-radius: 4px;
 }
-
+/* 
 .form_label {
     font-family: 'martian';
     font-size: 30px;
@@ -104,7 +104,7 @@ button {
     color: var(--inputText);
     width: fit-content;
     border-radius: 4px;
-}
+} */
 
 
 input[type=email]:hover,

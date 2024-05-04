@@ -1,7 +1,4 @@
-
-
 <form method="POST" id='flex_container' class=' flex_container' action="/races/addrace">
-    <label for="flex_container" class='form_label'>ADDRACE</label>
     <!--Name-->
     <label for="raceName" class="raceName">RACE NAME</label>
     <input type="text" name="raceName" id="raceName" class="raceName">
@@ -9,13 +6,13 @@
     <label for="raceCity" class="raceCity">RACE CITY</label>
     <input type="text" name="raceCity" id="raceCity" class="raceCity">
     <!--state-->
-    <label for="raceState" id="raceState">RACE STATE</label>
+    <label for="raceState">RACE STATE</label>
     <input type="text" name="raceState" id="raceState" class="raceState">
     <!--date-->
-    <label for="date" id="date">RACE DATE</label>
+    <label for="date">RACE DATE</label>
     <input type="text" name="date" id="date" class="date">
     <!--time-->
-    <label for="raceTime" id="raceTime">RACE TIME</label>
+    <label for="raceTime">RACE TIME</label>
     <input type="text" name="raceTime" id="raceTime" class="raceTime">
     <!--distance-->
     <label for="distance">DISTANCE</label>
@@ -24,17 +21,23 @@
         <option value="5K">5K</option>
         <option value="Half Marathon">Half Marathon</option>
         <option value="Marathon">Marathon</option>
-    </select>  
-     <!--terrain-->
-    <label for="terrain" id="terrain">TERRAIN</label><br>
-    <input type="checkbox" name="terrain" value="Street"> Street<br>
-    <input type="checkbox" name="terrain" value="Grass"> Grass<br>
-    <input type="checkbox" name="terrain" value="Beach"> Beach<br>
-    <input type="checkbox" name="terrain" value="Rocky"> Rocky<br>
-    <input type="checkbox" name="terrain" value="Inclined"> Inclined<br>
-    <input type="checkbox" name="terrain" value="Muddy"> Muddy<br>
-     <!--url-->
-    <label for="raceUrl" id="raceUrl">RACE URL</label>
+    </select>
+    <!--terrain-->
+    <h2>TERRAIN</h2><br>
+    <label for="street" class="checkboxes">STREET</label>
+    <input type="checkbox" name="terrain" value="Street" id="street">
+    <label for="grass">GRASS</label>
+    <input type="checkbox" name="terrain" value="Grass" id="grass">
+    <label for="beach">BEACH</label>
+    <input type="checkbox" name="terrain" value="Beach" id="beach">
+    <label for="rocky">ROCKY</label>
+    <input type="checkbox" name="terrain" value="Rocky" id="rocky">
+    <label for="inclined">INCLINED</label>
+    <input type="checkbox" name="terrain" value="Inclined" id="inclined">
+    <label for="muddy">MUDDY</label>
+    <input type="checkbox" name="terrain" value="Muddy" id="muddy">
+    <!--url-->
+    <label for="raceUrl">RACE URL</label>
     <input type="text" name="raceUrl" id="raceUrl" class="raceUrl">
-    <button type="create">CREATE PROFILE</button>
+    <button type="submit">CREATE PROFILE</button>
 </form>
