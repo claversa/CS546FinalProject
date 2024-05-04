@@ -1,65 +1,100 @@
 import { plans } from '../config/mongoCollections.js'
 import { ObjectId } from 'mongodb';
-import * as help from '../helpers.js';
+import * as help from '../helpers/helpers.js';
 
 const create = async (
-    raceId,
     raceName,
     raceDate,
     distance,
-    maxMileageYet,
-    tempoPace,
-    racePace
+    maxMileageYet, // user will click "register", all above params will populate automatically but they will answer a popup about latest mileage
 ) => {
-    // exists
-    let args = [reviewName, raceId, raceName, raceCity, raceState, raceDate, distance, authorFirstName, authorLastName, username, gender, age, authorId, comments, rating]
-    args.map((elem) => help.exists(elem, elem));
-    // not string or empty, trims all input as well
-    let strs = [reviewName, raceId, raceName, raceCity, raceState, raceDate, distance, authorFirstName, authorLastName, username, gender, authorId, comments]
-    strs = args.map((elem) => help.notStringOrEmpty(elem, elem));
-    // split again into individual vars
-    let { reviewName, raceId, raceName, raceCity, raceState, raceDate, distance, authorFirstName, authorLastName, username, gender, authorId, comments } = strs;
-    // age
-    if (typeof age !== 'number' || Number.isNaN(age) || age < 13 || age > 117) throw "Error: age must be a number between 13 and 117"
-    age = Math.round(age); // make age a whole number
-    // rating
-    if (typeof rating !== 'number' || Number.isNaN(rating) || rating <= 0 || rating > 5) throw "Error: rating must be a number between 1 and 5"
-    rating = Math.round(rating); // make rating a whole number
-    // date
+    // validation
+    raceName = help.notStringOrEmpty(raceName, "race name");
+    raceDate = help.notStringOrEmpty(raceDate, "race date");
+    distance = help.notStringOrEmpty(distance, "distance");
+    maxMileageYet = help.notStringOrEmpty(maxMileageYet, "max mileage yet");
+
     help.validDate(raceDate);
-    // distance
-    if (typeof distance !== 'number' || Number.isNaN(distance) || distance < 0) throw "Error: Distance must be a number"
-    // state 
-    state = help.validState(state); // to upper case
-    // time
-    help.validRaceTime(raceTimeHr, raceTimeMin);
+    
+    // 4 weeks
+    let base5k = [[0, 1, 1, 1, 0, 1, 2], [0, 1, 2, 1, 0, 1, 2], [0, 1, 2, 1, 0, 1, 2.5], [0, 2, 2, 1, 0, 2, 3.1]];
+    // 12 weeks
+    let baseHalf = [[0, 1, 1, 1, 0, 1, 2], [0, 1, 2, 1, 0, 1, 3], [0, 3, 2, 3, 0, 1, 4], [0, 3.5, 2, 3.5, 0, 1, 5], [0, 3.5, 2, 3.5, 0, 1, 5], [0, 4, 2, 4, 0, 1, 6], 
+    [0, 4, 2, 4, 1, 0, 3.1], [0, 4.5, 3, 4.5, 0, 1, 7], [0, 4.5, 3, 4.5, 0, 1, 8], [0, 5, 3, 5, 0, 1, 9], [0, 5, 3, 5, 0, 1, 10], [0, 4, 3, 2, 0, 0, 13.1]];
+    // 18 weeks
+    let baseMarathon = [[0, 1, 1, 1, 0, 1, 2], [0, 1, 2, 1, 0, 1, 3], [0, 3, 2, 3, 0, 1, 4], [0, 3.5, 2, 3.5, 0, 1, 5], [0, 4.5, 3, 4.5, 0, 1, 7], [0, 5, 3, 5, 0, 1, 9], [0, 5, 3, 5, 3, 0, 10], [0, 4, 3, 2, 4, 0, 13.2], 
+    [0, 3, 7, 4, 6, 0, 10], [0, 3, 7, 4, 0, 3, 15], [0, 4, 8, 5, 0, 3, 16], [0, 4, 8, 5, 0, 3, 12], [0, 4, 9, 5, 0, 3, 18], [0, 5, 9, 5, 0, 3, 14], [0, 5, 10, 5, 0, 4, 20], [0, 5, 8, 4, 0, 3, 12], [0, 4, 6, 3, 0, 1, 8],[0, 3, 4, 2, 0, 1, 26.2]]
+    // what was users last greatest mileage, compare FROM START TO END of above training arrays 
+    let plan = [];
+    switch (distance) {
+        case 3.1: 
+            plan = base5k;
+            break;
+        case 13.2: 
+            plan = baseHalf;
+            break;
+        case 26.2: 
+            plan = baseMarathon;
+            break;
+        default: 
+            throw `Not a valid distance`;
+    }
 
-    let basePlanHalf = [[0, 3, 2, 3, 0, 1, 4], [0, 3, 2, 3, 0, 1, 4], [0, 3.5, 2, 3.5, 0, 1, 5], [0, 3.5, 2, 3.5, 0, 1, 5], [0, 4, 2, 4, 0, 1, 6], [0, 4, 2, 4, 1, 0, 3.1], [0, 4.5, 3, 4.5, 0, 1, 7], [0, 4.5, 3, 4.5, 0, 1, 8], [0, 5, 3, 5, 0, 1, 9], [0, 5, 3, 5, 0, 1, 10], [0, 4, 3, 2, 0, 0, 13.2]];
+    if(maxMileageYet >= plan[1][6]){
+        for (let i = 1; i < plan.length; i++){
+            if(i === (plan.length - 1)){
+                plan = [plan[plan.length - 1]];
+                break;
+            } else if(maxMileageYet <= plan[i][6]){
+                plan = plan.slice(i, plan.length);
+                break;
+            }
+        }
+    }
 
-    // construct review
-    let newReview = {
+    let weeksUntil = Math.floor((Date.now() - new Date(raceDate))/1000/60/60/24/7);
 
-    };
-    const productCollection = await plans();
-    const insertInfo = await productCollection.insertOne(newProd);
+    if (weeksUntil < plan.length){
+        plan = plan.slice(0, weeksUntil);
+        let errorMsg = `You can not safely train for the entire ${distance} mile race. Train up until ${plan[plan.length-1][6]} miles and then you have to walk.`;
+    } else {
+        let div = Math.floor((weeksUntil - plan.length) / plan.length);
+        let mod = weeksUntil % plan.length;
+        if (plan.length === 1){
+            plan = Array(weeksUntil).fill(plan[0]);
+        } else{
+            plan = plan.map((week, ind) => {
+                if(ind === plan.length - 1){
+                    return Array(week);
+                } else if (plan.length - mod - 1 <= ind){
+                    return Array(2 + div).fill(week);
+                } else{
+                    return Array(1 + div).fill(week);
+                }
+            }).flat();
+        }
+    }
+
+    const planCollection = await plans();
+    const insertInfo = await planCollection.insertOne(plan);
     if (!insertInfo.acknowledged || !insertInfo.insertedId)
-        throw 'Could not add product';
+        throw 'Could not add plan';
 
-    const newId = insertInfo.insertedId.toString();
+    // const raceId = insertInfo.insertedId.toString();
 
-    const prod = await get(newId);
-    return prod;
+    // const prod = await get(raceId);
+    // return prod;
 };
 
-const getAll = async () => {
-    const productCollection = await products();
-    let prodList = await productCollection.find({}).toArray(); // get all products, put in array
-    if (!prodList) throw 'Could not get all products';
-    prodList = prodList.map((element) => {
+const getAll = async () => { // when comparing what to display, get all of a single user's training plans
+    const planCollection = await plans();
+    let planList = await planCollection.find({}).toArray(); // get all products, put in array
+    if (!planList) throw 'Could not get all plans';
+    planList = planList.map((element) => {
         element._id = element._id.toString();
         return element;
     });
-    return prodList;
+    return planList;
 };
 
 const get = async (id) => {
@@ -67,14 +102,12 @@ const get = async (id) => {
     exists(id, 'id');
     id = notStringOrEmpty(id, 'id');
     if (!ObjectId.isValid(id)) throw 'invalid object ID'; // check for valid id
-    const productCollection = await products();
-    const prod = await productCollection.findOne({ _id: new ObjectId(id) });
-    if (prod === null) throw 'No product with that id';
-    prod._id = prod._id.toString();
-    return prod;
+    const planCollection = await plans();
+    const plan = await planCollection.findOne({ _id: new ObjectId(id) });
+    if (plan === null) throw 'No product with that id';
+    plan._id = plan._id.toString();
+    return plan;
 };
-
-
 
 const remove = async (id) => {
     exists(id, 'id');
