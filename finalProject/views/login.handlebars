@@ -1,7 +1,3 @@
-<head>
-    <link rel="stylesheet" href="/public/createProfile.css" />
-</head>
-
 <h1>Login</h1>
 <form method="POST" id='flex_container' class=' flex_container' action="/login">
     <!--Name-->
@@ -10,6 +6,6 @@
     <label for="password" class="password">Password:</label>
     <input name="password" type="password" id="password" class="password" onmousedown="this.type='text'"
         onmouseup="this.type='password'" onmousemove="this.type='password'">
-    <button type="create">Log In</button>
+    <button type="submit">Log In</button>
+    <a href="/createProfile">Don't have an account click here to create an account </a>
 </form>
-<a href="/createProfile">Don't have an account click here to create an account </a>

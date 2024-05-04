@@ -1,10 +1,4 @@
-<head>
-    <link rel="stylesheet" href="/public/createProfile.css" />
-</head>
-
-
 <form method="POST" id='flex_container' class=' flex_container' action="/createProfile">
-    <label for="flex_container" class='form_label'>CREATE PROFILE</label>
     <!--Name-->
     <label for="firstName" class="firstName">FIRST NAME:</label>
     <input type="text" name="firstName" id="firstName" class="firstName">
@@ -14,7 +8,7 @@
     <label for="username" class="username">USERNAME:</label>
     <input type="text" name="username" id="username" class="username">
     <!--email-->
-    <label for="email" id="email">EMAIL:</label>
+    <label for="email">EMAIL:</label>
     <input type="email" name="email" id="email" class="email">
     <!--Gender drop down-->
     <label for="gender">GENDER:</label>
@@ -104,5 +98,5 @@
     <label for="password">PASSWORD:</label>
     <input name="password" type="password" id="password" class="password" onmousedown="this.type='text'"
         onmouseup="this.type='password'" onmousemove="this.type='password'">
-    <button type="create">CREATE PROFILE</button>
+    <button type="submit">CREATE PROFILE</button>
 </form>
