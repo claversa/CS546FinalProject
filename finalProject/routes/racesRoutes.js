@@ -32,7 +32,7 @@ router.route('/addrace')
     //   res.status(400).render('error', { title: "Error", class: "error", error: e.toString() });
     // }
     try {
-      let newRace = await data.create(first,
+      let newRace = await data.create(
         raceName,
         req.session.user.username,
         raceCity,
@@ -41,9 +41,10 @@ router.route('/addrace')
         raceTime,
         distance,
         terrain,
-        raceUrl); // create user
+        raceUrl); // create race
       // take user to homepage but now logged in
-      res.redirect('./home');
+      console.log(newRace)
+      res.redirect(`/race/${newRace._id}`);
     }
     catch (e) {
       res.status(404).render('error', { title: "Error", class: "not-found", error: e.toString(), otherCSS: "/public/error.css" });
@@ -56,7 +57,7 @@ router.route('/searchraces').post(async (req, res) => {
     search = help.notStringOrEmpty(search, 'race search');
   }
   catch (e) {
-    res.status(404).render('error', { title: "Error", class: "error", error: "No races found", user: req.session.user, otherCSS: "/public/error.css" });
+    res.status(404).render('raceSearch', { title: "Error", class: "not-found", search: "Please put a valid search so no blanks", user: req.session.user, otherCSS: "/public/error.css" });
   }
   try {
     const races = await data.search(search);

@@ -1,4 +1,4 @@
-<form method="POST" id='flex_container' class=' flex_container' action="/races/addrace">
+<form method="POST" id='flex_container' class=' flex_container' action="/race/addrace">
     <!--Name-->
     <label for="raceName" class="raceName">RACE NAME</label>
     <input type="text" name="raceName" id="raceName" class="raceName">
@@ -7,10 +7,63 @@
     <input type="text" name="raceCity" id="raceCity" class="raceCity">
     <!--state-->
     <label for="raceState">RACE STATE</label>
-    <input type="text" name="raceState" id="raceState" class="raceState">
+    <select name="raceState" id="raceState" class="raceState">
+        <option value="placeholder" selected>CLICK TO SELECT</option>
+        <option value="AL">AL</option>
+        <option value="AK">AK</option>
+        <option value="AZ">AZ</option>
+        <option value="AR">AR</option>
+        <option value="CA">CA</option>
+        <option value="CO">CO</option>
+        <option value="CT">CT</option>
+        <option value="DE">DE</option>
+        <option value="DC">DC</option>
+        <option value="FL">FL</option>
+        <option value="GA">GA</option>
+        <option value="HI">HI</option>
+        <option value="ID">ID</option>
+        <option value="IL">IL</option>
+        <option value="IN">IN</option>
+        <option value="IA">IA</option>
+        <option value="KS">KS</option>
+        <option value="KY">KY</option>
+        <option value="LA">LA</option>
+        <option value="ME">ME</option>
+        <option value="MD">MD</option>
+        <option value="MA">MA</option>
+        <option value="MI">MI</option>
+        <option value="MN">MN</option>
+        <option value="MS">MS</option>
+        <option value="MO">MO</option>
+        <option value="MT">MT</option>
+        <option value="NE">NE</option>
+        <option value="NV">NV</option>
+        <option value="NH">NH</option>
+        <option value="NJ">NJ</option>
+        <option value="NM">NM</option>
+        <option value="NY">NY</option>
+        <option value="NC">NC</option>
+        <option value="ND">ND</option>
+        <option value="OH">OH</option>
+        <option value="OK">OK</option>
+        <option value="OR">OR</option>
+        <option value="PA">PA</option>
+        <option value="RI">RI</option>
+        <option value="SC">SC</option>
+        <option value="SD">SD</option>
+        <option value="TN">TN</option>
+        <option value="TX">TX</option>
+        <option value="UT">UT</option>
+        <option value="VT">VT</option>
+        <option value="VA">VA</option>
+        <option value="WA">WA</option>
+        <option value="WV">WV</option>
+        <option value="WI">WI</option>
+        <option value="WY">WY</option>
+    </select>
     <!--date-->
-    <label for="date">RACE DATE</label>
-    <input type="text" name="date" id="date" class="date">
+    <label for="raceDate">RACE DATE</label>
+    <input type="date" id="raceDate" name="raceDate">
     <!--time-->
     <label for="raceTime">RACE TIME</label>
     <input type="text" name="raceTime" id="raceTime" class="raceTime">
@@ -39,5 +92,5 @@
     <!--url-->
     <label for="raceUrl">RACE URL</label>
     <input type="text" name="raceUrl" id="raceUrl" class="raceUrl">
-    <button type="submit">CREATE PROFILE</button>
+    <button type="create">ADD RACE</button>
 </form>
