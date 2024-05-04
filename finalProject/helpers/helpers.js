@@ -21,7 +21,7 @@ export let validDate = (date) => { // got this function from https://www.freecod
 export let validURL = (val) => {
     // regex for allowed url patterns
     const urlRegex = /^(?:https?:\/\/)?(?:www\.)?[\w.-]+\.[a-zA-Z]{2,}(?:\/[\w-./?=&%+]*)?$/;
-    if(!urlRegex.test(val)) throw `Error: ${val} is an invalid website URL`;
+    if (!urlRegex.test(val)) throw `Error: ${val} is an invalid website URL`;
 }
 
 export let validState = (state) => {
@@ -39,7 +39,7 @@ export let validTime = (timeStr) => {
     const [hours, minutes] = timeStr.split(':').map(numStr => parseInt(numStr, 10));
 
     if (hours < 0 || hours > 23 || minutes < 0 || minutes > 59) throw "Error: Hours should be between 00-23 and minutes between 00-59."
-    
+
     const formattedHours = hours.toString().padStart(2, '0');
     const formattedMinutes = minutes.toString().padStart(2, '0');
 
@@ -61,9 +61,9 @@ export let arraysWithStringElem = (val, error) => {
 export let metricToImperial = (x, type) => {
     switch (type) {
         case "Kilometer":
-            return x*0.621371;
+            return x * 0.621371;
         case "Kilogram":
-            return x*2.20462;
+            return x * 2.20462;
         default:
             throw "unknown unit";
     }
@@ -72,9 +72,9 @@ export let metricToImperial = (x, type) => {
 export let imperialToMetric = (x, type) => {
     switch (type) {
         case "Mile":
-            return x/0.621371;
+            return x / 0.621371;
         case "Pound":
-            return x/2.20462;
+            return x / 2.20462;
         default:
             throw "unknown unit";
     }
@@ -82,7 +82,7 @@ export let imperialToMetric = (x, type) => {
 
 export let validEmail = (email) => {
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    if (!emailRegex.test(email)) {throw "Error: Please provide a valid email"};
+    if (!emailRegex.test(email)) { throw "Error: Please provide a valid email" };
     return email.toLowerCase();
 }
 
@@ -98,7 +98,7 @@ export let calculateAge = (birthdate) => {
 }
 
 export let validBirthdate = (dateString) => {
-    const dateFormatRegex = /^\d{2}\/\d{2}\/\d{4}$/;
+    const dateFormatRegex = /^\d{4}-\d{2}-\d{2}$/;
     if (!dateFormatRegex.test(dateString)) throw "Error: Invalid birthdate format";
     const [month, day, year] = dateString.split('/').map(Number);
     const dateObject = new Date(year, month - 1, day);
@@ -107,12 +107,12 @@ export let validBirthdate = (dateString) => {
 
 export let validPassword = (password) => {
     const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*_+()=])[^\s]{8,}$/;
-    if (!passwordRegex.test(password)) {throw "Error: Please provide a valid password"};
+    if (!passwordRegex.test(password)) { throw "Error: Please provide a valid password that is at least 8 characters with at least 1 uppercase letter, number, and special character" };
     return password.toLowerCase();
 };
 
 export let validUsername = (username) => {
     const usernameRegex = /^[a-zA-Z]{5,10}$/;
-    if (!usernameRegex.test(username)) {throw "Error: Please provide a valid username"};
+    if (!usernameRegex.test(username)) { throw "Error: Please provide a valid username with between 5-10 characters" };
     return username.toLowerCase();
 };
