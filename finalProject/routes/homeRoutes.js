@@ -32,7 +32,6 @@ router.route('/createProfile')
     let username = profileInfo.username;
     let email = profileInfo.email;
     let birthday = profileInfo.birthday;
-    let city = profileInfo.city;
     let state = profileInfo.state;
     let gender = profileInfo.gender;
     let system = profileInfo.system;
@@ -52,7 +51,6 @@ router.route('/createProfile')
         last,
         username,
         email,
-        city,
         state,
         gender,
         birthday,
