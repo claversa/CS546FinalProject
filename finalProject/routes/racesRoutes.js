@@ -57,7 +57,7 @@ router.route('/searchraces').post(async (req, res) => {
     search = help.notStringOrEmpty(search, 'race search');
   }
   catch (e) {
-    res.status(404).render('raceSearch', { title: "Error", class: "not-found", search: "Please put a valid search so no blanks", user: req.session.user, otherCSS: "/public/error.css" });
+    res.status(404).render('raceSearch', { title: "Error", class: "not-found", search: "Please put a valid search so no blanks", user: req.session.user, otherCSS: "/public/raceSearch.css" });
   }
   try {
     const races = await data.search(search);
@@ -66,7 +66,7 @@ router.route('/searchraces').post(async (req, res) => {
       return;
     }
     if (races.length > 20) races = races.slice(0, 20);
-    res.render('raceSearch', { title: search, class: "search", races, user: req.session.user, search, otherCSS: "/public/reaceSearch.css" });
+    res.render('raceSearch', { title: "Search", class: "search", races, user: req.session.user, search, otherCSS: "/public/raceSearch.css" });
   } catch (error) {
     res.status(500).render('error', { title: "Error", error: 'Internal Server Error', class: 'error', user: req.session.user, otherCSS: "/public/error.css" });
   }
