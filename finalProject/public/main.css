@@ -1,16 +1,3 @@
-/* FONTS */
-
-@font-face {
-    font-family: "faster";
-    src: url(../fonts/Faster_One/FasterOne-Regular.ttf);
-}
-
-@font-face {
-    font-family: 'martian';
-    src: url(../../fonts/martian/MartianMono-VariableFont_wdth\,wght.ttf);
-}
-
-
 /* GLOBAL VARS */
 :root {
     /* colors */
@@ -23,33 +10,11 @@
 }
 
 
-/* GENERAL STYLES */
-
-body {
-    margin: 0;
-    /* width: 100%; */
-    color: var(--text);
-    background-color: var(--bg);
-    scroll-behavior: smooth;
-    box-sizing: border-box;
-}
-
-h2 {
-    font-family: 'martian';
-    font-size: 40px;
-}
-
-main {
-    font-family: 'martian';
-    font-size: 20px;
-    line-height: 30px;
-}
-
 
 
 /* NAVIGATION BAR */
 
-a {
+.nav-links {
     color: var(--links);
     font-size: 1.11rem;
     text-decoration: underline;
@@ -96,7 +61,7 @@ a:visited {
 .navbar-items {
     padding: 0 10px;
     list-style-type: none;
-    font-family: 'martian';
+    font-family: 'Courier New', Courier, monospace;
 }
 
 
@@ -134,7 +99,7 @@ a:visited {
 }
 
 .logo-text {
-    font-family: 'faster';
+    font-family: 'Courier New', Courier, monospace;
     font-size: 40px;
     margin: 0;
     width: 0;
@@ -167,39 +132,24 @@ a:visited {
     opacity: 1;
 }
 
+/* GENERAL STYLES */
 
-/* COUNTDOWN PAGE */
-/* 
-.count {
-    font-size: 100px;
-    font-weight: 100;
-    color: #FCA311;
-    font-family: 'faster';
+body {
+    margin: 0;
+    /* width: 100%; */
+    color: var(--text);
+    background-color: var(--bg);
+    scroll-behavior: smooth;
+    box-sizing: border-box;
 }
 
-
-.confetti-btn {
-    background-color: #FCA311;
-    padding: 10px 30px;
-    cursor: grab;
-    font-size: 70px;
-    border: 0;
-    font-family: 'martian';
-    font-weight: bold;
-    color: #233A6A;
+h2 {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 40px;
 }
 
-.countdown-content {
-    text-align: center;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-}
-
-.error {
-    color: red;
-    font-weight: 200;
+main {
+    font-family: 'Courier New', Courier, monospace;
     font-size: 20px;
-} */
+    line-height: 30px;
+}
