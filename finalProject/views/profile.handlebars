@@ -5,11 +5,13 @@
     <h3>MEASUREMENT SYSTEM: {{{system}}}</h3>
     <h3>HOME STATE: {{{state}}}</h3>
     <h3>AGE: {{{age}}}</h3>
-    <h3>{{{socialPlatform}}} HANDLE: {{{socialHandle}}}</h3>
+    <h3>{{{socialPlatform}}}HANDLE: {{{socialHandle}}}</h3>
     <h3>REGISTERED RACES:</h3>
-    <ul>
+    <ul class="horizontal-list">
         {{#each registeredRaces}}
-             <a href="/race/{{this.id}}" class="race-link"><p>{{this.name}}</p></a>
+        <a href="/race/{{this.id}}" class="race-link">
+            <p>{{this.name}}</p>
+        </a>
         {{/each}}
     </ul>
     <button>EDIT</button>

@@ -1,8 +1,3 @@
-@font-face {
-    font-family: 'martian';
-    src: url(../fonts/martian/MartianMono-VariableFont_wdth\,wght.ttf);
-}
-
 :root {
     --input: #F39803;
     --labels: #FCA311;
@@ -22,7 +17,6 @@ body {
 
 
 input[type=text] {
-    font-family: 'martian';
     padding: 12px 20px;
     margin: 8px 0;
     box-sizing: border-box;
@@ -49,7 +43,7 @@ input[type=text] {
 
 option,
 select {
-    font-family: 'martian';
+    font-family: 'Courier New', Courier, monospace;
     padding: 12px 20px;
     margin: 8px 0;
     margin: 8px 0;
@@ -68,7 +62,7 @@ option:hover {
 label,
 button,
 h4 {
-    font-family: 'martian';
+    font-family: 'Courier New', Courier, monospace;
     font-size: 20px;
     padding: 12px 20px;
     margin: 8px 0;

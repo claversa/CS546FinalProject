@@ -175,27 +175,28 @@ router.route('/countdown').get(async (req, res) => {
     user = await data.get(req.session.user.username); // get user
   }
   catch (e) {
-    res.render("error", { title: "Error", user: req.session.user, error: e, otherCSS: "/public/error.css" })
+    return res.render("error", { title: "Error", user: req.session.user, error: e, otherCSS: "/public/error.css" })
   }
   // get races
   let races = user.registeredRaces;
 
-  if (races.length == 0) {
-    res.render("countdown", { title: "Race Day Countdown", user: req.session.user, error: "", hasRaces: false, otherCSS: "/public/countdown.css" });
+
+  if (races.length === 0) {
+    return res.render("countdown", { title: "Race Day Countdown", user: req.session.user, error: "", hasRaces: false, otherCSS: "/public/countdown.css" });
 
   }
   else {
     let race = undefined;
     let nextRace = undefined; // this will be the upcoming race given to countdown
     let farAway = undefined; // this will be how far until the upcoming race
-    let raceDate = undefined; // this will be race date given to countdown
+    let date = undefined; // this will be race date given to countdown
     try {
-      race = await racesFuns.get(race);
+      race = await racesFuns.get(races[0]);
       farAway = help.dateAway(race.raceDate);
-      raceDate = race.raceDate;
+      date = race.raceDate;
     }
-    catch {
-      res.render("error", { title: "Error", user: req.session.user, error: e, otherCSS: "/public/error.css" })
+    catch (e) {
+      return res.render("error", { title: "Error", user: req.session.user, error: e, otherCSS: "/public/error.css" })
     }
     for (let raceId of races) {
       try {
@@ -204,16 +205,15 @@ router.route('/countdown').get(async (req, res) => {
         if (tempAway < farAway) {
           farAway = tempAway; // amount of time, tracking purposes
           nextRace = race; // idk if even need, but this is the race
-          raceDate = race.raceDate; // give this date to countdown
+          date = race.raceDate; // give this date to countdown
         }
       }
       catch (e) {
-        res.render("error", { title: "Error", user: req.session.user, error: e, otherCSS: "/public/error.css" })
+        return res.render("error", { title: "Error", user: req.session.user, error: e, otherCSS: "/public/error.css" })
 
       }
-
     }
-    res.render("countdown", { title: "Race Day Countdown", user: req.session.user, error: "", hasRaces: true, raceDate: raceDate, otherCSS: "/public/countdown.css" });
+    return res.render("countdown", { title: "Race Day Countdown", user: req.session.user, error: "", hasRaces: true, raceDate: date, otherCSS: "/public/countdown.css" });
   }
 
 

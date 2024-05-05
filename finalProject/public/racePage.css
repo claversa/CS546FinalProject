@@ -1,4 +1,6 @@
-h2, h4, h5 {
+h2,
+h4,
+h5 {
     text-align: center;
 }
 
@@ -20,15 +22,19 @@ p {
 
 button {
     display: block;
-    margin: 0 auto; 
+    margin: 0 auto;
 }
 
 .horizontal-list {
     text-align: center;
     line-height: 2;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    padding-bottom: 30px;
 }
 
 .horizontal-list p {
-    display: inline; 
+    display: inline;
     margin: 5px;
 }
