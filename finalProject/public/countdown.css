@@ -8,16 +8,25 @@
     src: url(../../fonts/martian/MartianMono-VariableFont_wdth\,wght.ttf);
 }
 
+:root {
+    --input: #F39803;
+    --labels: #FCA311;
+    --bg: #2F4D8A;
+    --inputText: #2F4D8A;
+    --hover: #213358;
+    --hoverText: #FCA311;
+}
+
 .count {
     font-size: 100px;
     font-weight: 100;
-    color: #FCA311;
+    color: var(--labels);
     font-family: 'faster';
 }
 
 
 .confetti-btn {
-    background-color: #FCA311;
+    background-color: var(--labels);
     padding: 10px 30px;
     cursor: grab;
     font-size: 70px;
@@ -34,4 +43,12 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
+}
+
+
+a {
+    text-align: center;
+    color: var(--input);
+    padding: 5px;
+    cursor: grab;
 }

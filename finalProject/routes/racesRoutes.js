@@ -57,7 +57,7 @@ router.route('/searchraces').post(async (req, res) => {
     search = help.notStringOrEmpty(search, 'race search');
   }
   catch (e) {
-    res.status(404).render('raceSearch', { title: "Error", class: "not-found", search: "Please put a valid search so no blanks", user: req.session.user, otherCSS: "/public/error.css" });
+    res.status(404).render('raceSearch', { title: "Error", class: "not-found", search: "Please put a valid search so no blanks", user: req.session.user, otherCSS: "/public/raceSearch.css" });
   }
   try {
     const races = await data.search(search);
@@ -66,7 +66,7 @@ router.route('/searchraces').post(async (req, res) => {
       return;
     }
     if (races.length > 20) races = races.slice(0, 20);
-    res.render('raceSearch', { title: search, class: "search", races, user: req.session.user, search, otherCSS: "/public/reaceSearch.css" });
+    res.render('raceSearch', { title: "Search", class: "search", races, user: req.session.user, search, otherCSS: "/public/raceSearch.css" });
   } catch (error) {
     res.status(500).render('error', { title: "Error", error: 'Internal Server Error', class: 'error', user: req.session.user, otherCSS: "/public/error.css" });
   }
@@ -85,7 +85,11 @@ router.route('/:id').get(async (req, res) => {
     let raceData = await data.get(raceId);
 
     if (raceData) {
-      res.render('racePage', { title: raceData.raceName, user: req.session.user, error: "", name: raceData.raceName, location: raceData.location, date: raceData.date, time: raceData.raceTime, distance: raceData.distance, terrain: raceData.terrain, URL: raceData.raceUrl, registrants: raceData.registrants, otherCSS: "/public/racePage.css" });
+      let registered = false;
+      if (raceData.registeredUsers.includes(req.session.user.username)) {
+        registered = true;
+      }
+      res.render('racePage', { registered, registrants: raceData.registeredUsers, title: raceData.raceName, name: raceData.raceName, user: req.session.user, error: "", name: raceData.raceName, city: raceData.raceCity, state: raceData.raceState, date: raceData.raceDate, time: raceData.raceTime, distance: raceData.distance, terrain: raceData.terrain, URL: raceData.raceUrl, otherCSS: "/public/racePage.css", raceId });
     }
   }
   catch (e) {

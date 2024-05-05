@@ -1,4 +1,3 @@
-
 <div class="countdown-content">
     <script src="https://cdn.jsdelivr.net/npm/@tsparticles/confetti@3.0.3/tsparticles.confetti.bundle.min.js"></script>
     <!--will get displayed in the following p element-->
@@ -6,6 +5,7 @@
         <p id="count" class="count"></p>
     </div>
     <br />
+    {{#if hasRaces}}
     <button class="confetti-btn" type="button">GET EXCITED!</button>
     <!--Countdown learned from https://www.w3schools.com/howto/howto_js_countdown.asp-->
     <script>
@@ -23,7 +23,7 @@
             });
         }
         // date counting down to
-        var countDownDate = new Date("May 19, 2024 8:00:00").getTime();
+        var countDownDate = new Date({{ raceDate }}).getTime(); // give race date from routes
         // Update the count down every 1 second
         var x = setInterval(function () {
 
@@ -39,7 +39,6 @@
             var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
             var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-            // put result in the element w id="demo"
             document.getElementById("count").innerHTML = days + "d " + hours + "h "
                 + minutes + "m " + seconds + "s ";
 
@@ -52,4 +51,8 @@
         let confettiBtn = document.querySelector(".confetti-btn");
         confettiBtn.addEventListener("click", triggerConfetti)
     </script>
+    {{else}}
+    <p>You are not currently registered for any races.</p>
+    <a href="./home.handlebars">REGISTER NOW!</a>
+    {{/if}}
 </div>

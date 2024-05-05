@@ -38,3 +38,27 @@ h2 {
     border-radius: 4px;
 
 }
+
+button {
+    text-align: center;
+    color: var(--inputText);
+    background-color: var(--input);
+    padding: 5px;
+    width: 100px;
+    cursor: grab;
+}
+
+button:hover {
+    color: var(--input);
+    background-color: var(--hover);
+}
+
+.horizontal-list {
+    text-align: center;
+    line-height: 2;
+}
+
+.horizontal-list p {
+    display: inline; 
+    margin: 0 5px;
+}

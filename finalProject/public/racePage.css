@@ -1,0 +1,30 @@
+h2, h4, h5 {
+    text-align: center;
+}
+
+.reviewRace {
+    text-align: center;
+}
+
+.register {
+    text-align: center;
+}
+
+.raceComment {
+    text-align: center;
+}
+
+button {
+    display: block;
+    margin: 0 auto; 
+}
+
+.horizontal-list {
+    text-align: center;
+    line-height: 2;
+}
+
+.horizontal-list p {
+    display: inline; 
+    margin: 5px;
+}

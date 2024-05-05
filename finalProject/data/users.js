@@ -1,4 +1,4 @@
-import { users } from '../config/mongoCollections.js'
+import { users, races } from '../config/mongoCollections.js'
 import { ObjectId } from 'mongodb';
 import * as help from '../helpers/helpers.js';
 import * as pw from '../helpers/bcrypt.js'
@@ -73,7 +73,7 @@ const create = async (
         socialHandle,
         system,
         hashedPW,
-        registeredRaces,
+        registeredRaces:[],
         trainingPlans,
     };
     const userCollection = await users();
@@ -256,23 +256,47 @@ const updatePassword = async (username, newPassword) => {
     return updatedInfo;
 };
 
-const registerRace = async (id, raceId) => {
-    exists(id, 'id');
-    exists(raceId, 'raceId');
-    id = notStringOrEmpty(id, 'id');
-    if (!ObjectId.isValid(id)) throw 'invalid object ID'; // check for valid ID
-    raceId = notStringOrEmpty(raceId, 'raceId');
+const registerRace = async (username, raceId) => {
+    username = help.notStringOrEmpty(username, 'username');
+    if (!ObjectId.isValid(raceId)) throw 'invalid object ID'; // check for valid ID
+    raceId = help.notStringOrEmpty(raceId, 'raceId');
     const userCollection = await users();
-    const user = await userCollection.findOne({ _id: new ObjectId(id) });
-    // already in list??  --------------------------------
-
-    // if not in list, add to list
-    let regRaces = user.registeredRaces.push(raceId);
+    const user = await userCollection.findOne({ username: username });
+    if (!Array.isArray(user.registeredRaces)) {
+        user.registeredRaces = [];
+    }
+    user.registeredRaces.push(raceId);
     const updatedUser = {
-        registeredRaces: regRaces
+        registeredRaces: user.registeredRaces
     };
     const updatedInfo = await userCollection.findOneAndUpdate(
-        { _id: new ObjectId(id) },
+        { username: username },
+        { $set: updatedUser },
+        { returnDocument: 'after' }
+    );
+    if (!updatedInfo) {
+        throw 'could not update user successfully';
+    }
+    updatedInfo._id = updatedInfo._id.toString();
+    return updatedInfo;
+};
+
+const unregisterRace = async (username, raceId) => {
+    username = help.notStringOrEmpty(username, 'username');
+    if (!ObjectId.isValid(raceId)) throw 'invalid object ID'; 
+    raceId = help.notStringOrEmpty(raceId, 'raceId');
+    const userCollection = await users();
+    const user = await userCollection.findOne({ username: username });
+    if (!Array.isArray(user.registeredRaces)) {
+        user.registeredRaces = [];
+    }
+
+    user.registeredRaces = user.registeredRaces.filter(id => id !== raceId);
+    const updatedUser = {
+        registeredRaces: user.registeredRaces
+    };
+    const updatedInfo = await userCollection.findOneAndUpdate(
+        { username: username },
         { $set: updatedUser },
         { returnDocument: 'after' }
     );
@@ -325,7 +349,7 @@ const check = async (username, password) => {
     return null;
 }
 
-export { create, getAll, get, updateEmail, updateState, updateGender, updateSocial, updateSystem, updatePassword, registerRace, addTrainingPlan, check };
+export { create, getAll, get, updateEmail, updateState, updateGender, updateSocial, updateSystem, updatePassword, registerRace, unregisterRace, addTrainingPlan, check };
 
 // create("jasper", "tumbokon", "jaspert", "jasperjay0628@gmail.com", "NJ", "male", "06/28/2003", "twitter", "jsprjay", "metric", "YourMom2$")
 //     .then((result) => {
