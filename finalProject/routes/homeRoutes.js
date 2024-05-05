@@ -17,7 +17,7 @@ router.route('/').get(async (req, res) => {
 router.route('/register/:raceId').post(async (req, res) => {
   try {
     const raceId = req.params.raceId;
-    await races.registerUser(req.session.user.username, raceId)
+    await racesFuns.registerUser(req.session.user.username, raceId)
     await data.registerRace(req.session.user.username, raceId)
     res.redirect(`/race/${raceId}`)
   } catch (error) {
@@ -28,7 +28,7 @@ router.route('/register/:raceId').post(async (req, res) => {
 router.route('/unregister/:raceId').post(async (req, res) => {
   try {
     const raceId = req.params.raceId;
-    await races.unregisterUser(req.session.user.username, raceId)
+    await racesFuns.unregisterUser(req.session.user.username, raceId)
     await data.unregisterRace(req.session.user.username, raceId)
     res.redirect(`/race/${raceId}`)
   } catch (error) {
@@ -120,7 +120,7 @@ router.route('/login')
   });
 
 router.route('/training').get(async (req, res) => {
-  res.render("training", { title: "Training Program", user: req.session.user, error: "", otherCSS: "/public/login.css" });
+  res.render("training", { title: "Training Program", user: req.session.user, error: "", otherCSS: "/public/training.css" });
 });
 
 router.route('/countdown').get(async (req, res) => {
