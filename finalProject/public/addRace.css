@@ -20,11 +20,6 @@ body {
     line-height: 30px;
 }
 
-h2 {
-    font-family: 'martian';
-    font-size: 40px;
-}
-
 
 input[type=text] {
     font-family: 'martian';
@@ -45,6 +40,8 @@ input[type=text] {
     align-items: center;
 } */
 .flex_container {
+    padding-top: 20px;
+    padding-bottom: 20px;
     margin-left: auto;
     margin-right: auto;
     text-align: center;
@@ -69,7 +66,8 @@ option:hover {
 
 
 label,
-button {
+button,
+h4 {
     font-family: 'martian';
     font-size: 20px;
     padding: 12px 20px;
@@ -86,4 +84,34 @@ select:hover,
 button:hover {
     background-color: var(--hover);
     color: var(--hoverText);
+}
+
+input[type="checkbox"] {
+    box-sizing: border-box;
+    width: 20px;
+    height: 20px;
+    margin: 6px;
+    padding: 0;
+    border: 2px solid var(--input);
+    appearance: none;
+    background-color: transparent;
+    outline: none;
+    transition: outline 0.1s;
+}
+
+input[type="checkbox"]:checked {
+    background-color: var(--input);
+    padding: 2px;
+}
+
+.checkboxes {
+    padding-bottom: 5px;
+    background-color: transparent;
+    color: var(--input);
+}
+
+.raceDate {
+    background-color: var(--input);
+    color: var(--bg);
+    padding: 10px;
 }

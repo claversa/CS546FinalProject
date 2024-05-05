@@ -46,7 +46,7 @@ label {
 }
 
 input[type=text] {
-    color: (var(--inputText));
+    color: (var(--bg));
     background-color: var(--input);
     padding: 10px;
     width: 80%
