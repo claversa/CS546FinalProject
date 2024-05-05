@@ -34,14 +34,14 @@ const create = async (
 
     if (gender != "male" && gender != "female" && gender != "other" && gender != "preferNot") throw 'Error: not a valid response (gender)!'
     if (system != "metric" && system != "imperial") throw "Error: invalid measurement system";
-    
+
     // validate birthdate
     try {
         help.validBirthdate(birthdate);
-    } catch(e) {
+    } catch (e) {
         throw e;
     };
-    
+
     // validate username and PW
     username = help.validUsername(username);
     password = help.validPassword(password);
@@ -55,7 +55,7 @@ const create = async (
     // password
     let hashedPW = await pw.hashPassword(password);
     let age = help.calculateAge(birthdate);
-    if (age < 13) throw "Age must be above 13 to register" 
+    if (age < 13) throw "Age must be above 13 to register"
 
     //make empty arrays for registered races and training plans that will be filled in later
     let registeredRaces = [];
@@ -75,7 +75,6 @@ const create = async (
         hashedPW,
         registeredRaces,
         trainingPlans,
-        darkmode: true
     };
     const userCollection = await users();
     const existUsername = await userCollection.findOne({ username: username });
@@ -110,24 +109,6 @@ const get = async (username) => {
     return user;
 };
 
-const updateDarkmode = async (username) => {
-    username = help.notStringOrEmpty(username, 'username)');
-    const userCollection = await users();
-    const user = await userCollection.findOne({ username: username });
-    if (!user) throw 'User not found' // checks if user is not found
-    const currentDarkmode = user.darkmode; // get curr val of darkmode
-    const newDarkmode = !currentDarkmode; // swap darkmode val
-
-    const updatedInfo = await userCollection.findOneAndUpdate(
-        { username: username },
-        { $set: { darkmode: newDarkmode } },
-        { returnDocument: 'after' }
-    );
-    if (!updatedInfo) {
-        throw 'could not update user successfully';
-    }
-    return updatedInfo;
-}
 
 const updateSystem = async (username) => {
     username = help.notStringOrEmpty(username, 'username)');
@@ -177,7 +158,7 @@ const updateEmail = async (username, newEmail) => {
     const existEmail = await userCollection.findOne({ email: email });
     if (existEmail) throw 'email already in use';
     // already set
-    if (newEmail.toLowerCase() === user.email.toLowerCase()) throw `Error: Email is already ${user.email}` 
+    if (newEmail.toLowerCase() === user.email.toLowerCase()) throw `Error: Email is already ${user.email}`
     const updatedInfo = await userCollection.findOneAndUpdate(
         { username: username },
         { $set: { email: newEmail } },
@@ -344,7 +325,7 @@ const check = async (username, password) => {
     return null;
 }
 
-export { create, getAll, get, updateDarkmode, updateEmail, updateState, updateGender, updateSocial, updateSystem, updatePassword, registerRace, addTrainingPlan, check };
+export { create, getAll, get, updateEmail, updateState, updateGender, updateSocial, updateSystem, updatePassword, registerRace, addTrainingPlan, check };
 
 // create("jasper", "tumbokon", "jaspert", "jasperjay0628@gmail.com", "NJ", "male", "06/28/2003", "twitter", "jsprjay", "metric", "YourMom2$")
 //     .then((result) => {
