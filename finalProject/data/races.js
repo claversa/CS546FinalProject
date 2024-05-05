@@ -279,6 +279,60 @@ export const updateUrl = async (id, userId, newUrl) => {
     return updatedInfo;
 };
 
+export const registerUser = async (username, raceId) => {
+    username = help.notStringOrEmpty(username, 'username');
+    if (!ObjectId.isValid(raceId)) throw 'invalid object ID'; // check for valid ID
+    raceId = help.notStringOrEmpty(raceId, 'raceId');
+    const raceCollection = await races();
+    const race = await raceCollection.findOne({ _id: new ObjectId(raceId) });
+    if (!Array.isArray(race.registeredUsers)) {
+        race.registeredUsers = [];
+    }
+    if (race.registeredUsers.includes(username)) {
+        throw 'You are already registered';
+    }
+    race.registeredUsers.push(username);
+    const updatedRace = {
+        registeredUsers: race.registeredUsers 
+    };
+    const updatedInfo = await raceCollection.findOneAndUpdate(
+        { _id: new ObjectId(raceId) },
+        { $set: updatedRace },
+        { returnDocument: 'after' }
+    );
+    if (!updatedInfo) {
+        throw 'could not update race successfully';
+    }
+    updatedInfo._id = updatedInfo._id.toString();
+    return updatedInfo;
+};
+
+export const unregisterUser = async (username, raceId) => {
+    username = help.notStringOrEmpty(username, 'username');
+    if (!ObjectId.isValid(raceId)) throw 'invalid object ID'; 
+    raceId = help.notStringOrEmpty(raceId, 'raceId');
+    const raceCollection = await races();
+    const race = await raceCollection.findOne({ _id: new ObjectId(raceId) });
+    if (!Array.isArray(race.registeredUsers)) {
+        race.registeredUsers = [];
+    }
+    
+    race.registeredUsers = race.registeredUsers.filter(name => name !== username);
+    const updatedRace = {
+        registeredUsers: race.registeredUsers
+    };
+    const updatedInfo = await raceCollection.findOneAndUpdate(
+        { _id: new ObjectId(raceId) },
+        { $set: updatedRace },
+        { returnDocument: 'after' }
+    );
+    if (!updatedInfo) {
+        throw 'could not update race successfully';
+    }
+    updatedInfo._id = updatedInfo._id.toString();
+    return updatedInfo;
+};
+
 // create("ur dadadadadad", "6621885fabed8ccf023bea58", "New York", "NY", "01/20/2024", "15:30", 100, ["rocky"], "www.apple.com")
 //     .then((result) => {
 //         // This function will execute when the promise is resolved

@@ -1,12 +1,12 @@
 
 <h2>{{{name}}}</h2>
-<h4>LOCATION: {{{location}}}</h4>
+<h4>STATE: {{{state}}}</h4>
+<h4>CITY: {{{city}}}</h4>
 <h4>DATE: {{{date}}}</h4>
 <h4>TIME: {{{time}}}</h4>
 <h4>DISTANCE: {{{distance}}}</h4>
 <h4>TERRAIN: {{{terrain}}}</h4>
 <h5>VISIT {{{URL}}} FOR REGISTRATION AND MORE INFO!</h5>
-<button type="submit">REGISTER HERE</button>
 
 {{!-- Review sections --}}
 <form action="/???" method="POST" class="reviewRace">
@@ -20,8 +20,22 @@
 
 {{!-- Registrants list --}}
 {{!-- Style with CSS to make it trail off (show more?) --}}
-<p>{{{registrants}}}</p>
 
+{{#if registered}}
+    <form action="/unregister/{{raceId}}" method="POST" class="unregister">
+        <button type="submit">Unregister</button>
+    </form>
+{{else}}
+    <form action="/register/{{raceId}}" method="POST" class="register">
+        <button type="submit">Register</button>
+    </form>
+{{/if}}
+
+<div class="horizontal-list">
+    {{#each registrants}}
+        <a href="/profile/{{this}}" class="profile-link"><p>{{this}}</p></a>
+    {{/each}}
+</div>
 
 {{!-- Comments section -- for users to interact, should use @ ? --}}
 <form action="/???" method="POST" class="raceComment">
