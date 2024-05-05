@@ -183,40 +183,45 @@ router.route('/countdown').get(async (req, res) => {
 
   if (races.length === 0) {
     return res.render("countdown", { title: "Race Day Countdown", user: req.session.user, error: "", hasRaces: false, otherCSS: "/public/countdown.css" });
-
   }
   else {
-    let race = undefined;
-    let nextRace = undefined; // this will be the upcoming race given to countdown
-    let farAway = undefined; // this will be how far until the upcoming race
-    let date = undefined; // this will be race date given to countdown
-    try {
-      race = await racesFuns.get(races[0]);
-      farAway = help.dateAway(race.raceDate);
-      date = race.raceDate;
-    }
-    catch (e) {
-      return res.render("error", { title: "Error", user: req.session.user, error: e, otherCSS: "/public/error.css" })
-    }
+    let farAway = Infinity;
+    let race, date, time;
+
+    // Iterate over the races
     for (let raceId of races) {
       try {
         race = await racesFuns.get(raceId);
-        let tempAway = help.dateAway(race.raceDate);
+        let tempDate = race.raceDate;
+        let tempTime = race.raceTime;
+
+        // Calculate time difference in days
+        let tempAway = help.dateAway(tempDate);
+
+        // Compare dates
         if (tempAway < farAway) {
-          farAway = tempAway; // amount of time, tracking purposes
-          nextRace = race; // idk if even need, but this is the race
-          date = race.raceDate; // give this date to countdown
+          farAway = tempAway;
+          date = tempDate;
+          time = tempTime;
+        } else if (tempAway === farAway) {
+          // If the races are on the same day, compare times
+          let currentRaceTime = new Date(`${date} ${time}`);
+          let tempRaceTime = new Date(`${tempDate} ${tempTime}`);
+
+          // Compare the times
+          if (tempRaceTime < currentRaceTime) {
+            date = tempDate;
+            time = tempTime;
+          }
         }
       }
       catch (e) {
         return res.render("error", { title: "Error", user: req.session.user, error: e, otherCSS: "/public/error.css" })
-
       }
     }
-    return res.render("countdown", { title: "Race Day Countdown", user: req.session.user, error: "", hasRaces: true, raceDate: date, otherCSS: "/public/countdown.css" });
+    let countdownDate = new Date(`${date} ${time}`)
+    return res.render("countdown", { title: "Race Day Countdown", user: req.session.user, error: "", hasRaces: true, raceDate: countdownDate, otherCSS: "/public/countdown.css" });
   }
-
-
 });
 
 //export router

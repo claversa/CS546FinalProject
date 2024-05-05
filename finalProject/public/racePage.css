@@ -1,16 +1,26 @@
+:root {
+    --input: #F39803;
+    --labels: #FCA311;
+    --bg: #2F4D8A;
+    --inputText: #2F4D8A;
+    --hover: #213358;
+    --hoverText: #FCA311;
+}
+
 h2,
 h4,
 h5 {
     text-align: center;
 }
 
+h4 {
+    padding-top: 30px;
+}
+
 .reviewRace {
     text-align: center;
 }
 
-p {
-    text-align: center;
-}
 
 .register {
     text-align: center;
@@ -22,7 +32,12 @@ p {
 
 button {
     display: block;
-    margin: 0 auto;
+    margin: 20px auto;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    width: fit-content;
+    background-color: var(--input);
+    color: var(--bg);
 }
 
 .horizontal-list {
@@ -37,4 +52,72 @@ button {
 .horizontal-list p {
     display: inline;
     margin: 5px;
+}
+
+textarea {
+    background-color: var(--input);
+    color: var(--bg);
+    width: 40%;
+    height: 150px;
+    padding: 12px 20px;
+    box-sizing: border-box;
+    border: 2px solid var(--hover);
+    /* border-radius: 4px; */
+    background-color: var(--input);
+    resize: both;
+
+}
+
+textarea:hover {
+    background-color: var(--hover);
+    color: var(--input);
+    border: 2px solid var(--input);
+
+}
+
+.rating {
+    -webkit-appearance: none;
+    /* Override default CSS styles */
+    appearance: none;
+    width: 30%;
+    /* Full-width */
+    height: 15px;
+    /* Specified height */
+    background: var(--input);
+    /* Grey background */
+    outline: none;
+    /* Remove outline */
+    opacity: 0.7;
+    /* Set transparency (for mouse-over effects on hover) */
+    -webkit-transition: .2s;
+    /* 0.2 seconds transition on hover */
+    transition: opacity .2s;
+    border-radius: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.rating:hover {
+    opacity: 1;
+    /* Fully shown on mouse-over */
+}
+
+.rating::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 30px;
+    background: var(--hover);
+    /* Green background */
+    cursor: grab;
+    /* Cursor on hover */
+}
+
+.rangeVal {
+    font-size: 30px;
+}
+
+.registrant {
+    font-size: 20px;
 }

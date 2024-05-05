@@ -24,42 +24,41 @@
         }
 
         // date counting down to
-        //var countDownDate = new Date({{{ raceDate }}}).getTime(); // give race date from routes
-        var countDownDate = new Date(`{{ raceDate }}`); // give race date from routes
+        let countDownDate = Date.parse(`{{{ raceDate }}}`);
+        countdownDate = new Date(countDownDate); // Parse the race date and convert it to milliseconds
 
         // Update the count down every 1 second
-        var x = setInterval(function () {
+        var intervalId = setInterval(function () {
+            // Today's date and time in milliseconds
+            let now = new Date().getTime();
 
-            // Today's date and time
-            //var now = new Date().getTime();
-            var now = new Date();
+            // Distance between now and the countdown date in milliseconds
+            let distance = countDownDate - now;
 
-            // Distance between now and the count down date
-            var distance = countDownDate - now;
+            //console.log(distance);
 
-            // calcs for days, hours, minutes, seconds
-            var days = Math.ceil(distance / (1000 * 60 * 60 * 24));
-            //var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            //var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            //var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            // Calculate days, hours, minutes, and seconds
+            let days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            let seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-            //document.getElementById("count").innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
-            let word = days > 1 ? " DAYS" : " DAY";
-            document.getElementById("count").innerHTML = days + word;
+            // Update the HTML element with the countdown
+            document.getElementById("count").innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
 
-
-
-            // If count down finished
+            // If countdown is finished
             if (distance < 0) {
-                clearInterval(x);
+                clearInterval(intervalId);
                 document.getElementById("count").innerHTML = "EXPIRED";
             }
         }, 1000);
+
+        // Add event listener for the confetti button
         let confettiBtn = document.querySelector(".confetti-btn");
-        confettiBtn.addEventListener("click", triggerConfetti)
+        confettiBtn.addEventListener("click", triggerConfetti);
     </script>
     {{else}}
     <p>You are not currently registered for any races.</p>
-    <a href="./home.handlebars" class = "register-btn">REGISTER NOW!</a>
+    <a href="./home.handlebars" class="register-btn">REGISTER NOW!</a>
     {{/if}}
 </div>

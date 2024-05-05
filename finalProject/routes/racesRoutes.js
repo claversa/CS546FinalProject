@@ -23,7 +23,7 @@ router.route('/edit/:raceId').post(async (req, res) => {
   try {
     const raceId = req.params.raceId;
     const raceData = await data.get(raceId);
-    res.render('editRace', { title: raceData.raceName, name: raceData.raceName, user: req.session.user, error: "", name: raceData.raceName, city: raceData.raceCity, state: raceData.raceState, date: raceData.raceDate, time: raceData.raceTime, distance: raceData.distance, terrain: raceData.terrain, URL: raceData.raceUrl, otherCSS: "/public/addRace.css", raceId });
+    res.render('editRace', { title: raceData.raceName, name: raceData.raceName, user: req.session.user, error: "", name: raceData.raceName, city: raceData.raceCity, state: raceData.raceState, date: raceData.raceDate, time: raceData.raceTime, distance: raceData.distance, terrain: raceData.terrain, URL: raceData.raceUrl, otherCSS: "/public/editRace.css", raceId });
   }
   catch (e) {
     res.status(404).render('error', { title: "Error", class: "not-found", error: e.toString(), user: req.session.user, otherCSS: "/public/error.css" });
@@ -166,7 +166,8 @@ router.route('/addrace')
       res.redirect(`/race/${newRace._id}`);
     }
     catch (e) {
-      res.status(404).render('error', { title: "Error", class: "not-found", error: e.toString(), otherCSS: "/public/error.css" });
+      res.status(404).render('addRace', { title: "Error", class: "not-found", error: e, user: req.session.user, otherCSS: "/public/addRace.css" });
+      // res.status(404).render('error', { title: "Error", class: "not-found", error: e.toString(), otherCSS: "/public/error.css" });
     }
   });
 

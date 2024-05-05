@@ -7,14 +7,6 @@
     --hoverText: #FCA311;
 }
 
-body {
-    margin: 0;
-    /* color: #FCA311; */
-    background-color: var(--bg);
-    scroll-behavior: smooth;
-    line-height: 30px;
-}
-
 
 input[type=text] {
     padding: 12px 20px;
@@ -28,18 +20,6 @@ input[type=text] {
     text-align: center;
 }
 
-/* .flex_container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-} */
-.flex_container {
-    padding-top: 20px;
-    padding-bottom: 20px;
-    margin-left: auto;
-    margin-right: auto;
-    text-align: center;
-}
 
 option,
 select {
@@ -61,12 +41,22 @@ option:hover {
 
 
 label,
-button,
 h4 {
     font-family: 'Courier New', Courier, monospace;
     font-size: 20px;
     padding: 12px 20px;
     margin: 8px 0;
+    background-color: var(--labels);
+    color: var(--inputText);
+    width: fit-content;
+    border-radius: 4px;
+}
+
+button {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 20px;
+    padding: 12px 20px;
+    /* margin: 8px 0; */
     background-color: var(--labels);
     color: var(--inputText);
     width: fit-content;
@@ -110,4 +100,19 @@ input[type="time"] {
     background-color: var(--input);
     color: var(--bg);
     padding: 10px;
+}
+
+.editRace {
+    padding-top: 20px;
+    padding-bottom: 50px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+.done {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    padding-bottom: 50px;
 }
