@@ -1,4 +1,3 @@
-
 <h2>{{{name}}}</h2>
 <h4>STATE: {{{state}}}</h4>
 <h4>CITY: {{{city}}}</h4>
@@ -9,34 +8,36 @@
 <h5>VISIT {{{URL}}} FOR REGISTRATION AND MORE INFO!</h5>
 
 {{#if owner}}
-    <form action="/race/edit/{{raceId}}" method="POST" class="editRace">
+<form action="/race/edit/{{raceId}}" method="POST" class="editRace">
     <button type="submit">EDIT</button>
-    </form>
-    <form action="/race/delete/{{raceId}}" method="POST" class="editRace">
+</form>
+<form action="/race/delete/{{raceId}}" method="POST" class="editRace">
     <button type="submit">DELETE</button>
-    </form>
+</form> <br><br>
 {{/if}}
 
 {{!-- Review sections --}}
 <form action="/review/{{raceId}}" method="POST" class="reviewRace">
-    <label for="review">REVIEW THIS RACE:</label><br>
-    <input type="text" id="review" name="review"><br>
-    <label for="rating">RATING:</label><br>
-    <input type="range" id="rating" class="rating" max="5" min="1"><br>
+    <label for="review" class="review-label">REVIEW THIS RACE:</label><br>
+    <textarea id="review" name="review" wrap="soft" placeholder="Type here..."></textarea><br>
+    <label for="rating" class="review-label">RATING:</label><br>
+    <input type="range" id="rating" class="rating" max="5" min="1" value="3"
+        oninput="rangeValue.innerText = this.value"><br>
+    <p id="rangeValue" class="rangeVal">3</p>
     <button type="submit">POST</button>
 </form>
 
 <h4>REVIEWS:</h4>
 {{#each reviews}}
-    <p>
-        <a href="/profile/{{this.username}}" class="profile-link">{{this.username}}</a>: {{this.comment}}
-        {{#eq this.username ../user.username}}
-            <form action="/removeReview/{{../raceId}}" method="POST" class="delete-review-form">
-                <input type="hidden" id="review" name="review" value="{{this.comment}}">
-                <button type="submit">Delete</button>
-            </form>
-        {{/eq}}
-    </p>
+<p>
+    <a href="/profile/{{this.username}}" class="profile-link">{{this.username}}</a>: {{this.comment}}
+    {{#eq this.username ../user.username}}
+<form action="/removeReview/{{../raceId}}" method="POST" class="delete-review-form">
+    <input type="hidden" id="review" name="review" value="{{this.comment}}">
+    <button type="submit">Delete</button>
+</form>
+{{/eq}}
+</p>
 {{/each}}
 
 
@@ -44,38 +45,40 @@
 {{!-- Style with CSS to make it trail off (show more?) --}}
 
 {{#if registered}}
-    <form action="/unregister/{{raceId}}" method="POST" class="unregister">
-        <button type="submit">Unregister</button>
-    </form>
+<form action="/unregister/{{raceId}}" method="POST" class="unregister">
+    <button type="submit">Unregister</button>
+</form>
 {{else}}
-    <form action="/register/{{raceId}}" method="POST" class="register">
-        <button type="submit">Register</button>
-    </form>
+<form action="/register/{{raceId}}" method="POST" class="register">
+    <button type="submit">Register</button>
+</form>
 {{/if}}
 
 <h4>REGISTRANTS:</h4>
 <div class="horizontal-list">
     {{#each registrants}}
-        <a href="/profile/{{this}}" class="profile-link"><p>{{this}}</p></a>
+    <a href="/profile/{{this}}" class="profile-link">
+        <p class="registrant">{{this}}</p>
+    </a>
     {{/each}}
 </div>
 
 {{!-- Comments section -- for users to interact, should use @ ? --}}
 <form action="/comment/{{raceId}}" method="POST" class="raceComment">
     <label for="comment">LEAVE A COMMENT:</label><br>
-    <input type="text" id="comment" name="comment"><br>
+    <textarea id="comment" name="comment" wrap="soft" placeholder="Type here..."></textarea><br>
     <button type="submit">POST</button>
 </form>
 
 <h4>COMMENTS:</h4>
 {{#each comments}}
-    <p>
-        <a href="/profile/{{this.username}}" class="profile-link">{{this.username}}</a>: {{this.comment}}
-        {{#eq this.username ../user.username}}
-            <form action="/uncomment/{{../raceId}}" method="POST" class="delete-comment-form">
-                <input type="hidden" id="comment" name="comment" value="{{this.comment}}">
-                <button type="submit">Delete</button>
-            </form>
-        {{/eq}}
-    </p>
+<p>
+    <a href="/profile/{{this.username}}" class="profile-link">{{this.username}}</a>: {{this.comment}}
+    {{#eq this.username ../user.username}}
+<form action="/uncomment/{{../raceId}}" method="POST" class="delete-comment-form">
+    <input type="hidden" id="comment" name="comment" value="{{this.comment}}">
+    <button type="submit">Delete</button>
+</form>
+{{/eq}}
+</p>
 {{/each}}

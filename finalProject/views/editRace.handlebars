@@ -1,15 +1,10 @@
-<h2>{{{name}}}</h2>
-
-    <form action="/race/editName/{{raceId}}" method="POST" class="editRace">
-    <label for="raceName" class="raceName">RACE NAME</label><br><br>
+<form action="/race/editName/{{raceId}}" method="POST" class="editRace">
+    <label for="raceName" class="raceName">RACE NAME: {{{name}}}</label><br><br>
     <input type="text" name="raceName" id="raceName" class="raceName"><br><br>
     <button type="submit">EDIT</button>
-    </form>
-
-<h4>STATE: {{{state}}}</h4>
-
-    <form action="/race/editState/{{raceId}}" method="POST" class="editRace">
-    <label for="raceState">RACE STATE</label><br><br>
+</form>
+<form action="/race/editState/{{raceId}}" method="POST" class="editRace">
+    <label for="raceState">RACE STATE: {{{state}}}</label><br><br>
     <select name="raceState" id="raceState" class="raceState">
         <option value="placeholder" selected>CLICK TO SELECT</option>
         <option value="AL">AL</option>
@@ -65,34 +60,30 @@
         <option value="WY">WY</option>
     </select><br><br>
     <button type="submit">EDIT</button>
-    </form>
+</form>
 
-<h4>CITY: {{{city}}}</h4>
 
-    <form action="/race/editCity/{{raceId}}" method="POST" class="editRace">
-    <label for="raceCity" class="raceCity">RACE CITY</label><br><br>
+<form action="/race/editCity/{{raceId}}" method="POST" class="editRace">
+    <label for="raceCity" class="raceCity">RACE CITY: {{{city}}}</label><br><br>
     <input type="text" name="raceCity" id="raceCity" class="raceCity"><br><br>
     <button type="submit">EDIT</button>
-    </form>
+</form>
 
-<h4>DATE: {{{date}}}</h4>
-    <form action="/race/editDate/{{raceId}}" method="POST" class="editRace">
-    <label for="raceDate">RACE DATE</label><br><br>
+<form action="/race/editDate/{{raceId}}" method="POST" class="editRace">
+    <label for="raceDate">RACE DATE: {{{date}}}</label><br><br>
     <input type="date" id="raceDate" name="raceDate" class="raceDate"><br><br>
     <button type="submit">EDIT</button>
-    </form>
-<h4>TIME: {{{time}}}</h4>
+</form>
 
-    <form action="/race/editTime/{{raceId}}" method="POST" class="editRace">
-    <label for="raceTime">RACE TIME</label><br><br>
+<form action="/race/editTime/{{raceId}}" method="POST" class="editRace">
+    <label for="raceTime">RACE TIME: {{{time}}}</label><br><br>
     <input type="text" name="raceTime" id="raceTime" class="raceTime"><br><br>
     <button type="submit">EDIT</button>
-    </form>
+</form>
 
-<h4>DISTANCE: {{{distance}}}</h4>
 
-    <form action="/race/editDistance/{{raceId}}" method="POST" class="editRace">
-    <label for="distance">DISTANCE</label><br><br>
+<form action="/race/editDistance/{{raceId}}" method="POST" class="editRace">
+    <label for="distance">DISTANCE: {{{distance}}}</label><br><br>
     <select name="distance" id="distance" class="distance">
         <option value="placeholder" selected>CLICK TO SELECT</option>
         <option value="5K">5K</option>
@@ -100,12 +91,10 @@
         <option value="Marathon">Marathon</option>
     </select><br><br>
     <button type="submit">EDIT</button>
-    </form>
+</form>
 
-<h4>TERRAIN: {{{terrain}}}</h4>
-
-    <form action="/race/editTerrain/{{raceId}}" method="POST" class="editRace">
-    <label for="terrain">TERRAIN</label><br><br>
+<form action="/race/editTerrain/{{raceId}}" method="POST" class="editRace">
+    <label for="terrain">TERRAIN: {{{terrain}}}</label><br><br>
     <label class="checkboxes"><input type="checkbox" name="terrain" value="Street" id="street">STREET</label><br>
     <label class="checkboxes"><input type="checkbox" name="terrain" value="Grass" id="grass">GRASS</label><br>
     <label class="checkboxes"><input type="checkbox" name="terrain" value="Beach" id="beach">MUDDY</label><br>
@@ -113,16 +102,14 @@
     <label class="checkboxes"><input type="checkbox" name="terrain" value="Inclined" id="inclined">INCLINED</label><br>
     <label class="checkboxes"><input type="checkbox" name="terrain" value="Muddy" id="muddy">MUDDY</label> <br><br>
     <button type="submit">EDIT</button>
-    </form>
+</form>
 
-<h5>VISIT {{{URL}}} FOR REGISTRATION AND MORE INFO!</h5>
-
-    <form action="/race/editUrl/{{raceId}}" method="POST" class="editRace">
-    <label for="raceUrl">RACE URL</label><br><br>
+<form action="/race/editUrl/{{raceId}}" method="POST" class="editRace">
+    <label for="raceUrl">RACE URL: {{{URL}}}</label><br><br>
     <input type="text" name="raceUrl" id="raceUrl" class="raceUrl"><br><br>
     <button type="submit">EDIT</button>
-    </form>
+</form>
 
-    <form action="/race/{{raceId}}" method="POST" class="done">
+<form action="/race/{{raceId}}" method="POST" class="done">
     <button type="submit">DONE</button>
-    </form>
+</form>
