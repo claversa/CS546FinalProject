@@ -39,8 +39,19 @@
 </div>
 
 {{!-- Comments section -- for users to interact, should use @ ? --}}
-<form action="/???" method="POST" class="raceComment">
+<form action="/comment/{{raceId}}" method="POST" class="raceComment">
     <label for="comment">LEAVE A COMMENT:</label><br>
     <input type="text" id="comment" name="comment"><br>
     <button type="submit">POST</button>
 </form>
+
+<h4>COMMENTS:</h4>
+{{#each comments}}
+    <p>
+        <a href="/profile/{{this.username}}" class="profile-link">{{this.username}}</a>: {{this.comment}}
+        {{#if (eq this.username currentUser.username)}}
+            <a href="/uncomment/{{raceId}}">Delete</a>
+        {{/if}}
+    </p>
+{{/each}}
+

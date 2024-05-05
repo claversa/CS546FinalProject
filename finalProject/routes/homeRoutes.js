@@ -14,10 +14,40 @@ router.route('/').get(async (req, res) => {
   res.render('home', { title: "Homepage", user: req.session.user, error: "", loggedIn: loggedIn, otherCSS: "/public/home.css" }); // NO ERROR
 });
 
+router.route('/comment/:raceId').post(async (req, res) => {
+  try {
+    const raceId = req.params.raceId;
+    const comment = req.body.comment;
+    await racesFuns.addComment(req.session.user.username, raceId, comment)
+    res.redirect(`/race/${raceId}`)
+  } catch (error) {
+    res.status(403).render('error', { title: "Error", error, user: req.session.user, otherCSS: "/public/error.css" });
+  }
+});
+
+router.route('/uncomment/:raceId').post(async (req, res) => {
+  try {
+    const raceId = req.params.raceId;
+    const comment = req.body.comment;
+    await racesFuns.addComment(req.session.user.username, raceId, comment)
+    res.redirect(`/race/${raceId}`)
+  } catch (error) {
+    res.status(403).render('error', { title: "Error", error, user: req.session.user, otherCSS: "/public/error.css" });
+  }
+});
+
+router.route('/review/:raceId').post(async (req, res) => {
+  try {
+    res.redirect(`/race/${raceId}`)
+  } catch (error) {
+    res.status(403).render('error', { title: "Error", error, user: req.session.user, otherCSS: "/public/error.css" });
+  }
+});
+
 router.route('/register/:raceId').post(async (req, res) => {
   try {
     const raceId = req.params.raceId;
-    await races.registerUser(req.session.user.username, raceId)
+    await racesFuns.registerUser(req.session.user.username, raceId)
     await data.registerRace(req.session.user.username, raceId)
     res.redirect(`/race/${raceId}`)
   } catch (error) {
@@ -28,7 +58,7 @@ router.route('/register/:raceId').post(async (req, res) => {
 router.route('/unregister/:raceId').post(async (req, res) => {
   try {
     const raceId = req.params.raceId;
-    await races.unregisterUser(req.session.user.username, raceId)
+    await racesFuns.unregisterUser(req.session.user.username, raceId)
     await data.unregisterRace(req.session.user.username, raceId)
     res.redirect(`/race/${raceId}`)
   } catch (error) {

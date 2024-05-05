@@ -56,7 +56,9 @@ export const create = async (
         distance, 
         terrain, 
         raceUrl,
-        registeredUsers: []
+        registeredUsers: [],
+        comments: [],
+        reviews: []
     };
     const raceCollection = await races();
     const insertInfo = await raceCollection.insertOne(newRace);
@@ -345,6 +347,70 @@ export const getRaceNamesByIds = async (raceIds) => {
             }
         }
         return raceNames;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const addComment = async (username, raceId, comment) => {
+    const raceCollection = await races();
+    try {
+        comment = help.notStringOrEmpty(comment, 'comment');
+        if (comment.length > 200) {
+            throw ('Comment must be less than 200 characters long');
+        }
+        const race = await raceCollection.findOne({ _id: new ObjectId(raceId) });
+        if (!Array.isArray(race.comments)) {
+            race.comments = [];
+        }
+        const newComment = { username, comment };
+        if (race) {
+            race.comments.push(newComment)
+        }       
+        
+        const updatedRace = {
+            comments: race.comments
+        };
+
+        const updatedInfo = await raceCollection.findOneAndUpdate(
+            { _id: new ObjectId(raceId) },
+            { $set: updatedRace },
+            { returnDocument: 'after' }
+        );
+        if (!updatedInfo) {
+            throw 'could not update race successfully';
+        }
+        updatedInfo._id = updatedInfo._id.toString();
+        return updatedInfo;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const removeComment = async (username, raceId, comment) => {
+    const raceCollection = await races();
+    try {
+        comment = help.notStringOrEmpty(comment, 'comment');
+        const race = await raceCollection.findOne({ _id: new ObjectId(raceId) });
+    
+        const indexToRemove = race.comments.findIndex(item => item.username === username && item.comment === comment);
+        if (indexToRemove !== -1) {
+        race.comments.splice(indexToRemove, 1);
+        }
+        const updatedRace = {
+            comments: race.comments
+        };
+
+        const updatedInfo = await raceCollection.findOneAndUpdate(
+            { _id: new ObjectId(raceId) },
+            { $set: updatedRace },
+            { returnDocument: 'after' }
+        );
+        if (!updatedInfo) {
+            throw 'could not update race successfully';
+        }
+        updatedInfo._id = updatedInfo._id.toString();
+        return updatedInfo;
     } catch (error) {
         throw error;
     }
