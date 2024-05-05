@@ -47,7 +47,8 @@ router.route('/addrace')
       res.redirect(`/race/${newRace._id}`);
     }
     catch (e) {
-      res.status(404).render('error', { title: "Error", class: "not-found", error: e.toString(), otherCSS: "/public/error.css" });
+      res.status(404).render('addRace', { title: "Error", class: "not-found", error: e, user: req.session.user, otherCSS: "/public/addRace.css" });
+      // res.status(404).render('error', { title: "Error", class: "not-found", error: e.toString(), otherCSS: "/public/error.css" });
     }
   });
 

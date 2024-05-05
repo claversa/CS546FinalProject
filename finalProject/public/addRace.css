@@ -51,6 +51,7 @@ select {
     color: var(--inputText);
     font-size: 16px;
     border-radius: 4px;
+    text-align: center;
 }
 
 
@@ -104,7 +105,8 @@ input[type="checkbox"]:checked {
     color: var(--input);
 }
 
-.raceDate {
+.raceDate,
+input[type="time"] {
     background-color: var(--input);
     color: var(--bg);
     padding: 10px;
