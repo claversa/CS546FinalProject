@@ -13,4 +13,17 @@
         {{/each}}
     </ul>
     <button>EDIT</button>
+
+    <h4>REVIEWS:</h4>
+    {{#each reviews}}
+        <p>
+            <a href="/profile/{{this.username}}" class="profile-link">{{this.username}}</a>: {{this.comment}}
+            {{#eq this.username ../user.username}}
+                <form action="/removeReview/{{this.raceId}}" method="POST" class="delete-review-form">
+                    <input type="hidden" id="review" name="review" value="{{this.comment}}">
+                    <button type="submit">Delete</button>
+                </form>
+            {{/eq}}
+        </p>
+    {{/each}}
 </div>

@@ -416,6 +416,71 @@ export const removeComment = async (username, raceId, comment) => {
     }
 }
 
+export const addReview = async (username, raceId, comment) => {
+    const raceCollection = await races();
+    try {
+        comment = help.notStringOrEmpty(comment, 'comment');
+        if (comment.length > 200) {
+            throw ('Review must be less than 200 characters long');
+        }
+        const race = await raceCollection.findOne({ _id: new ObjectId(raceId) });
+        if (!Array.isArray(race.reviews)) {
+            race.reviews = [];
+        }
+        const newComment = { username, comment };
+        if (race) {
+            race.reviews.push(newComment)
+        }       
+        
+        const updatedRace = {
+            reviews: race.reviews
+        };
+
+        const updatedInfo = await raceCollection.findOneAndUpdate(
+            { _id: new ObjectId(raceId) },
+            { $set: updatedRace },
+            { returnDocument: 'after' }
+        );
+        if (!updatedInfo) {
+            throw 'could not update race successfully';
+        }
+        updatedInfo._id = updatedInfo._id.toString();
+        return updatedInfo;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const removeReview = async (username, raceId, comment) => {
+    const raceCollection = await races();
+    try {
+        comment = help.notStringOrEmpty(comment, 'comment');
+        const race = await raceCollection.findOne({ _id: new ObjectId(raceId) });
+    
+        const indexToRemove = race.reviews.findIndex(item => item.username === username && item.comment === comment);
+        if (indexToRemove !== -1) {
+        race.reviews.splice(indexToRemove, 1);
+        }
+        const updatedRace = {
+            reviews: race.reviews
+        };
+
+        const updatedInfo = await raceCollection.findOneAndUpdate(
+            { _id: new ObjectId(raceId) },
+            { $set: updatedRace },
+            { returnDocument: 'after' }
+        );
+        if (!updatedInfo) {
+            throw 'could not update race successfully';
+        }
+        updatedInfo._id = updatedInfo._id.toString();
+        return updatedInfo;
+    } catch (error) {
+        throw error;
+    }
+}
+
+
 // create("ur dadadadadad", "6621885fabed8ccf023bea58", "New York", "NY", "01/20/2024", "15:30", 100, ["rocky"], "www.apple.com")
 //     .then((result) => {
 //         // This function will execute when the promise is resolved

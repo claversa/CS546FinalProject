@@ -9,13 +9,26 @@
 <h5>VISIT {{{URL}}} FOR REGISTRATION AND MORE INFO!</h5>
 
 {{!-- Review sections --}}
-<form action="/???" method="POST" class="reviewRace">
+<form action="/review/{{raceId}}" method="POST" class="reviewRace">
     <label for="review">REVIEW THIS RACE:</label><br>
     <input type="text" id="review" name="review"><br>
     <label for="rating">RATING:</label><br>
     <input type="range" id="rating" class="rating" max="5" min="1"><br>
     <button type="submit">POST</button>
 </form>
+
+<h4>REVIEWS:</h4>
+{{#each reviews}}
+    <p>
+        <a href="/profile/{{this.username}}" class="profile-link">{{this.username}}</a>: {{this.comment}}
+        {{#eq this.username ../user.username}}
+            <form action="/removeReview/{{../raceId}}" method="POST" class="delete-review-form">
+                <input type="hidden" id="review" name="review" value="{{this.comment}}">
+                <button type="submit">Delete</button>
+            </form>
+        {{/eq}}
+    </p>
+{{/each}}
 
 
 {{!-- Registrants list --}}
@@ -49,9 +62,11 @@
 {{#each comments}}
     <p>
         <a href="/profile/{{this.username}}" class="profile-link">{{this.username}}</a>: {{this.comment}}
-        {{#if (eq this.username currentUser.username)}}
-            <a href="/uncomment/{{raceId}}">Delete</a>
-        {{/if}}
+        {{#eq this.username ../user.username}}
+            <form action="/uncomment/{{../raceId}}" method="POST" class="delete-comment-form">
+                <input type="hidden" id="comment" name="comment" value="{{this.comment}}">
+                <button type="submit">Delete</button>
+            </form>
+        {{/eq}}
     </p>
 {{/each}}
-
