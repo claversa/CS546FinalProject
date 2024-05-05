@@ -118,6 +118,10 @@ textarea:hover {
     font-size: 30px;
 }
 
-.registrant {
+.registrant,
+.appears {
     font-size: 20px;
+    margin-right: auto;
+    margin-left: auto;
+
 }
