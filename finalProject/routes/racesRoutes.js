@@ -8,6 +8,28 @@ router.route('/').get(async (req, res) => {
   res.render("./races", { title: "Races", user: req.session.user, otherCSS: "/public/registeredRaces.css" });
 });
 
+router.route('/delete/:raceId').post(async (req, res) => {
+  try {
+    const raceId = req.params.raceId;
+    await data.deleteRace(raceId);
+    res.redirect("./home");
+  }
+  catch (e) {
+    res.status(404).render('error', { title: "Error", class: "not-found", error: e.toString(), user: req.session.user, otherCSS: "/public/error.css" });
+  }
+});
+
+router.route('/edit/:raceId').post(async (req, res) => {
+  try {
+    const raceId = req.params.raceId;
+    const raceData = await data.get(raceId);
+    res.render('editRace', { title: raceData.raceName, name: raceData.raceName, user: req.session.user, error: "", name: raceData.raceName, city: raceData.raceCity, state: raceData.raceState, date: raceData.raceDate, time: raceData.raceTime, distance: raceData.distance, terrain: raceData.terrain, URL: raceData.raceUrl, otherCSS: "/public/addRace.css", raceId });
+  }
+  catch (e) {
+    res.status(404).render('error', { title: "Error", class: "not-found", error: e.toString(), user: req.session.user, otherCSS: "/public/error.css" });
+  }
+});
+
 router.route('/addrace')
   .get(async (req, res) => {
     res.render("./addRace", { title: "Add race", user: req.session.user, otherCSS: "/public/addRace.css" });
@@ -86,11 +108,11 @@ router.route('/:id').get(async (req, res) => {
     let raceData = await data.get(raceId);
 
     if (raceData) {
+      let owner = false;
+      if (raceData.username === req.session.user.username) owner = true;
       let registered = false;
-      if (raceData.registeredUsers.includes(req.session.user.username)) {
-        registered = true;
-      }
-      res.render('racePage', { registered, registrants: raceData.registeredUsers, title: raceData.raceName, name: raceData.raceName, user: req.session.user, error: "", name: raceData.raceName, city: raceData.raceCity, state: raceData.raceState, date: raceData.raceDate, time: raceData.raceTime, distance: raceData.distance, terrain: raceData.terrain, URL: raceData.raceUrl, otherCSS: "/public/racePage.css", raceId });
+      if (raceData.registeredUsers.includes(req.session.user.username)) registered = true;
+      res.render('racePage', { owner, reviews: raceData.reviews, comments: raceData.comments, registered, registrants: raceData.registeredUsers, title: raceData.raceName, name: raceData.raceName, user: req.session.user, error: "", name: raceData.raceName, city: raceData.raceCity, state: raceData.raceState, date: raceData.raceDate, time: raceData.raceTime, distance: raceData.distance, terrain: raceData.terrain, URL: raceData.raceUrl, otherCSS: "/public/racePage.css", raceId });
     }
   }
   catch (e) {

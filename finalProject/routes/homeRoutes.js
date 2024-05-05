@@ -14,6 +14,52 @@ router.route('/').get(async (req, res) => {
   res.render('home', { title: "Homepage", user: req.session.user, error: "", loggedIn: loggedIn, otherCSS: "/public/home.css" }); // NO ERROR
 });
 
+router.route('/comment/:raceId').post(async (req, res) => {
+  try {
+    const raceId = req.params.raceId;
+    const comment = req.body.comment;
+    await racesFuns.addComment(req.session.user.username, raceId, comment)
+    res.redirect(`/race/${raceId}`)
+  } catch (error) {
+    res.status(403).render('error', { title: "Error", error, user: req.session.user, otherCSS: "/public/error.css" });
+  }
+});
+
+router.route('/uncomment/:raceId').post(async (req, res) => {
+  try {
+    const raceId = req.params.raceId;
+    const comment = req.body.comment;
+    await racesFuns.removeComment(req.session.user.username, raceId, comment)
+    res.redirect(`/race/${raceId}`)
+  } catch (error) {
+    res.status(403).render('error', { title: "Error", error, user: req.session.user, otherCSS: "/public/error.css" });
+  }
+});
+
+router.route('/review/:raceId').post(async (req, res) => {
+  try {
+    const raceId = req.params.raceId;
+    const comment = req.body.review;
+    await racesFuns.addReview(req.session.user.username, raceId, comment)
+    await data.addReview(req.session.user.username, raceId, comment)
+    res.redirect(`/race/${raceId}`)
+  } catch (error) {
+    res.status(403).render('error', { title: "Error", error, user: req.session.user, otherCSS: "/public/error.css" });
+  }
+});
+
+router.route('/removeReview/:raceId').post(async (req, res) => {
+  try {
+    const raceId = req.params.raceId;
+    const comment = req.body.review;
+    await racesFuns.removeReview(req.session.user.username, raceId, comment)
+    await data.removeReview(req.session.user.username, raceId, comment)
+    res.redirect(`/race/${raceId}`)
+  } catch (error) {
+    res.status(403).render('error', { title: "Error", error, user: req.session.user, otherCSS: "/public/error.css" });
+  }
+});
+
 router.route('/register/:raceId').post(async (req, res) => {
   try {
     const raceId = req.params.raceId;
@@ -120,23 +166,7 @@ router.route('/login')
   });
 
 router.route('/training').get(async (req, res) => {
-  res.render("./training", { title: "Training Program", otherCSS: "/public/training.css", plans: [[0, 1, 1, 1, 0, 1, 2], [0, 1, 2, 1, 0, 1, 2], [0, 1, 2, 1, 0, 1, 2.5], [0, 2, 2, 1, 0, 2, 3.1]] });
-  // let username = req.params.id;
-  // try {
-  //   username = help.notStringOrEmpty(username, 'username'); // checks id, trims
-  // }
-  // catch (e) {
-  //   res.status(404).render('error', { title: "Error", class: "error", error: "Not valid username", otherCSS: "/public/error.css" });
-  // }
-  // try {
-  //   let user = await data.get(username)
-  //   if (user) {
-  //     res.render("./training", { title: "Training Program", plans: [[0, 1, 1, 1, 0, 1, 2], [0, 1, 2, 1, 0, 1, 2], [0, 1, 2, 1, 0, 1, 2.5], [0, 2, 2, 1, 0, 2, 3.1]], otherCSS: "/public/training.css" });
-  //   }
-  // }
-  // catch (e) {
-  //   res.status(404).render('error', { title: "Error", class: "not-found", error: e.toString(), otherCSS: "/public/error.css" });
-  // }
+  res.render("training", { title: "Training Program", user: req.session.user, error: "", otherCSS: "/public/login.css" });
 });
 
 router.route('/countdown').get(async (req, res) => {
