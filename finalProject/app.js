@@ -1,9 +1,12 @@
 //Here is where you'll set up your server as shown in lecture code
 import express from 'express';
-const app = express();
 import configRoutes from './routes/index.js';
 import exphbs from 'express-handlebars';
 import session from 'express-session';
+import Handlebars from './handlebarsHelpers.js';
+
+
+const app = express();
 
 const rewriteUnsupportedBrowserMethods = (req, res, next) => {
     // If the user posts to the server with a property called _method, rewrite the request's method

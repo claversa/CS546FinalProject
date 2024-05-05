@@ -1,5 +1,34 @@
-
-
 <body>
-    <p>This is the training page</p>
+    <h1>Training Dashboard</h1>
+    <table class="center">
+      <thead>
+        <tr>
+          <th>Week</th>
+          <th>Monday</th>
+          <th>Tuesday</th>
+          <th>Wednesday</th>
+          <th>Thursday</th>
+          <th>Friday</th>
+          <th>Saturday</th>
+          <th>Sunday</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each plans}}
+          <tr>
+            <td>{{add @index 1}}</td>
+            {{#each this}}
+              <td>
+                {{#if this}}
+                  {{this}} miles<br>
+                  <input type="text" name="time" placeholder="Time">
+                {{else}}
+                  <p>Rest Day!</p>
+                {{/if}}
+              </td>
+            {{/each}}
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
 </body>

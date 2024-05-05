@@ -1,20 +1,26 @@
-import { plans } from '../config/mongoCollections.js'
+import { users } from '../config/mongoCollections.js'
 import { ObjectId } from 'mongodb';
 import * as help from '../helpers/helpers.js';
 
 const create = async (
+    username,
     raceName,
     raceDate,
     distance,
     maxMileageYet, // user will click "register", all above params will populate automatically but they will answer a popup about latest mileage
 ) => {
     // validation
+    username = help.notStringOrEmpty(username, 'username');
     raceName = help.notStringOrEmpty(raceName, "race name");
     raceDate = help.notStringOrEmpty(raceDate, "race date");
     distance = help.notStringOrEmpty(distance, "distance");
     maxMileageYet = help.notStringOrEmpty(maxMileageYet, "max mileage yet");
 
-    help.validDate(raceDate);
+    try {
+        help.validDate(raceDate);
+    } catch (e) {
+        throw e;
+    };
     
     // 4 weeks
     let base5k = [[0, 1, 1, 1, 0, 1, 2], [0, 1, 2, 1, 0, 1, 2], [0, 1, 2, 1, 0, 1, 2.5], [0, 2, 2, 1, 0, 2, 3.1]];
@@ -75,15 +81,23 @@ const create = async (
         }
     }
 
-    const planCollection = await plans();
-    const insertInfo = await planCollection.insertOne(plan);
-    if (!insertInfo.acknowledged || !insertInfo.insertedId)
-        throw 'Could not add plan';
+    const userCollection = await users();
+    const user = await userCollection.findOne({ username: username });
+    if (!user) throw 'User not found' // checks if user is not found
 
-    // const raceId = insertInfo.insertedId.toString();
+    const updatedInfo = await userCollection.findOneAndUpdate(
+        { username: username },
+        { $set: { trainingPlans: plan } },
+        { returnDocument: 'after' }
+    );
+    if (!updatedInfo) {
+        throw 'could not update user successfully';
+    }
+    return updatedInfo;
+};
 
-    // const prod = await get(raceId);
-    // return prod;
+const update = async () => {
+
 };
 
 const getAll = async () => { // when comparing what to display, get all of a single user's training plans
