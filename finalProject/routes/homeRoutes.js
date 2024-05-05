@@ -1,7 +1,7 @@
 import { Router } from 'express';
 const router = Router();
 // Data file for the data functions
-import * as races from '../data/races.js'; // need stuff from race db
+import * as racesFuns from '../data/races.js'; // need stuff from race db
 import * as help from "../helpers/helpers.js"
 import * as data from '../data/users.js';
 
@@ -132,8 +132,45 @@ router.route('/countdown').get(async (req, res) => {
     res.render("error", { title: "Error", user: req.session.user, error: e, otherCSS: "/public/error.css" })
   }
   // get races
+  let races = user.registeredRaces;
 
-  res.render("countdown", { title: "Race Day Countdown", user: req.session.user, error: "", otherCSS: "/public/login.css" });
+  if (races.length == 0) {
+    res.render("countdown", { title: "Race Day Countdown", user: req.session.user, error: "", hasRaces: false, otherCSS: "/public/countdown.css" });
+
+  }
+  else {
+    let race = undefined;
+    let nextRace = undefined; // this will be the upcoming race given to countdown
+    let farAway = undefined; // this will be how far until the upcoming race
+    let raceDate = undefined; // this will be race date given to countdown
+    try {
+      race = await racesFuns.get(race);
+      farAway = help.dateAway(race.raceDate);
+      raceDate = race.raceDate;
+    }
+    catch {
+      res.render("error", { title: "Error", user: req.session.user, error: e, otherCSS: "/public/error.css" })
+    }
+    for (let raceId of races) {
+      try {
+        race = await racesFuns.get(raceId);
+        let tempAway = help.dateAway(race.raceDate);
+        if (tempAway < farAway) {
+          farAway = tempAway; // amount of time, tracking purposes
+          nextRace = race; // idk if even need, but this is the race
+          raceDate = race.raceDate; // give this date to countdown
+        }
+      }
+      catch (e) {
+        res.render("error", { title: "Error", user: req.session.user, error: e, otherCSS: "/public/error.css" })
+
+      }
+
+    }
+    res.render("countdown", { title: "Race Day Countdown", user: req.session.user, error: "", hasRaces: true, raceDate: raceDate, otherCSS: "/public/countdown.css" });
+  }
+
+
 });
 
 //export router

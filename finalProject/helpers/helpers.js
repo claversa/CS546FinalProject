@@ -22,6 +22,13 @@ export let isDateAfterToday = (date) => {
     return inputDate > today;
 }
 
+export let dateAway = (date) => {
+    const today = new Date();
+    today.setUTCHours(0, 0, 0, 0);
+    const inputDate = new Date(date);
+    inputDate.setUTCHours(0, 0, 0, 0);
+    return inputDate - today;
+}
 
 export let validURL = (val) => {
     // regex for allowed url patterns
