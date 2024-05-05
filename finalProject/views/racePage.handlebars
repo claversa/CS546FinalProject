@@ -8,6 +8,15 @@
 <h4>TERRAIN: {{{terrain}}}</h4>
 <h5>VISIT {{{URL}}} FOR REGISTRATION AND MORE INFO!</h5>
 
+{{#if owner}}
+    <form action="/race/edit/{{raceId}}" method="POST" class="editRace">
+    <button type="submit">EDIT</button>
+    </form>
+    <form action="/race/delete/{{raceId}}" method="POST" class="editRace">
+    <button type="submit">DELETE</button>
+    </form>
+{{/if}}
+
 {{!-- Review sections --}}
 <form action="/review/{{raceId}}" method="POST" class="reviewRace">
     <label for="review">REVIEW THIS RACE:</label><br>

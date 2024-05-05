@@ -480,6 +480,21 @@ export const removeReview = async (username, raceId, comment) => {
     }
 }
 
+export const deleteRace = async (raceId) => {
+    const raceCollection = await races();
+    try {
+        const deletedRace = await raceCollection.deleteOne({ _id: new ObjectId(raceId) });
+
+        if (deletedRace.deletedCount === 0) {
+            throw 'Race not found or could not be deleted';
+        }
+
+        return { success: true, message: 'Race deleted successfully' };
+    } catch (error) {
+        throw error;
+    }
+}
+
 
 // create("ur dadadadadad", "6621885fabed8ccf023bea58", "New York", "NY", "01/20/2024", "15:30", 100, ["rocky"], "www.apple.com")
 //     .then((result) => {

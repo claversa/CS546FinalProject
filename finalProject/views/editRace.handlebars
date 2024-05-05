@@ -1,0 +1,128 @@
+<h2>{{{name}}}</h2>
+
+    <form action="/race/editName/{{raceId}}" method="POST" class="editRace">
+    <label for="raceName" class="raceName">RACE NAME</label><br><br>
+    <input type="text" name="raceName" id="raceName" class="raceName"><br><br>
+    <button type="submit">EDIT</button>
+    </form>
+
+<h4>STATE: {{{state}}}</h4>
+
+    <form action="/race/editState/{{raceId}}" method="POST" class="editRace">
+    <label for="raceState">RACE STATE</label><br><br>
+    <select name="raceState" id="raceState" class="raceState">
+        <option value="placeholder" selected>CLICK TO SELECT</option>
+        <option value="AL">AL</option>
+        <option value="AK">AK</option>
+        <option value="AZ">AZ</option>
+        <option value="AR">AR</option>
+        <option value="CA">CA</option>
+        <option value="CO">CO</option>
+        <option value="CT">CT</option>
+        <option value="DE">DE</option>
+        <option value="DC">DC</option>
+        <option value="FL">FL</option>
+        <option value="GA">GA</option>
+        <option value="HI">HI</option>
+        <option value="ID">ID</option>
+        <option value="IL">IL</option>
+        <option value="IN">IN</option>
+        <option value="IA">IA</option>
+        <option value="KS">KS</option>
+        <option value="KY">KY</option>
+        <option value="LA">LA</option>
+        <option value="ME">ME</option>
+        <option value="MD">MD</option>
+        <option value="MA">MA</option>
+        <option value="MI">MI</option>
+        <option value="MN">MN</option>
+        <option value="MS">MS</option>
+        <option value="MO">MO</option>
+        <option value="MT">MT</option>
+        <option value="NE">NE</option>
+        <option value="NV">NV</option>
+        <option value="NH">NH</option>
+        <option value="NJ">NJ</option>
+        <option value="NM">NM</option>
+        <option value="NY">NY</option>
+        <option value="NC">NC</option>
+        <option value="ND">ND</option>
+        <option value="OH">OH</option>
+        <option value="OK">OK</option>
+        <option value="OR">OR</option>
+        <option value="PA">PA</option>
+        <option value="RI">RI</option>
+        <option value="SC">SC</option>
+        <option value="SD">SD</option>
+        <option value="TN">TN</option>
+        <option value="TX">TX</option>
+        <option value="UT">UT</option>
+        <option value="VT">VT</option>
+        <option value="VA">VA</option>
+        <option value="WA">WA</option>
+        <option value="WV">WV</option>
+        <option value="WI">WI</option>
+        <option value="WY">WY</option>
+    </select><br><br>
+    <button type="submit">EDIT</button>
+    </form>
+
+<h4>CITY: {{{city}}}</h4>
+
+    <form action="/race/editCity/{{raceId}}" method="POST" class="editRace">
+    <label for="raceCity" class="raceCity">RACE CITY</label><br><br>
+    <input type="text" name="raceCity" id="raceCity" class="raceCity"><br><br>
+    <button type="submit">EDIT</button>
+    </form>
+
+<h4>DATE: {{{date}}}</h4>
+    <form action="/race/editDate/{{raceId}}" method="POST" class="editRace">
+    <label for="raceDate">RACE DATE</label><br><br>
+    <input type="date" id="raceDate" name="raceDate" class="raceDate"><br><br>
+    <button type="submit">EDIT</button>
+    </form>
+<h4>TIME: {{{time}}}</h4>
+
+    <form action="/race/editTime/{{raceId}}" method="POST" class="editRace">
+    <label for="raceTime">RACE TIME</label><br><br>
+    <input type="text" name="raceTime" id="raceTime" class="raceTime"><br><br>
+    <button type="submit">EDIT</button>
+    </form>
+
+<h4>DISTANCE: {{{distance}}}</h4>
+
+    <form action="/race/editDistance/{{raceId}}" method="POST" class="editRace">
+    <label for="distance">DISTANCE</label><br><br>
+    <select name="distance" id="distance" class="distance">
+        <option value="placeholder" selected>CLICK TO SELECT</option>
+        <option value="5K">5K</option>
+        <option value="Half Marathon">Half Marathon</option>
+        <option value="Marathon">Marathon</option>
+    </select><br><br>
+    <button type="submit">EDIT</button>
+    </form>
+
+<h4>TERRAIN: {{{terrain}}}</h4>
+
+    <form action="/race/editTerrain/{{raceId}}" method="POST" class="editRace">
+    <label for="terrain">TERRAIN</label><br><br>
+    <label class="checkboxes"><input type="checkbox" name="terrain" value="Street" id="street">STREET</label><br>
+    <label class="checkboxes"><input type="checkbox" name="terrain" value="Grass" id="grass">GRASS</label><br>
+    <label class="checkboxes"><input type="checkbox" name="terrain" value="Beach" id="beach">MUDDY</label><br>
+    <label class="checkboxes"><input type="checkbox" name="terrain" value="Rocky" id="rocky">ROCKY</label><br>
+    <label class="checkboxes"><input type="checkbox" name="terrain" value="Inclined" id="inclined">INCLINED</label><br>
+    <label class="checkboxes"><input type="checkbox" name="terrain" value="Muddy" id="muddy">MUDDY</label> <br><br>
+    <button type="submit">EDIT</button>
+    </form>
+
+<h5>VISIT {{{URL}}} FOR REGISTRATION AND MORE INFO!</h5>
+
+    <form action="/race/editUrl/{{raceId}}" method="POST" class="editRace">
+    <label for="raceUrl">RACE URL</label><br><br>
+    <input type="text" name="raceUrl" id="raceUrl" class="raceUrl"><br><br>
+    <button type="submit">EDIT</button>
+    </form>
+
+    <form action="/race/{{raceId}}" method="POST" class="done">
+    <button type="submit">DONE</button>
+    </form>
