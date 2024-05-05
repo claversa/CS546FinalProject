@@ -14,6 +14,28 @@ router.route('/').get(async (req, res) => {
   res.render('home', { title: "Homepage", user: req.session.user, error: "", loggedIn: loggedIn, otherCSS: "/public/home.css" }); // NO ERROR
 });
 
+router.route('/register/:raceId').post(async (req, res) => {
+  try {
+    const raceId = req.params.raceId;
+    await races.registerUser(req.session.user.username, raceId)
+    await data.registerRace(req.session.user.username, raceId)
+    res.redirect(`/race/${raceId}`)
+  } catch (error) {
+    res.status(403).render('error', { title: "Error", error, user: req.session.user, otherCSS: "/public/error.css" });
+  }
+});
+
+router.route('/unregister/:raceId').post(async (req, res) => {
+  try {
+    const raceId = req.params.raceId;
+    await races.unregisterUser(req.session.user.username, raceId)
+    await data.unregisterRace(req.session.user.username, raceId)
+    res.redirect(`/race/${raceId}`)
+  } catch (error) {
+    res.status(403).render('error', { title: "Error", error, user: req.session.user, otherCSS: "/public/error.css" });
+  }
+});
+
 router.route('/error').get(async (req, res) => {
   const error = req.query.message || 'Error';
   res.status(403).render('error', { title: "Error", error, user: req.session.user, otherCSS: "/public/error.css" });

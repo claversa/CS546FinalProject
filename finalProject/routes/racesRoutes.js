@@ -85,7 +85,11 @@ router.route('/:id').get(async (req, res) => {
     let raceData = await data.get(raceId);
 
     if (raceData) {
-      res.render('racePage', { title: raceData.raceName, user: req.session.user, error: "", name: raceData.raceName, location: raceData.location, date: raceData.date, time: raceData.raceTime, distance: raceData.distance, terrain: raceData.terrain, URL: raceData.raceUrl, registrants: raceData.registrants, otherCSS: "/public/racePage.css" });
+      let registered = false;
+      if (raceData.registeredUsers.includes(req.session.user.username)) {
+        registered = true;
+      }
+      res.render('racePage', { registered, registrants: raceData.registeredUsers, title: raceData.raceName, name: raceData.raceName, user: req.session.user, error: "", name: raceData.raceName, city: raceData.raceCity, state: raceData.raceState, date: raceData.raceDate, time: raceData.raceTime, distance: raceData.distance, terrain: raceData.terrain, URL: raceData.raceUrl, otherCSS: "/public/racePage.css", raceId });
     }
   }
   catch (e) {
