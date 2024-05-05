@@ -52,3 +52,13 @@ button:hover {
     color: var(--input);
     background-color: var(--hover);
 }
+
+.horizontal-list {
+    text-align: center;
+    line-height: 2;
+}
+
+.horizontal-list p {
+    display: inline; 
+    margin: 0 5px;
+}

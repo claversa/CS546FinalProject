@@ -333,6 +333,23 @@ export const unregisterUser = async (username, raceId) => {
     return updatedInfo;
 };
 
+export const getRaceNamesByIds = async (raceIds) => {
+    const racesCollection = await races();
+    const raceNames = [];
+    try {
+        for (const raceId of raceIds) {
+            const race = await racesCollection.findOne({ _id: new ObjectId(raceId) }, { projection: { raceName: 1 } });
+            if (race) {
+                race._id = race._id.toString();
+                raceNames.push({ id: race._id, name: race.raceName });
+            }
+        }
+        return raceNames;
+    } catch (error) {
+        throw error;
+    }
+}
+
 // create("ur dadadadadad", "6621885fabed8ccf023bea58", "New York", "NY", "01/20/2024", "15:30", 100, ["rocky"], "www.apple.com")
 //     .then((result) => {
 //         // This function will execute when the promise is resolved

@@ -21,11 +21,10 @@ button {
 
 .horizontal-list {
     text-align: center;
-    white-space: nowrap; 
-    overflow-x: auto;
+    line-height: 2;
 }
 
 .horizontal-list p {
     display: inline; 
-    margin: 0 5px;
+    margin: 5px;
 }

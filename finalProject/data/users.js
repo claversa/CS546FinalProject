@@ -1,4 +1,4 @@
-import { users } from '../config/mongoCollections.js'
+import { users, races } from '../config/mongoCollections.js'
 import { ObjectId } from 'mongodb';
 import * as help from '../helpers/helpers.js';
 import * as pw from '../helpers/bcrypt.js'
@@ -267,7 +267,7 @@ const registerRace = async (username, raceId) => {
     }
     user.registeredRaces.push(raceId);
     const updatedUser = {
-        registeredRaces: user.registerRaces
+        registeredRaces: user.registeredRaces
     };
     const updatedInfo = await userCollection.findOneAndUpdate(
         { username: username },
