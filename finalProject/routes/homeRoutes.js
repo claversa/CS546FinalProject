@@ -150,7 +150,23 @@ router.route('/login')
   });
 
 router.route('/training').get(async (req, res) => {
-  res.render("training", { title: "Training Program", user: req.session.user, error: "", otherCSS: "/public/login.css" });
+  res.render("./training", { title: "Training Program", otherCSS: "/public/training.css", plans: [[0, 1, 1, 1, 0, 1, 2], [0, 1, 2, 1, 0, 1, 2], [0, 1, 2, 1, 0, 1, 2.5], [0, 2, 2, 1, 0, 2, 3.1]] });
+  // let username = req.params.id;
+  // try {
+  //   username = help.notStringOrEmpty(username, 'username'); // checks id, trims
+  // }
+  // catch (e) {
+  //   res.status(404).render('error', { title: "Error", class: "error", error: "Not valid username", otherCSS: "/public/error.css" });
+  // }
+  // try {
+  //   let user = await data.get(username)
+  //   if (user) {
+  //     res.render("./training", { title: "Training Program", plans: [[0, 1, 1, 1, 0, 1, 2], [0, 1, 2, 1, 0, 1, 2], [0, 1, 2, 1, 0, 1, 2.5], [0, 2, 2, 1, 0, 2, 3.1]], otherCSS: "/public/training.css" });
+  //   }
+  // }
+  // catch (e) {
+  //   res.status(404).render('error', { title: "Error", class: "not-found", error: e.toString(), otherCSS: "/public/error.css" });
+  // }
 });
 
 router.route('/countdown').get(async (req, res) => {

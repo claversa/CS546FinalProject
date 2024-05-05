@@ -6,21 +6,6 @@
 }
 
 @font-face {
-    font-family: 'gura';
-    src: url(../fonts/gura/Gurajada-Regular.ttf);
-}
-
-@font-face {
-    font-family: 'merri';
-    src: url(../fonts/merriweather/Merriweather-Regular.ttf);
-}
-
-@font-face {
-    font-family: 'merri-bold';
-    src: url(../fonts/merriweather/Merriweather-BoldItalic.ttf);
-}
-
-@font-face {
     font-family: 'martian';
     src: url(../../fonts/martian/MartianMono-VariableFont_wdth\,wght.ttf);
 }
