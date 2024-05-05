@@ -64,7 +64,6 @@ router.route('/createProfile')
     }
     catch (e) {
       res.render('createProfile', { title: "Create Profile", user: req.session.user, error: e, otherCSS: "/public/createProfile.css" });
-      // res.status(404).render('error', { title: "Error", class: "not-found", error: e.toString(), otherCSS: "/public/error.css" });
     }
   });
 
@@ -95,17 +94,24 @@ router.route('/login')
     }
     catch (e) {
       res.render('login', { title: "Login", user: req.session.user, error: e, otherCSS: "/public/login.css" });
-
-      // res.status(404).render('error', { title: "Error", class: "not-found", error: e.toString(), otherCSS: "/public/error.css" });
     }
   });
 
 router.route('/training').get(async (req, res) => {
-  res.render("./training", { title: "Training Program", user: req.session.user });
+  res.render("training", { title: "Training Program", user: req.session.user, error: "", otherCSS: "/public/login.css" });
 });
 
 router.route('/countdown').get(async (req, res) => {
-  res.render("./countdown", { title: "Race Day Countdown", user: req.session.user });
+  let user = undefined;
+  try {
+    user = await data.get(req.session.user.username); // get user
+  }
+  catch (e) {
+    res.render("error", { title: "Error", user: req.session.user, error: e, otherCSS: "/public/error.css" })
+  }
+  // get races
+
+  res.render("countdown", { title: "Race Day Countdown", user: req.session.user, error: "", otherCSS: "/public/login.css" });
 });
 
 //export router
