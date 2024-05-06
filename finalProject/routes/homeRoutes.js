@@ -245,6 +245,7 @@ router.route('/login')
     let errors = [];
     try {
       username = help.notStringOrEmpty(username, "username");
+      username = username.toLowerCase();
     } catch (e) {
       errors.push(`username or password is incorrect`);
     }
@@ -313,6 +314,7 @@ router.route('/countdown').get(async (req, res) => {
         return res.render("error", { title: "Error", user: req.session.user, error: e, otherCSS: "/public/error.css" })
       }
     }
+    countdownDates.sort((a, b) => a - b); // sort soonest to latest
     return res.render("countdown", { title: "Race Day Countdown", user: req.session.user, error: "", hasRaces: true, raceDate: JSON.stringify(countdownDates), otherCSS: "/public/countdown.css" });
   }
 });
