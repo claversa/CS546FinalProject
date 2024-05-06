@@ -1,9 +1,7 @@
 <div class="countdown-content">
     <script src="https://cdn.jsdelivr.net/npm/@tsparticles/confetti@3.0.3/tsparticles.confetti.bundle.min.js"></script>
     <!--will get displayed in the following p element-->
-    <div>
-        <p id="count" class="count"></p>
-    </div>
+    <div id="countdowns"></div>
     <br />
     {{#if hasRaces}}
     <button class="confetti-btn" type="button">GET EXCITED!</button>
@@ -23,37 +21,41 @@
             });
         }
 
-        // date counting down to
-        let countDownDate = Date.parse(`{{{ raceDate }}}`);
-        countdownDate = new Date(countDownDate); // Parse the race date and convert it to milliseconds
+        // race dates
+        let raceDates = {{{ raceDate }}}; 
+        function formatTime(days, hours, minutes, seconds) {
+            return `${days}d ${hours}h ${minutes}m ${seconds}s`;
+        }
 
-        // Update the count down every 1 second
-        var intervalId = setInterval(function () {
-            // Today's date and time in milliseconds
-            let now = new Date().getTime();
+        function updateCountdown(countdownDate, container) {
+            var intervalId = setInterval(function () {
+                let now = new Date().getTime();
 
-            // Distance between now and the countdown date in milliseconds
-            let distance = countDownDate - now;
+                let distance = countdownDate - now;
 
-            //console.log(distance);
+                let days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                let seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-            // Calculate days, hours, minutes, and seconds
-            let days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                container.innerHTML = formatTime(days, hours, minutes, seconds);
+                if (distance < 0) {
+                    clearInterval(intervalId);
+                    container.innerHTML = "EXPIRED";
+                }
+            }, 1000);
+        }
 
-            // Update the HTML element with the countdown
-            document.getElementById("count").innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+        let countdownContainer = document.getElementById("countdowns");
+        raceDates.forEach(dateString => {
+            let countdownDate = new Date(dateString);
+            let countdownElement = document.createElement('p');
+            countdownElement.classList.add('count');
+            countdownContainer.appendChild(countdownElement);
+            updateCountdown(countdownDate, countdownElement);
+        });
 
-            // If countdown is finished
-            if (distance < 0) {
-                clearInterval(intervalId);
-                document.getElementById("count").innerHTML = "EXPIRED";
-            }
-        }, 1000);
-
-        // Add event listener for the confetti button
+  
         let confettiBtn = document.querySelector(".confetti-btn");
         confettiBtn.addEventListener("click", triggerConfetti);
     </script>

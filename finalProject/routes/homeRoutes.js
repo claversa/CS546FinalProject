@@ -298,40 +298,22 @@ router.route('/countdown').get(async (req, res) => {
   else {
     let farAway = Infinity;
     let race, date, time;
+    let countdownDates = [];
 
     // Iterate over the races
     for (let raceId of races) {
       try {
         race = await racesFuns.get(raceId);
-        let tempDate = race.raceDate;
-        let tempTime = race.raceTime;
-
-        // Calculate time difference in days
-        let tempAway = help.dateAway(tempDate);
-
-        // Compare dates
-        if (tempAway < farAway) {
-          farAway = tempAway;
-          date = tempDate;
-          time = tempTime;
-        } else if (tempAway === farAway) {
-          // If the races are on the same day, compare times
-          let currentRaceTime = new Date(`${date} ${time}`);
-          let tempRaceTime = new Date(`${tempDate} ${tempTime}`);
-
-          // Compare the times
-          if (tempRaceTime < currentRaceTime) {
-            date = tempDate;
-            time = tempTime;
-          }
-        }
+        let date = race.raceDate;
+        let time = race.raceTime;
+        let countdownDate = new Date(`${date} ${time}`)
+        countdownDates.push(countdownDate)
       }
       catch (e) {
         return res.render("error", { title: "Error", user: req.session.user, error: e, otherCSS: "/public/error.css" })
       }
     }
-    let countdownDate = new Date(`${date} ${time}`)
-    return res.render("countdown", { title: "Race Day Countdown", user: req.session.user, error: "", hasRaces: true, raceDate: countdownDate, otherCSS: "/public/countdown.css" });
+    return res.render("countdown", { title: "Race Day Countdown", user: req.session.user, error: "", hasRaces: true, raceDate: JSON.stringify(countdownDates), otherCSS: "/public/countdown.css" });
   }
 });
 
