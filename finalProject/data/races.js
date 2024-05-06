@@ -35,14 +35,14 @@ export const create = async (
 
     // date
     help.validDate(raceDate)
-
-    if (!help.isDateAfterToday(raceDate)) throw "Error: Race date must be after today's date"
     
     // state 
     raceState = help.validState(raceState); // to upper case
     
     // time
     raceTime = help.validTime(raceTime);
+
+    if (!help.isDateAfterToday(raceDate, raceTime)) throw "Error: Race date must be after today's date"
 
 
     //make new race to be inserted
@@ -60,7 +60,10 @@ export const create = async (
         comments: [],
         reviews: []
     };
+
     const raceCollection = await races();
+    const existRacename = await raceCollection.findOne({ raceName: raceName });
+    if (existRacename) throw 'Race name taken';
     const insertInfo = await raceCollection.insertOne(newRace);
     if (!insertInfo.acknowledged || !insertInfo.insertedId) throw 'Could not add race';
     const newId = insertInfo.insertedId.toString();
@@ -97,6 +100,13 @@ export const search = async (keyword) => { // finds races based on keyword in ra
             {raceName: { $regex: keyword, $options: 'i' } }
         ]
     }).toArray();
+    return results;
+};
+
+export const searchByState = async (state) => { 
+    state = help.notStringOrEmpty(state, 'state');
+    const raceCollection = await races();
+    let results = await raceCollection.find({ raceState: state }).toArray();
     return results;
 };
 
@@ -399,6 +409,9 @@ export const addReview = async (username, raceId, comment, rating) => {
             throw ('Review must be less than 200 characters long');
         }
         const race = await raceCollection.findOne({ _id: new ObjectId(raceId) });
+        if (help.isDateAfterToday(race.raceDate, race.raceTime)) {
+            throw ('You can only review after the Race Date')
+        }
         if (!Array.isArray(race.reviews)) {
             race.reviews = [];
         }

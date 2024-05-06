@@ -571,4 +571,19 @@ export const removeReview = async (username, raceId, comment, rating) => {
     }
 }
 
+export const checkUser = async (username, path) => {
+    try {
+        const pathArray = path.split('/');
+        const raceId = pathArray[pathArray.length - 1];
+        const raceCollection = await races();
+        const race = await raceCollection.findOne({ _id: new ObjectId(raceId) });
+        if (race.username === username) {
+            return true;
+        }
+        return false;
+    } catch (error) {
+        throw error;
+    }
+}
+
 export { create, getAll, get, updateEmail, updateState, updateGender, updateSocial, updateSystem, updatePassword, registerRace, unregisterRace, addTrainingPlan, removeTrainingPlan, check };
