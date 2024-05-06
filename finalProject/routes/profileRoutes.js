@@ -4,13 +4,14 @@ const router = Router();
 import * as races from '../data/races.js';
 import * as data from '../data/users.js';
 import * as help from '../helpers/helpers.js';
+import xss from 'xss';
 
 // default, get profile for given id
 router.route('/:id').get(async (req, res) => {
   //code here for GET will render the home handlebars file
   //CHECK ID
 
-  let username = req.params.id;
+  let username = xss(req.params.id);
   try {
     username = help.notStringOrEmpty(username, 'username'); // checks id, trims
   }
