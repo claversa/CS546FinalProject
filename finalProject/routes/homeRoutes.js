@@ -115,13 +115,13 @@ router.route('/createProfile')
 
     const errors = [];
     try {
-      firstName = help.notStringOrEmpty(firstName, "firstName");
+      first = help.notStringOrEmpty(first, "firstName");
     } catch (e) {
       errors.push(`invalid firstName`);
     }
 
     try {
-      lastName = help.notStringOrEmpty(lastName, "lastName");
+      last = help.notStringOrEmpty(last, "lastName");
     } catch (e) {
       errors.push(`invalid lastName`);
     }
