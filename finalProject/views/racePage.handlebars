@@ -16,30 +16,6 @@
 </form> <br><br>
 {{/if}}
 
-{{!-- Review sections --}}
-<form action="/review/{{raceId}}" method="POST" class="reviewRace">
-    <label for="review" class="review-label">REVIEW THIS RACE:</label><br>
-    <textarea id="review" name="review" wrap="soft" placeholder="Type here..."></textarea><br>
-    <label for="rating" class="review-label">RATING:</label><br>
-    <input type="range" id="rating" class="rating" max="5" min="1" value="3"
-        oninput="rangeValue.innerText = this.value"><br>
-    <p id="rangeValue" class="rangeVal">3</p>
-    <button type="submit">POST</button>
-</form>
-
-<h4>REVIEWS:</h4>
-{{#each reviews}}
-<p>
-    <a href="/profile/{{this.username}}" class="profile-link">{{this.username}}</a>: {{this.comment}}
-    {{#eq this.username ../user.username}}
-<form action="/removeReview/{{../raceId}}" method="POST" class="delete-review-form">
-    <input type="hidden" id="review" name="review" value="{{this.comment}}">
-    <button type="submit">Delete</button>
-</form>
-{{/eq}}
-</p>
-{{/each}}
-
 
 {{!-- Registrants list --}}
 {{!-- Style with CSS to make it trail off (show more?) --}}
@@ -63,6 +39,32 @@
     {{/each}}
 </div>
 
+{{!-- Review sections --}}
+<form action="/review/{{raceId}}" method="POST" class="reviewRace">
+    <label for="review" class="review-label">REVIEW THIS RACE:</label><br>
+    <textarea id="review" name="review" wrap="soft" placeholder="Type here..."></textarea><br>
+    <label for="rating" class="review-label">RATING:</label><br>
+    <input type="range" id="rating" class="rating" max="5" min="1" value="3"
+        oninput="rangeValue.innerText = this.value"><br>
+    <p id="rangeValue" class="rangeVal">3</p>
+    <button type="submit">POST</button>
+</form>
+
+<h4>REVIEWS:</h4>
+{{#each reviews}}
+<p class="appears">
+    <a href="/profile/{{this.username}}" class="profile-link">{{this.username}}</a>: {{this.comment}}
+    {{#eq this.username ../user.username}}
+</p>
+<form action="/removeReview/{{../raceId}}" method="POST" class="delete-review-form">
+    <input type="hidden" name="review" value="{{this.comment}}">
+    <button type="submit">Delete</button>
+</form>
+{{/eq}}
+
+{{/each}}
+
+
 {{!-- Comments section -- for users to interact, should use @ ? --}}
 <form action="/comment/{{raceId}}" method="POST" class="raceComment">
     <label for="comment">LEAVE A COMMENT:</label><br>
@@ -72,13 +74,14 @@
 
 <h4>COMMENTS:</h4>
 {{#each comments}}
-<p>
+<p class="appears">
     <a href="/profile/{{this.username}}" class="profile-link">{{this.username}}</a>: {{this.comment}}
     {{#eq this.username ../user.username}}
+</p>
 <form action="/uncomment/{{../raceId}}" method="POST" class="delete-comment-form">
-    <input type="hidden" id="comment" name="comment" value="{{this.comment}}">
+    <input type="hidden" name="comment" value="{{this.comment}}">
     <button type="submit">Delete</button>
 </form>
 {{/eq}}
-</p>
+
 {{/each}}
