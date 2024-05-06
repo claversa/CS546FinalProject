@@ -105,21 +105,107 @@ router.route('/createProfile')
     let last = profileInfo.lastName;
     let username = profileInfo.username;
     let email = profileInfo.email;
-    let birthday = profileInfo.birthday;
+    let birthdate = profileInfo.birthday;
     let state = profileInfo.state;
     let gender = profileInfo.gender;
     let system = profileInfo.system;
     let socialPlatform = profileInfo.social_platform;
     let socialHandle = profileInfo.social_handle;
     let password = profileInfo.password;
-    // CHECK ALL THESE ^^^^^^^^^^^^^^66
-    // -------------------- check
-    // try {
-    //   help.checkString(movieName, "movie name");
-    // }
-    // catch (e) {
-    //   res.status(400).render('error', { title: "Error", class: "error", error: e.toString() });
-    // }
+
+    const errors = [];
+    try {
+      firstName = help.notStringOrEmpty(firstName, "firstName");
+    } catch (e) {
+      errors.push(`invalid firstName`);
+    }
+
+    try {
+      lastName = help.notStringOrEmpty(lastName, "lastName");
+    } catch (e) {
+      errors.push(`invalid lastName`);
+    }
+
+    try {
+      username = help.notStringOrEmpty(username, "username");
+      username = help.validUsername(username);
+    } catch (e) {
+      errors.push(`invalid username`);
+    }
+
+    try {
+      email = help.notStringOrEmpty(email, "email");
+      email = help.validEmail(email);
+    } catch (e) {
+      errors.push(`invalid email`);
+    }
+
+    try {
+      state = help.notStringOrEmpty(state, "state");
+      state = help.validState(state);
+    } catch (e) {
+      errors.push(`invalid state`);
+    }
+
+    try {
+      gender = help.notStringOrEmpty(gender, "gender");
+      if (gender !== "male" && gender !== "female" && gender !== "other" && gender !== "preferNot") {
+        errors.push('invalid gender response');
+      }
+    } catch (e) {
+      errors.push(`invalid gender`);
+    }
+
+    try {
+      socialPlatform = help.notStringOrEmpty(socialPlatform, "social platform");
+      const validPlatforms = ["twitter", "facebook", "instagram"];
+      if (!validPlatforms.includes(socialPlatform)) {
+        errors.push('invalid social platform');
+      }
+    } catch (e) {
+      errors.push(`invalid social platform`);
+    }
+
+    try {
+      socialHandle = help.notStringOrEmpty(socialHandle, "social handle");
+    } catch (e) {
+      errors.push(`invalid social handle`);
+    }
+
+    try {
+      system = help.notStringOrEmpty(system, "system");
+      if (system !== "metric" && system !== "imperial") {
+        errors.push('invalid measurement system');
+      }
+    } catch (e) {
+      errors.push(`invalid system`);
+    }
+
+    try {
+      password = help.notStringOrEmpty(password, "password");
+      password = help.validPassword(password);
+    } catch (e) {
+      errors.push(`invalid password`);
+    }
+
+    let age;
+    try {
+      birthdate = help.notStringOrEmpty(birthdate, "birthdate");
+      help.validBirthdate(birthdate);
+      age = help.calculateAge(birthdate);
+      if (age < 13) {
+        errors.push("Age must be above 13 to register");
+      }
+    } catch (e) {
+      errors.push(`invalid birthdate`);
+    }
+
+
+    if (errors.length > 0) {
+      // console.log('Errors found:', errors);
+      return res.render('createProfile', { title: "Create Profile", user: req.session.user, error: errors, otherCSS: "/public/createProfile.css" });
+    }
+
     try {
       let newUser = await data.create(first,
         last,
@@ -127,7 +213,7 @@ router.route('/createProfile')
         email,
         state,
         gender,
-        birthday,
+        birthdate,
         socialPlatform,
         socialHandle,
         system,
@@ -155,8 +241,18 @@ router.route('/login')
     const loginInfo = req.body; // form info!
     let username = loginInfo.username;
     let password = loginInfo.password;
+    let errors = [];
     try {
-      // HERE
+      username = help.notStringOrEmpty(username, "username");
+    } catch (e) {
+      errors.push(`username or password is incorrect`);
+    }
+    try {
+      password = help.notStringOrEmpty(password, "password");
+    } catch (e) {
+      errors.push(`username or password is incorrect`);
+    }
+    try {
       let validation = await data.check(username, password)
       if (validation) {
         req.session.user = { username: username };

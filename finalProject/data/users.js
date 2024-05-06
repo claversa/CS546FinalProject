@@ -20,50 +20,107 @@ const create = async (
     system,
     password
 ) => {
-    // exists, not string or empty, trims all input as well
-    username = help.notStringOrEmpty(username, "username");
-    firstName = help.notStringOrEmpty(firstName, "firstName");
-    lastName = help.notStringOrEmpty(lastName, "lastName");
-    email = help.notStringOrEmpty(email, "email");
-    state = help.notStringOrEmpty(state, "state");
-    gender = help.notStringOrEmpty(gender, "gender");
-    socialPlatform = help.notStringOrEmpty(socialPlatform, "social platform");
-    socialHandle = help.notStringOrEmpty(socialHandle, "social handle");
-    system = help.notStringOrEmpty(system, "system");
-    password = help.notStringOrEmpty(password, "password");
-    birthdate = help.notStringOrEmpty(birthdate, "birthdate");
 
-    if (gender != "male" && gender != "female" && gender != "other" && gender != "preferNot") throw 'Error: not a valid response (gender)!'
-    if (system != "metric" && system != "imperial") throw "Error: invalid measurement system";
-    let validPlatforms = ["twitter", "facebook", "instagram"];
-    if (!(validPlatforms.includes(socialPlatform))) throw "Error: invalid social platform";
-    // validate birthdate
+    const errors = [];
     try {
-        help.validBirthdate(birthdate);
+        firstName = help.notStringOrEmpty(firstName, "firstName");
     } catch (e) {
-        throw e;
-    };
+        errors.push(`invalid firstName`);
+    }
 
-    // validate username and PW
-    username = help.validUsername(username);
-    password = help.validPassword(password);
+    try {
+        lastName = help.notStringOrEmpty(lastName, "lastName");
+    } catch (e) {
+        errors.push(`invalid lastName`);
+    }
 
-    // validate abbrev and makes uppercase
-    state = help.validState(state);
+    try {
+        username = help.notStringOrEmpty(username, "username");
+        username = help.validUsername(username);
+    } catch (e) {
+        errors.push(`invalid username: username must have between 5 and 10 characters `);
+    }
 
-    // validate email -- NO DUPLICATES EVEN WITH CAPS
-    email = help.validEmail(email);
+    try {
+        email = help.notStringOrEmpty(email, "email");
+        email = help.validEmail(email);
+    } catch (e) {
+        errors.push(`invalid email`);
+    }
 
-    // password
-    let hashedPW = await pw.hashPassword(password);
-    let age = help.calculateAge(birthdate);
-    if (age < 13) throw "Age must be above 13 to register"
+    try {
+        state = help.notStringOrEmpty(state, "state");
+        state = help.validState(state);
+    } catch (e) {
+        errors.push(`invalid state`);
+    }
+
+    try {
+        gender = help.notStringOrEmpty(gender, "gender");
+        if (gender !== "male" && gender !== "female" && gender !== "other" && gender !== "preferNot") {
+            errors.push('invalid gender response');
+        }
+    } catch (e) {
+        errors.push(`invalid gender`);
+    }
+
+    try {
+        socialPlatform = help.notStringOrEmpty(socialPlatform, "social platform");
+        const validPlatforms = ["twitter", "facebook", "instagram"];
+        if (!validPlatforms.includes(socialPlatform)) {
+            errors.push('invalid social platform');
+        }
+    } catch (e) {
+        errors.push(`invalid social platform`);
+    }
+
+    try {
+        socialHandle = help.notStringOrEmpty(socialHandle, "social handle");
+    } catch (e) {
+        errors.push(`invalid social handle`);
+    }
+
+    try {
+        system = help.notStringOrEmpty(system, "system");
+        if (system !== "metric" && system !== "imperial") {
+            errors.push('invalid measurement system');
+        }
+    } catch (e) {
+        errors.push(`invalid system`);
+    }
+
+    try {
+        password = help.notStringOrEmpty(password, "password");
+        password = help.validPassword(password);
+    } catch (e) {
+        errors.push(`invalid password: password must have at least 8 characters with at least 1 uppercase letter, number, and special character`);
+    }
+
+    let age;
+    try {
+        birthdate = help.notStringOrEmpty(birthdate, "birthdate");
+        help.validBirthdate(birthdate);
+        age = help.calculateAge(birthdate);
+        if (age < 13) {
+            errors.push("Age must be above 13 to register");
+        }
+    } catch (e) {
+        errors.push(`invalid birthdate`);
+    }
+
+
+    if (errors.length > 0) {
+        // If there are errors, handle them accordingly
+        // console.log('Errors found:', errors);
+        throw (`Errors: ${errors}`);
+    }
+
 
     //make empty arrays for registered races and training plans that will be filled in later
     let registeredRaces = [];
     let currPlan = [];
     let trainingPlans = {};
-
+    let hashedPW = await pw.hashPassword(password);
     let newUser = {
         firstName,
         lastName,
@@ -96,7 +153,7 @@ const create = async (
 const getAll = async () => {
     const userCollection = await users();
     let userList = await userCollection.find({}).toArray(); // get all users, put in array
-    if (!userList) throw 'Could not get all products';
+    if (!userList) throw 'Could not get all users';
     userList = userList.map((element) => {
         element._id = element._id.toString();
         return element;
@@ -107,7 +164,6 @@ const getAll = async () => {
 // get specific user
 const get = async (username) => {
     username = help.notStringOrEmpty(username, 'username');
-    //if (!ObjectId.isValid(id)) throw 'invalid object ID';
     const userCollection = await users();
     const user = await userCollection.findOne({ username: username });
     if (user === null) throw `No user named ${username}`;

@@ -14,41 +14,87 @@ export const create = async (
     terrain, // array
     raceUrl // string
 ) => {
-    //SPLIT UP
+
+    const errors = [];
+
     if (typeof terrain === 'string') {
-        terrain = [terrain]
+        terrain = [terrain];
     }
-    raceName = help.notStringOrEmpty(raceName, "race name");
-    username = help.notStringOrEmpty(username, "username");
-    raceCity = help.notStringOrEmpty(raceCity, "raceCity");
-    raceState = help.notStringOrEmpty(raceState, "raceState");
-    raceTime = help.notStringOrEmpty(raceTime, "raceTime");
-    terrain = help.arraysWithStringElem(terrain, "terrain");
-    raceUrl = help.notStringOrEmpty(raceUrl, "raceUrl");
 
-    const userCollection = await users();
-    const user = await userCollection.findOne({ username: username });
-    if (!user) throw `Error: User ${username} not found`;
+    try {
+        raceName = help.notStringOrEmpty(raceName, "race name");
+    } catch (e) {
+        errors.push(`invalid race name`);
+    }
 
-    // validate url
-    help.validURL(raceUrl)
+    try {
+        username = help.notStringOrEmpty(username, "username");
+    } catch (e) {
+        errors.push(`invalid username`);
+    }
 
-    // date
-    help.validDate(raceDate)
+    try {
+        raceCity = help.notStringOrEmpty(raceCity, "race city");
+    } catch (e) {
+        errors.push(`invalid race city`);
+    }
 
-    // state 
-    raceState = help.validState(raceState); // to upper case
+    try {
+        raceState = help.notStringOrEmpty(raceState, "race state");
+        raceState = help.validState(raceState);
+    } catch (e) {
+        errors.push(`invalid race state`);
+    }
 
-    // time
-    raceTime = help.validTime(raceTime);
+    try {
+        raceTime = help.notStringOrEmpty(raceTime, "race time");
+        raceTime = help.validTime(raceTime);
+    } catch (e) {
+        errors.push(`invalid race time`);
+    }
 
-    if (!help.isDateAfterToday(raceDate, raceTime)) throw "Error: Race date must be after today's date"
-    let validDist = ["5K", "Half Marathon", "Marathon"]
-    if (!(validDist.includes(distance))) throw "Error: invalid distance";
+    try {
+        terrain = help.arraysWithStringElem(terrain, "terrain");
+        let validTerrain = ["Street", "Grass", "Beach", "Rocky", "Inclined", "Muddy"];
+        for (let ter of terrain) {
+            if (!(validTerrain.includes(ter))) {
+                throw "Error: Invalid terrain";
+            }
+        }
+    } catch (e) {
+        errors.push(`invalid terrain`);
+    }
 
-    let validTerrain = ["Street", "Grass", "Beach", "Rocky", "Inclined", "Muddy"];
-    for (let ter of terrain) {
-        if (!(validTerrain.includes(ter))) throw "Error: invalid terrain";
+    try {
+        raceUrl = help.notStringOrEmpty(raceUrl, "race URL");
+        help.validURL(raceUrl);
+    } catch (e) {
+        errors.push(`invalid race URL: must be of form https://www.{url}.{com,org,etc}`);
+    }
+
+    try {
+        // Validate date
+        help.validDate(raceDate);
+        if (!help.isDateAfterToday(raceDate, raceTime)) throw "Error: Race date must be after today's date";
+    } catch (e) {
+        errors.push(`invalid race : must be valid format and after today's date and time`);
+    }
+
+    try {
+        // Validate distance
+        let validDist = ["5K", "Half Marathon", "Marathon"];
+        if (!(validDist.includes(distance))) {
+            throw "Error: Invalid distance";
+        }
+    } catch (e) {
+        errors.push(`invalid distance`);
+    }
+
+
+    // Check for errors and handle accordingly
+    if (errors.length > 0) {
+        // console.log('Validation errors:', errors);
+        throw (`Errors: ${errors}`);
     }
 
     //make new race to be inserted
