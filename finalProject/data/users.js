@@ -120,7 +120,6 @@ const create = async (
     let registeredRaces = [];
     let currPlan = [];
     let trainingPlans = {};
-    let racesCompleted = [];
 
     let hashedPW = await pw.hashPassword(password);
     let newUser = {
@@ -138,7 +137,6 @@ const create = async (
         registeredRaces,
         currPlan,
         trainingPlans,
-        racesCompleted,
         private: false
     };
     const userCollection = await users();

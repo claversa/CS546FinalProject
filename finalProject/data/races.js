@@ -535,7 +535,15 @@ export const deleteRace = async (raceId) => {
     }
 }
 
-
+export const isCompleted = async (raceId) => {
+    const raceCollection = await races();
+    const race = await raceCollection.findOne({ _id: new ObjectId(raceId) });
+    if (help.isDateAfterToday(race.raceDate, race.raceTime)) {
+        return undefined;
+    } else {
+        return race.raceName;
+    }
+}
 // create("ur dadadadadad", "6621885fabed8ccf023bea58", "New York", "NY", "01/20/2024", "15:30", 100, ["rocky"], "www.apple.com")
 //     .then((result) => {
 //         // This function will execute when the promise is resolved
