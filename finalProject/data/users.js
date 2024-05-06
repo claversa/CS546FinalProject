@@ -503,4 +503,71 @@ const check = async (username, password) => {
     return null;
 }
 
+export const addReview = async (username, raceId, comment, rating) => {
+    const userCollection = await users();
+    try {
+        comment = help.notStringOrEmpty(comment, 'comment');
+        if (comment.length > 200) {
+            throw ('Review must be less than 200 characters long');
+        }
+        const user = await userCollection.findOne({ username: username });
+        if (!Array.isArray(user.reviews)) {
+            user.reviews = [];
+        }
+        const raceCollection = await races();
+        const race = await raceCollection.findOne({ _id: new ObjectId(raceId) });
+        const raceName = race.raceName
+        const newComment = { username, raceName, raceId, comment, rating };
+        if (user) {
+            user.reviews.push(newComment)
+        }       
+        
+        const updatedUser = {
+            reviews: user.reviews
+        };
+
+        const updatedInfo = await userCollection.findOneAndUpdate(
+            { username: username },
+            { $set: updatedUser },
+            { returnDocument: 'after' }
+        );
+        if (!updatedInfo) {
+            throw 'could not update user successfully';
+        }
+        updatedInfo._id = updatedInfo._id.toString();
+        return updatedInfo;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const removeReview = async (username, raceId, comment, rating) => {
+    const userCollection = await users();
+    try {
+        comment = help.notStringOrEmpty(comment, 'comment');
+        const user = await userCollection.findOne({ username: username });
+    
+        const indexToRemove = user.reviews.findIndex(item => item.username === username && item.comment === comment && item.rating === rating && item.raceId === raceId);
+        if (indexToRemove !== -1) {
+        user.reviews.splice(indexToRemove, 1);
+        }
+        const updatedUser = {
+            reviews: user.reviews
+        };
+
+        const updatedInfo = await userCollection.findOneAndUpdate(
+            { username: username },
+            { $set: updatedUser },
+            { returnDocument: 'after' }
+        );
+        if (!updatedInfo) {
+            throw 'could not update race successfully';
+        }
+        updatedInfo._id = updatedInfo._id.toString();
+        return updatedInfo;
+    } catch (error) {
+        throw error;
+    }
+}
+
 export { create, getAll, get, updateEmail, updateState, updateGender, updateSocial, updateSystem, updatePassword, registerRace, unregisterRace, addTrainingPlan, removeTrainingPlan, check };

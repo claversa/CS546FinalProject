@@ -14,6 +14,54 @@ router.route('/').get(async (req, res) => {
   res.render('home', { title: "Homepage", user: req.session.user, error: "", loggedIn: loggedIn, otherCSS: "/public/home.css" }); // NO ERROR
 });
 
+router.route('/comment/:raceId').post(async (req, res) => {
+  try {
+    const raceId = req.params.raceId;
+    const comment = req.body.comment;
+    await racesFuns.addComment(req.session.user.username, raceId, comment)
+    res.redirect(`/race/${raceId}`)
+  } catch (error) {
+    res.status(403).render('error', { title: "Error", error, user: req.session.user, otherCSS: "/public/error.css" });
+  }
+});
+
+router.route('/uncomment/:raceId').post(async (req, res) => {
+  try {
+    const raceId = req.params.raceId;
+    const comment = req.body.comment;
+    await racesFuns.removeComment(req.session.user.username, raceId, comment)
+    res.redirect(`/race/${raceId}`)
+  } catch (error) {
+    res.status(403).render('error', { title: "Error", error, user: req.session.user, otherCSS: "/public/error.css" });
+  }
+});
+
+router.route('/review/:raceId').post(async (req, res) => {
+  try {
+    const raceId = req.params.raceId;
+    const comment = req.body.review;
+    const rating = req.body.rating;
+    await racesFuns.addReview(req.session.user.username, raceId, comment, rating)
+    await data.addReview(req.session.user.username, raceId, comment, rating)
+    res.redirect(`/race/${raceId}`)
+  } catch (error) {
+    res.status(403).render('error', { title: "Error", error, user: req.session.user, otherCSS: "/public/error.css" });
+  }
+});
+
+router.route('/removeReview/:raceId').post(async (req, res) => {
+  try {
+    const raceId = req.params.raceId;
+    const comment = req.body.review;
+    const rating = req.body.rating;
+    await racesFuns.removeReview(req.session.user.username, raceId, comment, rating)
+    await data.removeReview(req.session.user.username, raceId, comment, rating)
+    res.redirect(`/race/${raceId}`)
+  } catch (error) {
+    res.status(403).render('error', { title: "Error", error, user: req.session.user, otherCSS: "/public/error.css" });
+  }
+});
+
 router.route('/register/:raceId').post(async (req, res) => {
   try {
     const raceId = req.params.raceId;
@@ -140,48 +188,53 @@ router.route('/countdown').get(async (req, res) => {
     user = await data.get(req.session.user.username); // get user
   }
   catch (e) {
-    res.render("error", { title: "Error", user: req.session.user, error: e, otherCSS: "/public/error.css" })
+    return res.render("error", { title: "Error", user: req.session.user, error: e, otherCSS: "/public/error.css" })
   }
   // get races
   let races = user.registeredRaces;
 
-  if (races.length == 0) {
-    res.render("countdown", { title: "Race Day Countdown", user: req.session.user, error: "", hasRaces: false, otherCSS: "/public/countdown.css" });
 
+  if (races.length === 0) {
+    return res.render("countdown", { title: "Race Day Countdown", user: req.session.user, error: "", hasRaces: false, otherCSS: "/public/countdown.css" });
   }
   else {
-    let race = undefined;
-    let nextRace = undefined; // this will be the upcoming race given to countdown
-    let farAway = undefined; // this will be how far until the upcoming race
-    let raceDate = undefined; // this will be race date given to countdown
-    try {
-      race = await racesFuns.get(race);
-      farAway = help.dateAway(race.raceDate);
-      raceDate = race.raceDate;
-    }
-    catch {
-      res.render("error", { title: "Error", user: req.session.user, error: e, otherCSS: "/public/error.css" })
-    }
+    let farAway = Infinity;
+    let race, date, time;
+
+    // Iterate over the races
     for (let raceId of races) {
       try {
         race = await racesFuns.get(raceId);
-        let tempAway = help.dateAway(race.raceDate);
+        let tempDate = race.raceDate;
+        let tempTime = race.raceTime;
+
+        // Calculate time difference in days
+        let tempAway = help.dateAway(tempDate);
+
+        // Compare dates
         if (tempAway < farAway) {
-          farAway = tempAway; // amount of time, tracking purposes
-          nextRace = race; // idk if even need, but this is the race
-          raceDate = race.raceDate; // give this date to countdown
+          farAway = tempAway;
+          date = tempDate;
+          time = tempTime;
+        } else if (tempAway === farAway) {
+          // If the races are on the same day, compare times
+          let currentRaceTime = new Date(`${date} ${time}`);
+          let tempRaceTime = new Date(`${tempDate} ${tempTime}`);
+
+          // Compare the times
+          if (tempRaceTime < currentRaceTime) {
+            date = tempDate;
+            time = tempTime;
+          }
         }
       }
       catch (e) {
-        res.render("error", { title: "Error", user: req.session.user, error: e, otherCSS: "/public/error.css" })
-
+        return res.render("error", { title: "Error", user: req.session.user, error: e, otherCSS: "/public/error.css" })
       }
-
     }
-    res.render("countdown", { title: "Race Day Countdown", user: req.session.user, error: "", hasRaces: true, raceDate: raceDate, otherCSS: "/public/countdown.css" });
+    let countdownDate = new Date(`${date} ${time}`)
+    return res.render("countdown", { title: "Race Day Countdown", user: req.session.user, error: "", hasRaces: true, raceDate: countdownDate, otherCSS: "/public/countdown.css" });
   }
-
-
 });
 
 //export router

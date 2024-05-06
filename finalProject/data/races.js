@@ -56,7 +56,9 @@ export const create = async (
         distance, 
         terrain, 
         raceUrl,
-        registeredUsers: []
+        registeredUsers: [],
+        comments: [],
+        reviews: []
     };
     const raceCollection = await races();
     const insertInfo = await raceCollection.insertOne(newRace);
@@ -99,16 +101,14 @@ export const search = async (keyword) => { // finds races based on keyword in ra
 };
 
 // update functions
-export const updateName = async (id, userId, newName) => { 
+export const updateName = async (id, newName) => { 
     id = help.notStringOrEmpty(id, 'id');
     if (!ObjectId.isValid(id)) throw 'invalid object ID'; // check for valid id
-    userId = help.notStringOrEmpty(userId, 'userId');
-    if (!ObjectId.isValid(userId)) throw 'invalid user ID'; // check for valid user id
-    newName = help.notStringOrEmpty(newName, "new race name");
+    newName = help.notStringOrEmpty(newName, 'newName');
+    if (newName.length > 200) throw 'The new name must be less than 200 characters';
     const raceCollection = await races();
     const race = await raceCollection.findOne({ _id: new ObjectId(id) });
-    if (userId !== races.userId) throw "Error: you must be the creator of this race to edit."
-    if (newName.toLowerCase() === race.raceName.toLowerCase()) throw `Error: Race name is already ${race.raceName}`
+    if (newName === race.raceName) throw `Error: Race name is already ${race.raceName}`
     const updatedInfo = await raceCollection.findOneAndUpdate(
         { _id: new ObjectId(id) },
         { $set: { raceName: newName } },
@@ -121,16 +121,14 @@ export const updateName = async (id, userId, newName) => {
     return updatedInfo;
 };
 
-export const updateCity = async (id, userId, newCity) => {
+export const updateCity = async (id, newCity) => { 
     id = help.notStringOrEmpty(id, 'id');
     if (!ObjectId.isValid(id)) throw 'invalid object ID'; // check for valid id
-    userId = help.notStringOrEmpty(userId, 'userId');
-    if (!ObjectId.isValid(userId)) throw 'invalid user ID'; // check for valid user id
-    newCity = help.notStringOrEmpty(newCity, "new race city");
+    newCity = help.notStringOrEmpty(newCity, 'newCity');
+    if (newCity.length > 57) throw 'The new city must be less than 57 characters';
     const raceCollection = await races();
     const race = await raceCollection.findOne({ _id: new ObjectId(id) });
-    if (userId !== races.userId) throw "Error: you must be the creator of this race to edit."
-    if (newCity.toLowerCase() === race.raceCity.toLowerCase()) throw `Error: Race city is already ${race.raceCity}`
+    if (newCity === race.raceCity) throw `Error: Race city is already ${race.raceCity}`
     const updatedInfo = await raceCollection.findOneAndUpdate(
         { _id: new ObjectId(id) },
         { $set: { raceCity: newCity } },
@@ -143,17 +141,14 @@ export const updateCity = async (id, userId, newCity) => {
     return updatedInfo;
 };
 
-export const updateState = async (id, userId, newState) => {
+export const updateState = async (id, newState) => { 
     id = help.notStringOrEmpty(id, 'id');
     if (!ObjectId.isValid(id)) throw 'invalid object ID'; // check for valid id
-    userId = help.notStringOrEmpty(userId, 'userId');
-    if (!ObjectId.isValid(userId)) throw 'invalid user ID'; // check for valid user id
-    newState = help.notStringOrEmpty(newState, "new race state");
-    newState = help.validState(newState); // to upper case
+    newState = help.notStringOrEmpty(newState, 'newState');
+    newState = help.validState(newState);
     const raceCollection = await races();
     const race = await raceCollection.findOne({ _id: new ObjectId(id) });
-    if (userId !== races.userId) throw "Error: you must be the creator of this race to edit."
-    if (newState.toLowerCase() === race.raceState.toLowerCase()) throw `Error: Race state is already ${race.raceState}`
+    if (newState === race.raceState) throw `Error: Race state is already ${race.raceState}`
     const updatedInfo = await raceCollection.findOneAndUpdate(
         { _id: new ObjectId(id) },
         { $set: { raceState: newState } },
@@ -166,17 +161,13 @@ export const updateState = async (id, userId, newState) => {
     return updatedInfo;
 };
 
-export const updateDate = async (id, userId, newDate) => {
+export const updateDate = async (id, newDate) => { 
     id = help.notStringOrEmpty(id, 'id');
     if (!ObjectId.isValid(id)) throw 'invalid object ID'; // check for valid id
-    userId = help.notStringOrEmpty(userId, 'userId');
-    if (!ObjectId.isValid(userId)) throw 'invalid user ID'; // check for valid user id
-    newDate = help.notStringOrEmpty(newDate, "new race date");
-    help.validDate(newDate);
+    newDate = help.notStringOrEmpty(newDate, 'newDate');
     const raceCollection = await races();
     const race = await raceCollection.findOne({ _id: new ObjectId(id) });
-    if (userId !== races.userId) throw "Error: you must be the creator of this race to edit."
-    if (newDate.toLowerCase() === race.raceDate.toLowerCase()) throw `Error: Race date is already ${race.raceDate}`
+    if (newDate === race.raceDate) throw `Error: Race date is already ${race.raceDate}`
     const updatedInfo = await raceCollection.findOneAndUpdate(
         { _id: new ObjectId(id) },
         { $set: { raceDate: newDate } },
@@ -189,17 +180,13 @@ export const updateDate = async (id, userId, newDate) => {
     return updatedInfo;
 };
 
-export const updateTime = async (id, userId, newTime) => {
+export const updateTime = async (id, newTime) => { 
     id = help.notStringOrEmpty(id, 'id');
     if (!ObjectId.isValid(id)) throw 'invalid object ID'; // check for valid id
-    userId = help.notStringOrEmpty(userId, 'userId');
-    if (!ObjectId.isValid(userId)) throw 'invalid user ID'; // check for valid user id
-    newTime = help.notStringOrEmpty(newTime, "new race time");
-    newTime = help.validTime(newTime);
+    newTime = help.notStringOrEmpty(newTime, 'newTime');
     const raceCollection = await races();
     const race = await raceCollection.findOne({ _id: new ObjectId(id) });
-    if (userId !== races.userId) throw "Error: you must be the creator of this race to edit."
-    if (newTime.toLowerCase() === race.distance.toLowerCase()) throw `Error: Race time is already ${race.distance}`
+    if (newTime === race.raceTime) throw `Error: Race time is already ${race.raceTime}`
     const updatedInfo = await raceCollection.findOneAndUpdate(
         { _id: new ObjectId(id) },
         { $set: { raceTime: newTime } },
@@ -212,15 +199,12 @@ export const updateTime = async (id, userId, newTime) => {
     return updatedInfo;
 };
 
-export const updateDistance = async (id, userId, newDistance) => {
+export const updateDistance = async (id, newDistance) => { 
     id = help.notStringOrEmpty(id, 'id');
     if (!ObjectId.isValid(id)) throw 'invalid object ID'; // check for valid id
-    userId = help.notStringOrEmpty(userId, 'userId');
-    if (!ObjectId.isValid(userId)) throw 'invalid user ID'; // check for valid user id
-    if (typeof newDistance !== 'number' || Number.isNaN(newDistance) || newDistance < 0) throw "Error: Distance must be a number"
+    newDistance = help.notStringOrEmpty(newDistance, 'newDistance');
     const raceCollection = await races();
     const race = await raceCollection.findOne({ _id: new ObjectId(id) });
-    if (userId !== races.userId) throw "Error: you must be the creator of this race to edit."
     if (newDistance === race.distance) throw `Error: Race distance is already ${race.distance}`
     const updatedInfo = await raceCollection.findOneAndUpdate(
         { _id: new ObjectId(id) },
@@ -228,44 +212,37 @@ export const updateDistance = async (id, userId, newDistance) => {
         { returnDocument: 'after' }
     );
     if (!updatedInfo) {
-        throw 'could not update user successfully';
+        throw 'could not update distance successfully';
     }
     updatedInfo._id = updatedInfo._id.toString();
     return updatedInfo;
 };
 
-export const updateTerrain = async (id, userId, newTerrain) => {
+export const updateTerrain = async (id, newTerrain) => { 
     id = help.notStringOrEmpty(id, 'id');
     if (!ObjectId.isValid(id)) throw 'invalid object ID'; // check for valid id
-    userId = help.notStringOrEmpty(userId, 'userId');
-    if (!ObjectId.isValid(userId)) throw 'invalid user ID'; // check for valid user id
-    newTerrain = help.arraysWithStringElem(newTerrain, "new race terrain");
     const raceCollection = await races();
     const race = await raceCollection.findOne({ _id: new ObjectId(id) });
-    if (userId !== races.userId) throw "Error: you must be the creator of this race to edit."
-    if (newTerrain === race.terrain) throw `Error: Race terrain is already ${race.terrain}`
+    if (newTerrain === race.raceTerrain) throw `Error: Race terrain is already ${race.raceTerrain}`
     const updatedInfo = await raceCollection.findOneAndUpdate(
         { _id: new ObjectId(id) },
         { $set: { terrain: newTerrain } },
         { returnDocument: 'after' }
     );
     if (!updatedInfo) {
-        throw 'could not update user successfully';
+        throw 'could not update terrain successfully';
     }
     updatedInfo._id = updatedInfo._id.toString();
     return updatedInfo;
 };
 
-export const updateUrl = async (id, userId, newUrl) => {
+export const updateUrl = async (id, newUrl) => {
     id = help.notStringOrEmpty(id, 'id');
     if (!ObjectId.isValid(id)) throw 'invalid object ID'; // check for valid id
-    userId = help.notStringOrEmpty(userId, 'userId');
-    if (!ObjectId.isValid(userId)) throw 'invalid user ID'; // check for valid user id
     newUrl = help.notStringOrEmpty(newUrl, "new race url");
     help.validURL(newUrl);
     const raceCollection = await races();
     const race = await raceCollection.findOne({ _id: new ObjectId(id) });
-    if (userId !== races.userId) throw "Error: you must be the creator of this race to edit."
     if (newUrl.toLowerCase() === race.raceUrl.toLowerCase()) throw `Error: Race name is already ${race.raceUrl}`
     const updatedInfo = await raceCollection.findOneAndUpdate(
         { _id: new ObjectId(id) },
@@ -349,6 +326,150 @@ export const getRaceNamesByIds = async (raceIds) => {
         throw error;
     }
 }
+
+export const addComment = async (username, raceId, comment) => {
+    const raceCollection = await races();
+    try {
+        comment = help.notStringOrEmpty(comment, 'comment');
+        if (comment.length > 200) {
+            throw ('Comment must be less than 200 characters long');
+        }
+        const race = await raceCollection.findOne({ _id: new ObjectId(raceId) });
+        if (!Array.isArray(race.comments)) {
+            race.comments = [];
+        }
+        const newComment = { username, comment };
+        if (race) {
+            race.comments.push(newComment)
+        }       
+        
+        const updatedRace = {
+            comments: race.comments
+        };
+
+        const updatedInfo = await raceCollection.findOneAndUpdate(
+            { _id: new ObjectId(raceId) },
+            { $set: updatedRace },
+            { returnDocument: 'after' }
+        );
+        if (!updatedInfo) {
+            throw 'could not update race successfully';
+        }
+        updatedInfo._id = updatedInfo._id.toString();
+        return updatedInfo;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const removeComment = async (username, raceId, comment) => {
+    const raceCollection = await races();
+    try {
+        comment = help.notStringOrEmpty(comment, 'comment');
+        const race = await raceCollection.findOne({ _id: new ObjectId(raceId) });
+    
+        const indexToRemove = race.comments.findIndex(item => item.username === username && item.comment === comment);
+        if (indexToRemove !== -1) {
+        race.comments.splice(indexToRemove, 1);
+        }
+        const updatedRace = {
+            comments: race.comments
+        };
+
+        const updatedInfo = await raceCollection.findOneAndUpdate(
+            { _id: new ObjectId(raceId) },
+            { $set: updatedRace },
+            { returnDocument: 'after' }
+        );
+        if (!updatedInfo) {
+            throw 'could not update race successfully';
+        }
+        updatedInfo._id = updatedInfo._id.toString();
+        return updatedInfo;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const addReview = async (username, raceId, comment, rating) => {
+    const raceCollection = await races();
+    try {
+        comment = help.notStringOrEmpty(comment, 'comment');
+        if (comment.length > 200) {
+            throw ('Review must be less than 200 characters long');
+        }
+        const race = await raceCollection.findOne({ _id: new ObjectId(raceId) });
+        if (!Array.isArray(race.reviews)) {
+            race.reviews = [];
+        }
+        const newComment = { username, comment, rating };
+        if (race) {
+            race.reviews.push(newComment)
+        }       
+        
+        const updatedRace = {
+            reviews: race.reviews
+        };
+
+        const updatedInfo = await raceCollection.findOneAndUpdate(
+            { _id: new ObjectId(raceId) },
+            { $set: updatedRace },
+            { returnDocument: 'after' }
+        );
+        if (!updatedInfo) {
+            throw 'could not update race successfully';
+        }
+        updatedInfo._id = updatedInfo._id.toString();
+        return updatedInfo;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const removeReview = async (username, raceId, comment, rating) => {
+    const raceCollection = await races();
+    try {
+        comment = help.notStringOrEmpty(comment, 'comment');
+        const race = await raceCollection.findOne({ _id: new ObjectId(raceId) });
+    
+        const indexToRemove = race.reviews.findIndex(item => item.username === username && item.comment === comment && item.rating === rating);
+        if (indexToRemove !== -1) {
+        race.reviews.splice(indexToRemove, 1);
+        }
+        const updatedRace = {
+            reviews: race.reviews
+        };
+
+        const updatedInfo = await raceCollection.findOneAndUpdate(
+            { _id: new ObjectId(raceId) },
+            { $set: updatedRace },
+            { returnDocument: 'after' }
+        );
+        if (!updatedInfo) {
+            throw 'could not update race successfully';
+        }
+        updatedInfo._id = updatedInfo._id.toString();
+        return updatedInfo;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const deleteRace = async (raceId) => {
+    const raceCollection = await races();
+    try {
+        const deletedRace = await raceCollection.deleteOne({ _id: new ObjectId(raceId) });
+
+        if (deletedRace.deletedCount === 0) {
+            throw 'Race not found or could not be deleted';
+        }
+
+        return { success: true, message: 'Race deleted successfully' };
+    } catch (error) {
+        throw error;
+    }
+}
+
 
 // create("ur dadadadadad", "6621885fabed8ccf023bea58", "New York", "NY", "01/20/2024", "15:30", 100, ["rocky"], "www.apple.com")
 //     .then((result) => {
