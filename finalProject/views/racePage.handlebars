@@ -26,6 +26,8 @@
 </form>
 {{else}}
 <form action="/register/{{raceId}}" method="POST" class="register">
+    <label for="maxMileageYet">What is the maximum amount of miles you ran in the past week, this will be the basis for your training plan:</label><br>
+    <input type="text" id="maxMileageYet" name="maxMileageYet"><br>
     <button type="submit">Register</button>
 </form>
 {{/if}}
