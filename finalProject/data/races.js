@@ -145,6 +145,7 @@ export const updateState = async (id, newState) => {
     id = help.notStringOrEmpty(id, 'id');
     if (!ObjectId.isValid(id)) throw 'invalid object ID'; // check for valid id
     newState = help.notStringOrEmpty(newState, 'newState');
+    newState = help.validState(newState);
     const raceCollection = await races();
     const race = await raceCollection.findOne({ _id: new ObjectId(id) });
     if (newState === race.raceState) throw `Error: Race state is already ${race.raceState}`
