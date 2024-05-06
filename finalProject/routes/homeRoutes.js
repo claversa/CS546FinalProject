@@ -180,6 +180,7 @@ router.route('/training').get(async (req, res) => {
     res.render("error", { title: "Error", user: req.session.user, error: e, otherCSS: "/public/error.css" })
   }
   res.render("./training", { title: "Training Program", otherCSS: "/public/training.css", user: req.session.user, plans: user.currPlan });
+
 });
 
 router.route('/countdown').get(async (req, res) => {

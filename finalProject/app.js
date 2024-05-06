@@ -63,17 +63,6 @@ app.use(async (req, res, next) => {
     next();
 });
 
-app.use(async (req, res, next) => {
-    if (req.path.startsWith('/profile/')) {
-        if (req.session.user) {
-            if (req.path !== `/profile/${req.session.user.username}`){
-                return res.redirect('/error?message=Access Denied');
-            }
-        }
-    }
-    next();
-});
-
 configRoutes(app);
 
 app.listen(3000, () => {

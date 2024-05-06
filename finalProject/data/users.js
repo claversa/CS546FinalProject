@@ -78,6 +78,7 @@ const create = async (
         registeredRaces,
         currPlan,
         trainingPlans,
+        private: false
     };
     const userCollection = await users();
     const existUsername = await userCollection.findOne({ username: username });
