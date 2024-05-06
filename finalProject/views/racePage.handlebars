@@ -39,11 +39,10 @@
     {{/each}}
 </div>
 
-
 {{!-- Review sections --}}
 <form action="/review/{{raceId}}" method="POST" class="reviewRace">
-    <label for="write-review" class="review-label">REVIEW THIS RACE:</label><br>
-    <textarea id="write-review" name="write-review" wrap="soft" placeholder="Type here..."></textarea><br>
+    <label for="review" class="review-label">REVIEW THIS RACE:</label><br>
+    <textarea id="review" name="review" wrap="soft" placeholder="Type here..."></textarea><br>
     <label for="rating" class="review-label">RATING:</label><br>
     <input type="range" id="rating" class="rating" max="5" min="1" value="3"
         oninput="rangeValue.innerText = this.value"><br>
@@ -58,14 +57,12 @@
     {{#eq this.username ../user.username}}
 </p>
 <form action="/removeReview/{{../raceId}}" method="POST" class="delete-review-form">
-    <input type="hidden" id="review" name="review" value="{{this.comment}}">
+    <input type="hidden" name="review" value="{{this.comment}}">
     <button type="submit">Delete</button>
 </form>
 {{/eq}}
 
 {{/each}}
-
-
 
 
 {{!-- Comments section -- for users to interact, should use @ ? --}}
@@ -82,7 +79,7 @@
     {{#eq this.username ../user.username}}
 </p>
 <form action="/uncomment/{{../raceId}}" method="POST" class="delete-comment-form">
-    <input type="hidden" id="comment" name="comment" value="{{this.comment}}">
+    <input type="hidden" name="comment" value="{{this.comment}}">
     <button type="submit">Delete</button>
 </form>
 {{/eq}}

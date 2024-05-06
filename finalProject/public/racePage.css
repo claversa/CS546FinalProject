@@ -40,6 +40,11 @@ button {
     color: var(--bg);
 }
 
+button:hover {
+    background-color: var(--bg);
+    color: var(--input);
+}
+
 .horizontal-list {
     text-align: center;
     line-height: 2;
@@ -123,5 +128,7 @@ textarea:hover {
     font-size: 20px;
     margin-right: auto;
     margin-left: auto;
+    text-align: center;
+    width: 50%;
 
 }
