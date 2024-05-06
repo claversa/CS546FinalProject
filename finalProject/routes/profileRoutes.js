@@ -9,7 +9,6 @@ import xss from 'xss';
 // default, get profile for given id
 router.route('/:id').get(async (req, res) => {
   //code here for GET will render the home handlebars file
-  //CHECK ID
 
   let username = xss(req.params.id);
   try {
@@ -26,15 +25,16 @@ router.route('/:id').get(async (req, res) => {
       for (const raceId of user.registeredRaces) {
         raceName = await races.isCompleted(raceId);
         if (raceName) {
-            racesCompleted.push(raceName);
+          racesCompleted.push(raceId);
         }
       }
-      console.log(racesCompleted)
+      // console.log(racesCompleted)
       if (user.private && !(req.session.user.username === username)) {
         throw "User has a private profile";
       }
       let registeredRaces = await races.getRaceNamesByIds(user.registeredRaces)
-      res.render("profile", { completedRaces: racesCompleted, reviews: user.reviews, registeredRaces: registeredRaces, title: 'Profile', first: user.firstName.toUpperCase(), privacy: user.private, last: user.lastName.toUpperCase(), username: user.username, email: user.email.toUpperCase(), gender: user.gender.toUpperCase(), system: user.system.toUpperCase(), state: user.state.toUpperCase(), age: user.age, socialHandle: user.socialHandle, socialPlatform: user.socialPlatform.toUpperCase(), password: user.password, user: req.session.user, otherCSS: "/public/profile.css" })
+      let completedRaces = await races.getRaceNamesByIds(racesCompleted)
+      res.render("profile", { completedRaces: completedRaces, reviews: user.reviews, registeredRaces: registeredRaces, title: 'Profile', first: user.firstName.toUpperCase(), privacy: user.private, last: user.lastName.toUpperCase(), username: user.username, email: user.email.toUpperCase(), gender: user.gender.toUpperCase(), system: user.system.toUpperCase(), state: user.state.toUpperCase(), age: user.age, socialHandle: user.socialHandle, socialPlatform: user.socialPlatform.toUpperCase(), password: user.password, user: req.session.user, otherCSS: "/public/profile.css" })
     }
   }
   catch (e) {

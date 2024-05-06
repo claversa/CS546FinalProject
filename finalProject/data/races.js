@@ -229,6 +229,7 @@ export const updateDate = async (id, newDate) => {
     newDate = help.notStringOrEmpty(newDate, 'newDate');
     const raceCollection = await races();
     const race = await raceCollection.findOne({ _id: new ObjectId(id) });
+    if (!help.isDateAfterToday(newDate, race.raceTime)) throw "Error: Race is not after today's current date and time."
     if (newDate === race.raceDate) throw `Error: Race date is already ${race.raceDate}`
     const updatedInfo = await raceCollection.findOneAndUpdate(
         { _id: new ObjectId(id) },
@@ -248,6 +249,7 @@ export const updateTime = async (id, newTime) => {
     newTime = help.notStringOrEmpty(newTime, 'newTime');
     const raceCollection = await races();
     const race = await raceCollection.findOne({ _id: new ObjectId(id) });
+    if (!help.isDateAfterToday(race.raceDate, newTime)) throw "Error: Race is not after today's current date and time."
     if (newTime === race.raceTime) throw `Error: Race time is already ${race.raceTime}`
     const updatedInfo = await raceCollection.findOneAndUpdate(
         { _id: new ObjectId(id) },

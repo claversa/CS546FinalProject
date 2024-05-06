@@ -4,6 +4,7 @@ const router = Router();
 import * as racesFuns from '../data/races.js'; // need stuff from race db
 import * as help from "../helpers/helpers.js"
 import * as data from '../data/users.js';
+import { ObjectId } from "mongodb";
 import xss from 'xss';
 
 router.route('/').get(async (req, res) => {
@@ -18,7 +19,9 @@ router.route('/').get(async (req, res) => {
 router.route('/comment/:raceId').post(async (req, res) => {
   try {
     const raceId = xss(req.params.raceId);
-    const comment = xss(req.body.comment);
+    if (!ObjectId.isValid(raceId)) throw 'invalid race ID';
+    let comment = xss(req.body.comment);
+    comment = help.notStringOrEmpty(comment);
     await racesFuns.addComment(req.session.user.username, raceId, comment)
     res.redirect(`/race/${raceId}`)
   } catch (error) {
@@ -29,7 +32,9 @@ router.route('/comment/:raceId').post(async (req, res) => {
 router.route('/uncomment/:raceId').post(async (req, res) => {
   try {
     const raceId = xss(req.params.raceId);
-    const comment = xss(req.body.comment);
+    if (!ObjectId.isValid(raceId)) throw 'invalid race ID';
+    let comment = xss(req.body.comment);
+    comment = help.notStringOrEmpty(comment);
     await racesFuns.removeComment(req.session.user.username, raceId, comment)
     res.redirect(`/race/${raceId}`)
   } catch (error) {
@@ -40,8 +45,12 @@ router.route('/uncomment/:raceId').post(async (req, res) => {
 router.route('/review/:raceId').post(async (req, res) => {
   try {
     const raceId = xss(req.params.raceId);
-    const comment = xss(req.body.review);
-    const rating = xss(req.body.rating);
+    if (!ObjectId.isValid(raceId)) throw 'invalid race ID';
+    let comment = xss(req.body.review);
+    comment = help.notStringOrEmpty(comment);
+    let rating = xss(req.body.rating);
+    let validRating = ["1", "2", "3", "4", "5"];
+    if (!validRating.includes(rating)) throw "Error: invalid rating";
     await racesFuns.addReview(req.session.user.username, raceId, comment, rating)
     await data.addReview(req.session.user.username, raceId, comment, rating)
     res.redirect(`/race/${raceId}`)
@@ -53,8 +62,12 @@ router.route('/review/:raceId').post(async (req, res) => {
 router.route('/removeReview/:raceId').post(async (req, res) => {
   try {
     const raceId = xss(req.params.raceId);
-    const comment = xss(req.body.review);
-    const rating = xss(req.body.rating);
+    if (!ObjectId.isValid(raceId)) throw 'invalid race ID';
+    let comment = xss(req.body.review);
+    comment = help.notStringOrEmpty(comment);
+    let rating = xss(req.body.rating);
+    let validRating = ["1", "2", "3", "4", "5"];
+    if (!validRating.includes(rating)) throw "Error: invalid rating";
     await racesFuns.removeReview(req.session.user.username, raceId, comment, rating)
     await data.removeReview(req.session.user.username, raceId, comment, rating)
     res.redirect(`/race/${raceId}`)
@@ -66,6 +79,7 @@ router.route('/removeReview/:raceId').post(async (req, res) => {
 router.route('/register/:raceId').post(async (req, res) => {
   try {
     const raceId = xss(req.params.raceId);
+    if (!ObjectId.isValid(raceId)) throw 'invalid race ID';
     await racesFuns.registerUser(req.session.user.username, raceId);
     await data.registerRace(req.session.user.username, raceId);
     await data.addTrainingPlan(req.session.user.username, raceId, req.body.maxMileageYet);
@@ -79,6 +93,7 @@ router.route('/register/:raceId').post(async (req, res) => {
 router.route('/unregister/:raceId').post(async (req, res) => {
   try {
     const raceId = xss(req.params.raceId);
+    if (!ObjectId.isValid(raceId)) throw 'invalid race ID';
     await racesFuns.unregisterUser(req.session.user.username, raceId);
     await data.unregisterRace(req.session.user.username, raceId);
     await data.removeTrainingPlan(req.session.user.username, raceId);
