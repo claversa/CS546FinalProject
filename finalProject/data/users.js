@@ -62,6 +62,7 @@ const create = async (
     let registeredRaces = [];
     let currPlan = [];
     let trainingPlans = {};
+    let racesCompleted = [];
 
     let newUser = {
         firstName,
@@ -78,6 +79,7 @@ const create = async (
         registeredRaces,
         currPlan,
         trainingPlans,
+        racesCompleted,
         private: false
     };
     const userCollection = await users();
