@@ -20,6 +20,7 @@ router.route('/:id').get(async (req, res) => {
   }
   try {
     let user = await data.get(username);
+    let owner = false;
     if (user) {
       let racesCompleted = [];
       let raceName = undefined;
@@ -34,11 +35,23 @@ router.route('/:id').get(async (req, res) => {
         throw "User has a private profile";
       }
       let registeredRaces = await races.getRaceNamesByIds(user.registeredRaces)
-      res.render("profile", { completedRaces: racesCompleted, reviews: user.reviews, registeredRaces: registeredRaces, title: 'Profile', first: user.firstName.toUpperCase(), privacy: user.private, last: user.lastName.toUpperCase(), username: user.username, email: user.email.toUpperCase(), gender: user.gender.toUpperCase(), system: user.system.toUpperCase(), state: user.state.toUpperCase(), age: user.age, socialHandle: user.socialHandle, socialPlatform: user.socialPlatform.toUpperCase(), password: user.password, user: req.session.user, otherCSS: "/public/profile.css" })
+      if (user.username === req.session.user.username) owner = true;
+      res.render("profile", { owner, completedRaces: racesCompleted, reviews: user.reviews, registeredRaces: registeredRaces, title: 'Profile', first: user.firstName.toUpperCase(), privacy: user.private, last: user.lastName.toUpperCase(), username: user.username, email: user.email.toUpperCase(), gender: user.gender.toUpperCase(), system: user.system.toUpperCase(), state: user.state.toUpperCase(), age: user.age, socialHandle: user.socialHandle, socialPlatform: user.socialPlatform.toUpperCase(), password: user.password, user: req.session.user, otherCSS: "/public/profile.css" })
     }
   }
   catch (e) {
     res.status(404).render('error', { title: "Error", class: "not-found", error: e.toString(), otherCSS: "/public/error.css" });
+  }
+});
+
+router.route('/editGender/:id').post(async (req, res) => {
+  try {
+    const newGender = xss(req.body.gender);
+    const username = xss(req.params.id);
+    await data.updateGender(username, newGender);      
+    res.status(200).json({ message: "Gender updated successfully" });
+  } catch (e) {
+    res.status(400).json({ error: "Invalid gender" });
   }
 });
 

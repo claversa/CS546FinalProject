@@ -260,9 +260,8 @@ const updateGender = async (username, newGender) => {
     if (newGender != "male" && newGender != "female" && newGender != "other" && newGender != "preferNot") throw 'Error: not a valid response (gender)!'
     const userCollection = await users();
     const user = await userCollection.findOne({ username: username });
-    if (!user) throw 'User not found' // checks if user is not found
-    // already set
-    if (newGender.toLowerCase() === user.gender.toLowerCase()) throw `Error: Gender is already ${user.gender}`
+    if (!user) throw 'User not found' 
+    if (newGender === user.gender) throw `Error: Gender is already ${user.gender}`
     const updatedInfo = await userCollection.findOneAndUpdate(
         { username: username },
         { $set: { gender: newGender } },

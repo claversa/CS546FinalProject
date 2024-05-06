@@ -15,7 +15,14 @@
         </a>
         {{/each}}
     </ul>
-    <button>EDIT</button>
+    {{#if owner}}
+        <form action="/editProfile" method="GET" class="editProfile">
+        <button type="submit">EDIT</button>
+        </form>
+        <form action="/profile/delete/{{username}}" method="POST" class="editProfile">
+        <button type="submit">DELETE</button>
+        </form> <br><br>
+    {{/if}}
 
     <h4>REVIEWS:</h4>
     {{#each reviews}}

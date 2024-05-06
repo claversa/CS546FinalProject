@@ -15,6 +15,10 @@ router.route('/').get(async (req, res) => {
   res.render('home', { title: "Homepage", user: req.session.user, error: "", loggedIn: loggedIn, otherCSS: "/public/home.css" }); // NO ERROR
 });
 
+router.route('/editProfile').get(async (req, res) => {
+  res.render('editProfile', { title: "Edit Profile", user: req.session.user, error: "", otherCSS: "" });
+});
+
 router.route('/comment/:raceId').post(async (req, res) => {
   try {
     const raceId = xss(req.params.raceId);
