@@ -14,47 +14,99 @@ export const create = async (
     terrain, // array
     raceUrl // string
 ) => {
-    //SPLIT UP
+
+    const errors = [];
+
     if (typeof terrain === 'string') {
-        terrain = [terrain]
+        terrain = [terrain];
     }
-    raceName = help.notStringOrEmpty(raceName, "race name");
-    username = help.notStringOrEmpty(username, "username");
-    raceCity = help.notStringOrEmpty(raceCity, "raceCity");
-    raceState = help.notStringOrEmpty(raceState, "raceState");
-    raceTime = help.notStringOrEmpty(raceTime, "raceTime");
-    terrain = help.arraysWithStringElem(terrain, "terrain");
-    raceUrl = help.notStringOrEmpty(raceUrl, "raceUrl");
 
-    const userCollection = await users();
-    const user = await userCollection.findOne({ username: username });
-    if (!user) throw 'Error: User not found';
+    try {
+        raceName = help.notStringOrEmpty(raceName, "race name");
+    } catch (e) {
+        errors.push(`invalid race name`);
+    }
 
-    // validate url
-    help.validURL(raceUrl)
+    try {
+        username = help.notStringOrEmpty(username, "username");
+    } catch (e) {
+        errors.push(`invalid username`);
+    }
 
-    // date
-    help.validDate(raceDate)
-    
-    // state 
-    raceState = help.validState(raceState); // to upper case
-    
-    // time
-    raceTime = help.validTime(raceTime);
+    try {
+        raceCity = help.notStringOrEmpty(raceCity, "race city");
+    } catch (e) {
+        errors.push(`invalid race city`);
+    }
 
-    if (!help.isDateAfterToday(raceDate, raceTime)) throw "Error: Race date must be after today's date"
+    try {
+        raceState = help.notStringOrEmpty(raceState, "race state");
+        raceState = help.validState(raceState);
+    } catch (e) {
+        errors.push(`invalid race state`);
+    }
 
+    try {
+        raceTime = help.notStringOrEmpty(raceTime, "race time");
+        raceTime = help.validTime(raceTime);
+    } catch (e) {
+        errors.push(`invalid race time`);
+    }
+
+    try {
+        terrain = help.arraysWithStringElem(terrain, "terrain");
+        let validTerrain = ["Street", "Grass", "Beach", "Rocky", "Inclined", "Muddy"];
+        for (let ter of terrain) {
+            if (!(validTerrain.includes(ter))) {
+                throw "Error: Invalid terrain";
+            }
+        }
+    } catch (e) {
+        errors.push(`invalid terrain`);
+    }
+
+    try {
+        raceUrl = help.notStringOrEmpty(raceUrl, "race URL");
+        help.validURL(raceUrl);
+    } catch (e) {
+        errors.push(`invalid race URL: must be of form https://www.{url}.{com,org,etc}`);
+    }
+
+    try {
+        // Validate date
+        help.validDate(raceDate);
+        if (!help.isDateAfterToday(raceDate, raceTime)) throw "Error: Race date must be after today's date";
+    } catch (e) {
+        errors.push(`invalid race : must be valid format and after today's date and time`);
+    }
+
+    try {
+        // Validate distance
+        let validDist = ["5K", "Half Marathon", "Marathon"];
+        if (!(validDist.includes(distance))) {
+            throw "Error: Invalid distance";
+        }
+    } catch (e) {
+        errors.push(`invalid distance`);
+    }
+
+
+    // Check for errors and handle accordingly
+    if (errors.length > 0) {
+        // console.log('Validation errors:', errors);
+        throw (`Errors: ${errors}`);
+    }
 
     //make new race to be inserted
-    let newRace = { 
+    let newRace = {
         raceName,
-        username, 
-        raceCity, 
-        raceState, 
-        raceDate, 
-        raceTime, 
-        distance, 
-        terrain, 
+        username,
+        raceCity,
+        raceState,
+        raceDate,
+        raceTime,
+        distance,
+        terrain,
         raceUrl,
         registeredUsers: [],
         comments: [],
@@ -97,13 +149,13 @@ export const search = async (keyword) => { // finds races based on keyword in ra
     const raceCollection = await races();
     let results = await raceCollection.find({
         $or: [
-            {raceName: { $regex: keyword, $options: 'i' } }
+            { raceName: { $regex: keyword, $options: 'i' } }
         ]
     }).toArray();
     return results;
 };
 
-export const searchByState = async (state) => { 
+export const searchByState = async (state) => {
     state = help.notStringOrEmpty(state, 'state');
     const raceCollection = await races();
     let results = await raceCollection.find({ raceState: state }).toArray();
@@ -111,7 +163,7 @@ export const searchByState = async (state) => {
 };
 
 // update functions
-export const updateName = async (id, newName) => { 
+export const updateName = async (id, newName) => {
     id = help.notStringOrEmpty(id, 'id');
     if (!ObjectId.isValid(id)) throw 'invalid object ID'; // check for valid id
     newName = help.notStringOrEmpty(newName, 'newName');
@@ -131,7 +183,7 @@ export const updateName = async (id, newName) => {
     return updatedInfo;
 };
 
-export const updateCity = async (id, newCity) => { 
+export const updateCity = async (id, newCity) => {
     id = help.notStringOrEmpty(id, 'id');
     if (!ObjectId.isValid(id)) throw 'invalid object ID'; // check for valid id
     newCity = help.notStringOrEmpty(newCity, 'newCity');
@@ -151,7 +203,7 @@ export const updateCity = async (id, newCity) => {
     return updatedInfo;
 };
 
-export const updateState = async (id, newState) => { 
+export const updateState = async (id, newState) => {
     id = help.notStringOrEmpty(id, 'id');
     if (!ObjectId.isValid(id)) throw 'invalid object ID'; // check for valid id
     newState = help.notStringOrEmpty(newState, 'newState');
@@ -171,7 +223,7 @@ export const updateState = async (id, newState) => {
     return updatedInfo;
 };
 
-export const updateDate = async (id, newDate) => { 
+export const updateDate = async (id, newDate) => {
     id = help.notStringOrEmpty(id, 'id');
     if (!ObjectId.isValid(id)) throw 'invalid object ID'; // check for valid id
     newDate = help.notStringOrEmpty(newDate, 'newDate');
@@ -190,7 +242,7 @@ export const updateDate = async (id, newDate) => {
     return updatedInfo;
 };
 
-export const updateTime = async (id, newTime) => { 
+export const updateTime = async (id, newTime) => {
     id = help.notStringOrEmpty(id, 'id');
     if (!ObjectId.isValid(id)) throw 'invalid object ID'; // check for valid id
     newTime = help.notStringOrEmpty(newTime, 'newTime');
@@ -209,7 +261,7 @@ export const updateTime = async (id, newTime) => {
     return updatedInfo;
 };
 
-export const updateDistance = async (id, newDistance) => { 
+export const updateDistance = async (id, newDistance) => {
     id = help.notStringOrEmpty(id, 'id');
     if (!ObjectId.isValid(id)) throw 'invalid object ID'; // check for valid id
     newDistance = help.notStringOrEmpty(newDistance, 'newDistance');
@@ -228,7 +280,7 @@ export const updateDistance = async (id, newDistance) => {
     return updatedInfo;
 };
 
-export const updateTerrain = async (id, newTerrain) => { 
+export const updateTerrain = async (id, newTerrain) => {
     id = help.notStringOrEmpty(id, 'id');
     if (!ObjectId.isValid(id)) throw 'invalid object ID'; // check for valid id
     const raceCollection = await races();
@@ -280,7 +332,7 @@ export const registerUser = async (username, raceId) => {
     }
     race.registeredUsers.push(username);
     const updatedRace = {
-        registeredUsers: race.registeredUsers 
+        registeredUsers: race.registeredUsers
     };
     const updatedInfo = await raceCollection.findOneAndUpdate(
         { _id: new ObjectId(raceId) },
@@ -296,14 +348,14 @@ export const registerUser = async (username, raceId) => {
 
 export const unregisterUser = async (username, raceId) => {
     username = help.notStringOrEmpty(username, 'username');
-    if (!ObjectId.isValid(raceId)) throw 'invalid object ID'; 
+    if (!ObjectId.isValid(raceId)) throw 'invalid object ID';
     raceId = help.notStringOrEmpty(raceId, 'raceId');
     const raceCollection = await races();
     const race = await raceCollection.findOne({ _id: new ObjectId(raceId) });
     if (!Array.isArray(race.registeredUsers)) {
         race.registeredUsers = [];
     }
-    
+
     race.registeredUsers = race.registeredUsers.filter(name => name !== username);
     const updatedRace = {
         registeredUsers: race.registeredUsers
@@ -351,8 +403,8 @@ export const addComment = async (username, raceId, comment) => {
         const newComment = { username, comment };
         if (race) {
             race.comments.push(newComment)
-        }       
-        
+        }
+
         const updatedRace = {
             comments: race.comments
         };
@@ -377,10 +429,10 @@ export const removeComment = async (username, raceId, comment) => {
     try {
         comment = help.notStringOrEmpty(comment, 'comment');
         const race = await raceCollection.findOne({ _id: new ObjectId(raceId) });
-    
+
         const indexToRemove = race.comments.findIndex(item => item.username === username && item.comment === comment);
         if (indexToRemove !== -1) {
-        race.comments.splice(indexToRemove, 1);
+            race.comments.splice(indexToRemove, 1);
         }
         const updatedRace = {
             comments: race.comments
@@ -418,8 +470,8 @@ export const addReview = async (username, raceId, comment, rating) => {
         const newComment = { username, comment, rating };
         if (race) {
             race.reviews.push(newComment)
-        }       
-        
+        }
+
         const updatedRace = {
             reviews: race.reviews
         };
@@ -444,10 +496,10 @@ export const removeReview = async (username, raceId, comment, rating) => {
     try {
         comment = help.notStringOrEmpty(comment, 'comment');
         const race = await raceCollection.findOne({ _id: new ObjectId(raceId) });
-    
+
         const indexToRemove = race.reviews.findIndex(item => item.username === username && item.comment === comment && item.rating === rating);
         if (indexToRemove !== -1) {
-        race.reviews.splice(indexToRemove, 1);
+            race.reviews.splice(indexToRemove, 1);
         }
         const updatedRace = {
             reviews: race.reviews

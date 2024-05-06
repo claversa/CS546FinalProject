@@ -20,43 +20,101 @@ const create = async (
     system,
     password
 ) => {
-    // exists, not string or empty, trims all input as well
-    username = help.notStringOrEmpty(username, "username");
-    firstName = help.notStringOrEmpty(firstName, "firstName");
-    lastName = help.notStringOrEmpty(lastName, "lastName");
-    email = help.notStringOrEmpty(email, "email");
-    state = help.notStringOrEmpty(state, "state");
-    gender = help.notStringOrEmpty(gender, "gender");
-    socialPlatform = help.notStringOrEmpty(socialPlatform, "social platform");
-    socialHandle = help.notStringOrEmpty(socialHandle, "social handle");
-    system = help.notStringOrEmpty(system, "system");
-    password = help.notStringOrEmpty(password, "password");
-    birthdate = help.notStringOrEmpty(birthdate, "birthdate");
 
-    if (gender != "male" && gender != "female" && gender != "other" && gender != "preferNot") throw 'Error: not a valid response (gender)!'
-    if (system != "metric" && system != "imperial") throw "Error: invalid measurement system";
-
-    // validate birthdate
+    const errors = [];
     try {
-        help.validBirthdate(birthdate);
+        firstName = help.notStringOrEmpty(firstName, "firstName");
     } catch (e) {
-        throw e;
-    };
+        errors.push(`invalid firstName`);
+    }
 
-    // validate username and PW
-    username = help.validUsername(username);
-    password = help.validPassword(password);
+    try {
+        lastName = help.notStringOrEmpty(lastName, "lastName");
+    } catch (e) {
+        errors.push(`invalid lastName`);
+    }
 
-    // validate abbrev and makes uppercase
-    state = help.validState(state);
+    try {
+        username = help.notStringOrEmpty(username, "username");
+        username = help.validUsername(username);
+    } catch (e) {
+        errors.push(`invalid username: username must have between 5 and 10 characters `);
+    }
 
-    // validate email -- NO DUPLICATES EVEN WITH CAPS
-    email = help.validEmail(email);
+    try {
+        email = help.notStringOrEmpty(email, "email");
+        email = help.validEmail(email);
+    } catch (e) {
+        errors.push(`invalid email`);
+    }
 
-    // password
-    let hashedPW = await pw.hashPassword(password);
-    let age = help.calculateAge(birthdate);
-    if (age < 13) throw "Age must be above 13 to register"
+    try {
+        state = help.notStringOrEmpty(state, "state");
+        state = help.validState(state);
+    } catch (e) {
+        errors.push(`invalid state`);
+    }
+
+    try {
+        gender = help.notStringOrEmpty(gender, "gender");
+        if (gender !== "male" && gender !== "female" && gender !== "other" && gender !== "preferNot") {
+            errors.push('invalid gender response');
+        }
+    } catch (e) {
+        errors.push(`invalid gender`);
+    }
+
+    try {
+        socialPlatform = help.notStringOrEmpty(socialPlatform, "social platform");
+        const validPlatforms = ["twitter", "facebook", "instagram"];
+        if (!validPlatforms.includes(socialPlatform)) {
+            errors.push('invalid social platform');
+        }
+    } catch (e) {
+        errors.push(`invalid social platform`);
+    }
+
+    try {
+        socialHandle = help.notStringOrEmpty(socialHandle, "social handle");
+    } catch (e) {
+        errors.push(`invalid social handle`);
+    }
+
+    try {
+        system = help.notStringOrEmpty(system, "system");
+        if (system !== "metric" && system !== "imperial") {
+            errors.push('invalid measurement system');
+        }
+    } catch (e) {
+        errors.push(`invalid system`);
+    }
+
+    try {
+        password = help.notStringOrEmpty(password, "password");
+        password = help.validPassword(password);
+    } catch (e) {
+        errors.push(`invalid password: password must have at least 8 characters with at least 1 uppercase letter, number, and special character`);
+    }
+
+    let age;
+    try {
+        birthdate = help.notStringOrEmpty(birthdate, "birthdate");
+        help.validBirthdate(birthdate);
+        age = help.calculateAge(birthdate);
+        if (age < 13) {
+            errors.push("Age must be above 13 to register");
+        }
+    } catch (e) {
+        errors.push(`invalid birthdate`);
+    }
+
+
+    if (errors.length > 0) {
+        // If there are errors, handle them accordingly
+        // console.log('Errors found:', errors);
+        throw (`Errors: ${errors}`);
+    }
+
 
     //make empty arrays for registered races and training plans that will be filled in later
     let registeredRaces = [];
@@ -64,6 +122,7 @@ const create = async (
     let trainingPlans = {};
     let racesCompleted = [];
 
+    let hashedPW = await pw.hashPassword(password);
     let newUser = {
         firstName,
         lastName,
@@ -97,7 +156,7 @@ const create = async (
 const getAll = async () => {
     const userCollection = await users();
     let userList = await userCollection.find({}).toArray(); // get all users, put in array
-    if (!userList) throw 'Could not get all products';
+    if (!userList) throw 'Could not get all users';
     userList = userList.map((element) => {
         element._id = element._id.toString();
         return element;
@@ -108,7 +167,6 @@ const getAll = async () => {
 // get specific user
 const get = async (username) => {
     username = help.notStringOrEmpty(username, 'username');
-    //if (!ObjectId.isValid(id)) throw 'invalid object ID';
     const userCollection = await users();
     const user = await userCollection.findOne({ username: username });
     if (user === null) throw `No user named ${username}`;
@@ -289,7 +347,7 @@ const registerRace = async (username, raceId) => {
 
 const unregisterRace = async (username, raceId) => {
     username = help.notStringOrEmpty(username, 'username');
-    if (!ObjectId.isValid(raceId)) throw 'invalid object ID'; 
+    if (!ObjectId.isValid(raceId)) throw 'invalid object ID';
     raceId = help.notStringOrEmpty(raceId, 'raceId');
     const userCollection = await users();
     const user = await userCollection.findOne({ username: username });
@@ -315,104 +373,104 @@ const unregisterRace = async (username, raceId) => {
 
 const addTrainingPlan = async (username, raceId, maxMileageYet) => {
     username = help.notStringOrEmpty(username, 'username');
-    if (!ObjectId.isValid(raceId)) throw 'invalid object ID'; 
+    if (!ObjectId.isValid(raceId)) throw 'invalid object ID';
     raceId = help.notStringOrEmpty(raceId, 'raceId');
 
     const userCollection = await users();
     const user = await userCollection.findOne({ username: username });
     if (!user) throw 'User not found' // checks if user is not found
     // user.registeredRaces = user.registeredRaces.filter(id => id !== raceId);
-    if(!maxMileageYet){
+    if (!maxMileageYet) {
         maxMileageYet = 0
-    } else{
+    } else {
         maxMileageYet = help.isValidNumber(maxMileageYet, 'max mileage yet');
     }
 
-    const { 
+    const {
         raceName,
-        raceCreator, 
-        raceCity, 
-        raceState, 
-        raceDate, 
-        raceTime, 
-        distance, 
-        terrain, 
+        raceCreator,
+        raceCity,
+        raceState,
+        raceDate,
+        raceTime,
+        distance,
+        terrain,
         raceUrl,
         registeredUsers
     } = await race.get(raceId);
-    
+
     // 4 weeks
     let base5k = [[0, 1, 1, 1, 0, 1, 2], [0, 1, 2, 1, 0, 1, 2], [0, 1, 2, 1, 0, 1, 2.5], [0, 2, 2, 1, 0, 2, 3.1]];
     // 12 weeks
-    let baseHalf = [[0, 1, 1, 1, 0, 1, 2], [0, 1, 2, 1, 0, 1, 3], [0, 3, 2, 3, 0, 1, 4], [0, 3.5, 2, 3.5, 0, 1, 5], [0, 3.5, 2, 3.5, 0, 1, 5], [0, 4, 2, 4, 0, 1, 6], 
+    let baseHalf = [[0, 1, 1, 1, 0, 1, 2], [0, 1, 2, 1, 0, 1, 3], [0, 3, 2, 3, 0, 1, 4], [0, 3.5, 2, 3.5, 0, 1, 5], [0, 3.5, 2, 3.5, 0, 1, 5], [0, 4, 2, 4, 0, 1, 6],
     [0, 4, 2, 4, 1, 0, 3.1], [0, 4.5, 3, 4.5, 0, 1, 7], [0, 4.5, 3, 4.5, 0, 1, 8], [0, 5, 3, 5, 0, 1, 9], [0, 5, 3, 5, 0, 1, 10], [0, 4, 3, 2, 0, 0, 13.1]];
     // 18 weeks
-    let baseMarathon = [[0, 1, 1, 1, 0, 1, 2], [0, 1, 2, 1, 0, 1, 3], [0, 3, 2, 3, 0, 1, 4], [0, 3.5, 2, 3.5, 0, 1, 5], [0, 4.5, 3, 4.5, 0, 1, 7], [0, 5, 3, 5, 0, 1, 9], [0, 5, 3, 5, 3, 0, 10], [0, 4, 3, 2, 4, 0, 13.2], 
-    [0, 3, 7, 4, 6, 0, 10], [0, 3, 7, 4, 0, 3, 15], [0, 4, 8, 5, 0, 3, 16], [0, 4, 8, 5, 0, 3, 12], [0, 4, 9, 5, 0, 3, 18], [0, 5, 9, 5, 0, 3, 14], [0, 5, 10, 5, 0, 4, 20], [0, 5, 8, 4, 0, 3, 12], [0, 4, 6, 3, 0, 1, 8],[0, 3, 4, 2, 0, 1, 26.2]];
+    let baseMarathon = [[0, 1, 1, 1, 0, 1, 2], [0, 1, 2, 1, 0, 1, 3], [0, 3, 2, 3, 0, 1, 4], [0, 3.5, 2, 3.5, 0, 1, 5], [0, 4.5, 3, 4.5, 0, 1, 7], [0, 5, 3, 5, 0, 1, 9], [0, 5, 3, 5, 3, 0, 10], [0, 4, 3, 2, 4, 0, 13.2],
+    [0, 3, 7, 4, 6, 0, 10], [0, 3, 7, 4, 0, 3, 15], [0, 4, 8, 5, 0, 3, 16], [0, 4, 8, 5, 0, 3, 12], [0, 4, 9, 5, 0, 3, 18], [0, 5, 9, 5, 0, 3, 14], [0, 5, 10, 5, 0, 4, 20], [0, 5, 8, 4, 0, 3, 12], [0, 4, 6, 3, 0, 1, 8], [0, 3, 4, 2, 0, 1, 26.2]];
     // what was users last greatest mileage, compare FROM START TO END of above training arrays 
     let plan = [];
     switch (distance) {
-        case "5K": 
+        case "5K":
             plan = base5k;
             break;
-        case "Half Marathon": 
+        case "Half Marathon":
             plan = baseHalf;
             break;
-        case "Marathon": 
+        case "Marathon":
             plan = baseMarathon;
             break;
-        default: 
+        default:
             throw `Not a valid distance`;
     }
-    
-    if(maxMileageYet >= plan[1][6]){
+
+    if (maxMileageYet >= plan[1][6]) {
         for (let i = 0; i < plan.length; i++) {
             if (maxMileageYet <= plan[i][6]) {
-              plan = plan.slice(i, plan.length);
-              break;
-            } else if (i === plan.length - 1){
-              plan = plan.slice(i, plan.length);
+                plan = plan.slice(i, plan.length);
+                break;
+            } else if (i === plan.length - 1) {
+                plan = plan.slice(i, plan.length);
             }
         }
     }
 
-    let weeksUntil = Math.floor((new Date(raceDate) - Date.now())/1000/60/60/24/7);
+    let weeksUntil = Math.floor((new Date(raceDate) - Date.now()) / 1000 / 60 / 60 / 24 / 7);
     let errorMsg = "";
-    
-    if (weeksUntil <= 0){
+
+    if (weeksUntil <= 0) {
         plan = [];
         errorMsg = `This race data already passed.`;
-    } else if (weeksUntil < plan.length){
+    } else if (weeksUntil < plan.length) {
         plan = plan.slice(0, weeksUntil);
-        errorMsg = `You can not safely train for the entire ${distance} mile race. Train up until ${plan[plan.length-1][6]} miles and then you have to walk.`;
+        errorMsg = `You can not safely train for the entire ${distance} mile race. Train up until ${plan[plan.length - 1][6]} miles and then you have to walk.`;
     } else {
         let div = Math.floor((weeksUntil - plan.length) / plan.length);
         let mod = weeksUntil % plan.length;
-        if (plan.length === 1){
+        if (plan.length === 1) {
             plan = Array(weeksUntil).fill(plan[0]);
-        } else{
+        } else {
             plan = plan.map((week, ind) => {
-                if(ind === plan.length - 1){
+                if (ind === plan.length - 1) {
                     return Array(week);
-                } else if (plan.length - mod - 1 <= ind){
+                } else if (plan.length - mod - 1 <= ind) {
                     return Array(2 + div).fill(week);
-                } else{
+                } else {
                     return Array(1 + div).fill(week);
                 }
             }).flat();
         }
     }
-    
+
     let plans = user.trainingPlans;
     plans[`${raceId}`] = plan;
-    if (Object.keys(plans).length === 0){
+    if (Object.keys(plans).length === 0) {
         plan = [];
-    } else if(Object.keys(plans).length === 1){
+    } else if (Object.keys(plans).length === 1) {
         plan = Object.values(plans)[0];
     } else {
-        plan = [0, [[0,0,0,0,0,0,0]]];
+        plan = [0, [[0, 0, 0, 0, 0, 0, 0]]];
         for (const [key, val] of Object.entries(plans)) {
-            if (plan[1].join() === [[0,0,0,0,0,0,0]].join()) {
+            if (plan[1].join() === [[0, 0, 0, 0, 0, 0, 0]].join()) {
                 plan = [key, val];
             } else {
                 let r1 = await race.get(key);
@@ -427,13 +485,15 @@ const addTrainingPlan = async (username, raceId, maxMileageYet) => {
         }
         plan = plan[1];
     }
-    
+
     const updatedInfo = await userCollection.findOneAndUpdate(
         { username: username },
-        { $set: { 
-            currPlan: plan,
-            trainingPlans: plans
-        }},
+        {
+            $set: {
+                currPlan: plan,
+                trainingPlans: plans
+            }
+        },
         { returnDocument: 'after' }
     );
     if (!updatedInfo) {
@@ -446,7 +506,7 @@ const addTrainingPlan = async (username, raceId, maxMileageYet) => {
 
 const removeTrainingPlan = async (username, raceId) => {
     username = help.notStringOrEmpty(username, 'username');
-    if (!ObjectId.isValid(raceId)) throw 'invalid object ID'; 
+    if (!ObjectId.isValid(raceId)) throw 'invalid object ID';
     raceId = help.notStringOrEmpty(raceId, 'raceId');
 
     const userCollection = await users();
@@ -456,14 +516,14 @@ const removeTrainingPlan = async (username, raceId) => {
     let plan;
     let plans = user.trainingPlans;
     delete plans[`${raceId}`];
-    if (Object.keys(plans).length === 0){
+    if (Object.keys(plans).length === 0) {
         plan = [];
-    } else if(Object.keys(plans).length === 1){
+    } else if (Object.keys(plans).length === 1) {
         plan = Object.values(plans)[0];
     } else {
-        plan = [0, [[0,0,0,0,0,0,0]]];
+        plan = [0, [[0, 0, 0, 0, 0, 0, 0]]];
         for (const [key, val] of Object.entries(plans)) {
-            if (plan[1].join() === [[0,0,0,0,0,0,0]].join()) {
+            if (plan[1].join() === [[0, 0, 0, 0, 0, 0, 0]].join()) {
                 plan = [key, val];
             } else {
                 let r1 = await race.get(key);
@@ -481,10 +541,12 @@ const removeTrainingPlan = async (username, raceId) => {
 
     const updatedInfo = await userCollection.findOneAndUpdate(
         { username: username },
-        { $set: { 
-            currPlan: plan,
-            trainingPlans: plans
-        }},
+        {
+            $set: {
+                currPlan: plan,
+                trainingPlans: plans
+            }
+        },
         { returnDocument: 'after' }
     );
     if (!updatedInfo) {
@@ -525,8 +587,8 @@ export const addReview = async (username, raceId, comment, rating) => {
         const newComment = { username, raceName, raceId, comment, rating };
         if (user) {
             user.reviews.push(newComment)
-        }       
-        
+        }
+
         const updatedUser = {
             reviews: user.reviews
         };
@@ -551,10 +613,10 @@ export const removeReview = async (username, raceId, comment, rating) => {
     try {
         comment = help.notStringOrEmpty(comment, 'comment');
         const user = await userCollection.findOne({ username: username });
-    
+
         const indexToRemove = user.reviews.findIndex(item => item.username === username && item.comment === comment && item.rating === rating && item.raceId === raceId);
         if (indexToRemove !== -1) {
-        user.reviews.splice(indexToRemove, 1);
+            user.reviews.splice(indexToRemove, 1);
         }
         const updatedUser = {
             reviews: user.reviews
