@@ -4,6 +4,7 @@ const router = Router();
 import * as racesFuns from '../data/races.js'; // need stuff from race db
 import * as help from "../helpers/helpers.js"
 import * as data from '../data/users.js';
+import xss from 'xss';
 
 router.route('/').get(async (req, res) => {
   //render the home handlebars file
@@ -16,8 +17,8 @@ router.route('/').get(async (req, res) => {
 
 router.route('/comment/:raceId').post(async (req, res) => {
   try {
-    const raceId = req.params.raceId;
-    const comment = req.body.comment;
+    const raceId = xss(req.params.raceId);
+    const comment = xss(req.body.comment);
     await racesFuns.addComment(req.session.user.username, raceId, comment)
     res.redirect(`/race/${raceId}`)
   } catch (error) {
@@ -27,8 +28,8 @@ router.route('/comment/:raceId').post(async (req, res) => {
 
 router.route('/uncomment/:raceId').post(async (req, res) => {
   try {
-    const raceId = req.params.raceId;
-    const comment = req.body.comment;
+    const raceId = xss(req.params.raceId);
+    const comment = xss(req.body.comment);
     await racesFuns.removeComment(req.session.user.username, raceId, comment)
     res.redirect(`/race/${raceId}`)
   } catch (error) {
@@ -38,9 +39,9 @@ router.route('/uncomment/:raceId').post(async (req, res) => {
 
 router.route('/review/:raceId').post(async (req, res) => {
   try {
-    const raceId = req.params.raceId;
-    const comment = req.body.review;
-    const rating = req.body.rating;
+    const raceId = xss(req.params.raceId);
+    const comment = xss(req.body.review);
+    const rating = xss(req.body.rating);
     await racesFuns.addReview(req.session.user.username, raceId, comment, rating)
     await data.addReview(req.session.user.username, raceId, comment, rating)
     res.redirect(`/race/${raceId}`)
@@ -51,9 +52,9 @@ router.route('/review/:raceId').post(async (req, res) => {
 
 router.route('/removeReview/:raceId').post(async (req, res) => {
   try {
-    const raceId = req.params.raceId;
-    const comment = req.body.review;
-    const rating = req.body.rating;
+    const raceId = xss(req.params.raceId);
+    const comment = xss(req.body.review);
+    const rating = xss(req.body.rating);
     await racesFuns.removeReview(req.session.user.username, raceId, comment, rating)
     await data.removeReview(req.session.user.username, raceId, comment, rating)
     res.redirect(`/race/${raceId}`)
@@ -64,7 +65,7 @@ router.route('/removeReview/:raceId').post(async (req, res) => {
 
 router.route('/register/:raceId').post(async (req, res) => {
   try {
-    const raceId = req.params.raceId;
+    const raceId = xss(req.params.raceId);
     await racesFuns.registerUser(req.session.user.username, raceId);
     await data.registerRace(req.session.user.username, raceId);
     await data.addTrainingPlan(req.session.user.username, raceId, req.body.maxMileageYet);
@@ -77,7 +78,7 @@ router.route('/register/:raceId').post(async (req, res) => {
 
 router.route('/unregister/:raceId').post(async (req, res) => {
   try {
-    const raceId = req.params.raceId;
+    const raceId = xss(req.params.raceId);
     await racesFuns.unregisterUser(req.session.user.username, raceId);
     await data.unregisterRace(req.session.user.username, raceId);
     await data.removeTrainingPlan(req.session.user.username, raceId);
@@ -89,7 +90,7 @@ router.route('/unregister/:raceId').post(async (req, res) => {
 });
 
 router.route('/error').get(async (req, res) => {
-  const error = req.query.message || 'Error';
+  const error = xss(req.query.message) || 'Error';
   res.status(403).render('error', { title: "Error", error, user: req.session.user, otherCSS: "/public/error.css" });
 });
 
@@ -101,17 +102,17 @@ router.route('/createProfile')
   .post(async (req, res) => {
     //code here for POST this is where profile form will be submitting new user and then call your data function passing in the profile info   and then rendering the search results of up to 20 Movies.
     const profileInfo = req.body; // form info!
-    let first = profileInfo.firstName;
-    let last = profileInfo.lastName;
-    let username = profileInfo.username;
-    let email = profileInfo.email;
-    let birthdate = profileInfo.birthday;
-    let state = profileInfo.state;
-    let gender = profileInfo.gender;
-    let system = profileInfo.system;
-    let socialPlatform = profileInfo.social_platform;
-    let socialHandle = profileInfo.social_handle;
-    let password = profileInfo.password;
+    let first = xss(profileInfo.firstName);
+    let last = xss(profileInfo.lastName);
+    let username = xss(profileInfo.username);
+    let email = xss(profileInfo.email);
+    let birthdate = xss(profileInfo.birthday);
+    let state = xss(profileInfo.state);
+    let gender = xss(profileInfo.gender);
+    let system = xss(profileInfo.system);
+    let socialPlatform = xss(profileInfo.social_platform);
+    let socialHandle = xss(profileInfo.social_handle);
+    let password = xss(profileInfo.password);
 
     const errors = [];
     try {
@@ -239,8 +240,8 @@ router.route('/login')
   })
   .post(async (req, res) => {
     const loginInfo = req.body; // form info!
-    let username = loginInfo.username;
-    let password = loginInfo.password;
+    let username = xss(loginInfo.username);
+    let password = xss(loginInfo.password);
     let errors = [];
     try {
       username = help.notStringOrEmpty(username, "username");
