@@ -40,8 +40,9 @@ router.route('/review/:raceId').post(async (req, res) => {
   try {
     const raceId = req.params.raceId;
     const comment = req.body.review;
-    await racesFuns.addReview(req.session.user.username, raceId, comment)
-    await data.addReview(req.session.user.username, raceId, comment)
+    const rating = req.body.rating;
+    await racesFuns.addReview(req.session.user.username, raceId, comment, rating)
+    await data.addReview(req.session.user.username, raceId, comment, rating)
     res.redirect(`/race/${raceId}`)
   } catch (error) {
     res.status(403).render('error', { title: "Error", error, user: req.session.user, otherCSS: "/public/error.css" });
@@ -52,8 +53,9 @@ router.route('/removeReview/:raceId').post(async (req, res) => {
   try {
     const raceId = req.params.raceId;
     const comment = req.body.review;
-    await racesFuns.removeReview(req.session.user.username, raceId, comment)
-    await data.removeReview(req.session.user.username, raceId, comment)
+    const rating = req.body.rating;
+    await racesFuns.removeReview(req.session.user.username, raceId, comment, rating)
+    await data.removeReview(req.session.user.username, raceId, comment, rating)
     res.redirect(`/race/${raceId}`)
   } catch (error) {
     res.status(403).render('error', { title: "Error", error, user: req.session.user, otherCSS: "/public/error.css" });

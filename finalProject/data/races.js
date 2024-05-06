@@ -391,7 +391,7 @@ export const removeComment = async (username, raceId, comment) => {
     }
 }
 
-export const addReview = async (username, raceId, comment) => {
+export const addReview = async (username, raceId, comment, rating) => {
     const raceCollection = await races();
     try {
         comment = help.notStringOrEmpty(comment, 'comment');
@@ -402,7 +402,7 @@ export const addReview = async (username, raceId, comment) => {
         if (!Array.isArray(race.reviews)) {
             race.reviews = [];
         }
-        const newComment = { username, comment };
+        const newComment = { username, comment, rating };
         if (race) {
             race.reviews.push(newComment)
         }       
@@ -426,13 +426,13 @@ export const addReview = async (username, raceId, comment) => {
     }
 }
 
-export const removeReview = async (username, raceId, comment) => {
+export const removeReview = async (username, raceId, comment, rating) => {
     const raceCollection = await races();
     try {
         comment = help.notStringOrEmpty(comment, 'comment');
         const race = await raceCollection.findOne({ _id: new ObjectId(raceId) });
     
-        const indexToRemove = race.reviews.findIndex(item => item.username === username && item.comment === comment);
+        const indexToRemove = race.reviews.findIndex(item => item.username === username && item.comment === comment && item.rating === rating);
         if (indexToRemove !== -1) {
         race.reviews.splice(indexToRemove, 1);
         }
