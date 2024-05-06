@@ -6,7 +6,7 @@
 <h4>TIME: {{{time}}}</h4>
 <h4>DISTANCE: {{{distance}}}</h4>
 <h4>TERRAIN: {{{terrain}}}</h4>
-<h5>VISIT {{{URL}}} FOR REGISTRATION AND MORE INFO!</h5>
+<h5><a href={{{URL}}} target="_blank">VISIT FOR REGISTRATION AND MORE INFO!</a></h5>
 
 {{!-- Review sections --}}
 <form action="/???" method="POST" class="reviewRace">
@@ -14,7 +14,7 @@
     <input type="text" id="review" name="review"><br>
     <label for="rating">RATING:</label><br>
     <input type="range" id="rating" class="rating" max="5" min="1"><br>
-    <button type="submit">POST</button>
+    <button type="submit">POST</button><br>
 </form>
 
 
@@ -27,6 +27,8 @@
     </form>
 {{else}}
     <form action="/register/{{raceId}}" method="POST" class="register">
+        <label for="maxMileageYet">What is the maximum amount of miles you ran in the past week, this will be the basis for your training plan:</label><br>
+        <input type="text" id="maxMileageYet" name="maxMileageYet"><br>
         <button type="submit">Register</button>
     </form>
 {{/if}}
