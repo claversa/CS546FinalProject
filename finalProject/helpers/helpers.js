@@ -134,7 +134,7 @@ export let validPassword = (password) => {
 };
 
 export let validUsername = (username) => {
-    const usernameRegex = /^[a-zA-Z]{5,10}$/;
-    if (!usernameRegex.test(username)) { throw "Error: Please provide a valid username with between 5-10 characters" };
+    const usernameRegex = /^[a-zA-Z]{2,10}$/;
+    if (!usernameRegex.test(username)) { throw "Error: Please provide a valid username with between 2-10 characters" };
     return username.toLowerCase();
 };

@@ -131,7 +131,7 @@ router.route('/createProfile')
       username = help.notStringOrEmpty(username, "username");
       username = help.validUsername(username);
     } catch (e) {
-      errors.push(`invalid username`);
+      errors.push(`invalid username: username must have between 2 and 10 characters`);
     }
 
     try {
@@ -186,7 +186,7 @@ router.route('/createProfile')
       password = help.notStringOrEmpty(password, "password");
       password = help.validPassword(password);
     } catch (e) {
-      errors.push(`invalid password`);
+      errors.push(`invalid password: password must have at least 8 characters with at least 1 uppercase letter, number, and special character`);
     }
 
     let age;
