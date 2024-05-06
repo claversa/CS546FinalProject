@@ -190,7 +190,11 @@ router.route('/addrace')
     let raceDate = xss(raceInfo.raceDate);
     let raceTime = xss(raceInfo.raceTime);
     let distance = xss(raceInfo.distance);
-    let terrain = xss(raceInfo.terrain);
+    let terrain = [];
+    for (let x of raceInfo.terrain) {
+      let value = xss(x);
+      terrain.push(value);
+    }
     let raceUrl = xss(raceInfo.raceUrl);
 
     // CHECK ALL THESE ^^^^^^^^^^^^^^66
