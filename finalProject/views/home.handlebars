@@ -11,9 +11,9 @@
         <input type="text" id="search" name="search" class="search-input"><br>
         <button type="submit">SEARCH</button>
     </form>
-    <label for="state">Search by State</label>
-    <form method="POST" id='flex_container' class=' flex_container' action="/race/searchState">
-        <select name="search" id="search" class="state">
+    <label for="state" class="state-label">Search by State</label>
+    <form method="POST" id='flex_container' class='start-searching' action="/race/searchState">
+        <select name="search" id="search-by-state" class="state">
             <option value="placeholder" selected>CLICK TO SELECT</option>
             <option value="AL">AL</option>
             <option value="AK">AK</option>
@@ -67,7 +67,7 @@
             <option value="WI">WI</option>
             <option value="WY">WY</option>
         </select><br>
-        <button type="submit">Search</button>
+        <button type="submit">SEARCH</button>
     </form>
     {{/if}}
     <div class="error" id="error">{{error}}</div>
