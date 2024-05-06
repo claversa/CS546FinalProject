@@ -3,7 +3,7 @@ import express from 'express';
 import configRoutes from './routes/index.js';
 import exphbs from 'express-handlebars';
 import session from 'express-session';
-import Handlebars from './handlebarsHelpers.js';
+import Handlebars from './helpers/handlebarsHelpers.js';
 
 
 const app = express();
