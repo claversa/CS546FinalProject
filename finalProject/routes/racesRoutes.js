@@ -135,8 +135,11 @@ router.route('/editDistance/:raceId').post(async (req, res) => {
 
 router.route('/editTerrain/:raceId').post(async (req, res) => {
   try {
-    const terrain = req.body.terrain;
-    if (!terrain || !Array.isArray(terrain)) throw "Array cannot be empty";
+    let terrain = req.body.terrain;
+    if (!terrain) throw "Array cannot be empty";
+    if (!Array.isArray(terrain)) {
+      terrain = [terrain];
+    }
     const raceId = req.params.raceId;
     await data.updateTerrain(raceId, terrain);
     res.redirect(`/race/edit/${req.params.raceId}`);

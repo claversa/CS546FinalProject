@@ -5,7 +5,7 @@
 <h4>TIME: {{{time}}}</h4>
 <h4>DISTANCE: {{{distance}}}</h4>
 <h4>TERRAIN: {{{terrain}}}</h4>
-<h5>VISIT {{{URL}}} FOR REGISTRATION AND MORE INFO!</h5>
+<h5><a href={{{URL}}} target="_blank">VISIT FOR REGISTRATION AND MORE INFO!</a></h5>
 
 {{#if owner}}
 <form action="/race/edit/{{raceId}}" method="GET" class="editRace">
@@ -53,7 +53,8 @@
 <h4>REVIEWS:</h4>
 {{#each reviews}}
 <p class="appears">
-    Profile: <a href="/profile/{{this.username}}" class="profile-link">{{this.username}}</a> Rating: {{this.rating}} Comment: {{this.comment}}
+    Profile: <a href="/profile/{{this.username}}" class="profile-link">{{this.username}}</a> Rating: {{this.rating}}
+    Comment: {{this.comment}}
     {{#eq this.username ../user.username}}
 </p>
 <form action="/removeReview/{{../raceId}}" method="POST" class="delete-review-form">

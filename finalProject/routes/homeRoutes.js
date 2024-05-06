@@ -65,9 +65,11 @@ router.route('/removeReview/:raceId').post(async (req, res) => {
 router.route('/register/:raceId').post(async (req, res) => {
   try {
     const raceId = req.params.raceId;
-    await racesFuns.registerUser(req.session.user.username, raceId)
-    await data.registerRace(req.session.user.username, raceId)
-    res.redirect(`/race/${raceId}`)
+    await racesFuns.registerUser(req.session.user.username, raceId);
+    await data.registerRace(req.session.user.username, raceId);
+    await data.addTrainingPlan(req.session.user.username, raceId, req.body.maxMileageYet);
+    res.redirect(`/race/${raceId}`);
+    // res.render("./training", { title: "Training Program", otherCSS: "/public/training.css", plans: user.currPlan });
   } catch (error) {
     res.status(403).render('error', { title: "Error", error, user: req.session.user, otherCSS: "/public/error.css" });
   }
@@ -76,9 +78,11 @@ router.route('/register/:raceId').post(async (req, res) => {
 router.route('/unregister/:raceId').post(async (req, res) => {
   try {
     const raceId = req.params.raceId;
-    await racesFuns.unregisterUser(req.session.user.username, raceId)
-    await data.unregisterRace(req.session.user.username, raceId)
-    res.redirect(`/race/${raceId}`)
+    await racesFuns.unregisterUser(req.session.user.username, raceId);
+    await data.unregisterRace(req.session.user.username, raceId);
+    await data.removeTrainingPlan(req.session.user.username, raceId);
+    res.redirect(`/race/${raceId}`);
+    // res.render("./training", { title: "Training Program", otherCSS: "/public/training.css", plans: user.currPlan });
   } catch (error) {
     res.status(403).render('error', { title: "Error", error, user: req.session.user, otherCSS: "/public/error.css" });
   }
@@ -168,7 +172,14 @@ router.route('/login')
   });
 
 router.route('/training').get(async (req, res) => {
-  res.render("training", { title: "Training Program", user: req.session.user, error: "", otherCSS: "/public/login.css" });
+  let user = undefined;
+  try {
+    user = await data.get(req.session.user.username);
+  }
+  catch (e) {
+    res.render("error", { title: "Error", user: req.session.user, error: e, otherCSS: "/public/error.css" })
+  }
+  res.render("./training", { title: "Training Program", otherCSS: "/public/training.css", plans: user.currPlan });
 });
 
 router.route('/countdown').get(async (req, res) => {

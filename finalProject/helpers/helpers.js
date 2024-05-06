@@ -5,6 +5,14 @@ export let notStringOrEmpty = (val, undef) => {
     return val.trim(); // trims whitespace
 }
 
+export let isValidNumber = (val, undef) => {
+    if (!val) throw `Error: ${undef} is undefined`;
+    if (typeof val !== "string") throw `Error: input for ${undef} must be a string`;
+    if (val.trim().length === 0) throw "Error: input must not be empty or just spaces";
+    const number = parseFloat(val);
+    if (isNaN(number)) throw `Error: ${undef} must be a valid number`;
+    return number;
+}
 
 export let validDate = (date) => { // got this function from https://www.freecodecamp.org/news/how-to-validate-a-date-in-javascript/
     const dateFormatRegex = /^\d{4}-\d{2}-\d{2}$/;

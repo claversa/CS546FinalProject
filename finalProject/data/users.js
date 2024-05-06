@@ -1,8 +1,9 @@
-import { users, races } from '../config/mongoCollections.js'
+import { users, races } from '../config/mongoCollections.js';
 import { ObjectId } from 'mongodb';
 import * as help from '../helpers/helpers.js';
-import * as pw from '../helpers/bcrypt.js'
+import * as pw from '../helpers/bcrypt.js';
 import bcrypt from 'bcryptjs';
+import * as race from './races.js';
 
 
 // create new user
@@ -59,7 +60,8 @@ const create = async (
 
     //make empty arrays for registered races and training plans that will be filled in later
     let registeredRaces = [];
-    let trainingPlans = [];
+    let currPlan = [];
+    let trainingPlans = {};
 
     let newUser = {
         firstName,
@@ -73,8 +75,8 @@ const create = async (
         socialHandle,
         system,
         hashedPW,
-        registeredRaces:[],
-        reviews: [],
+        registeredRaces,
+        currPlan,
         trainingPlans,
     };
     const userCollection = await users();
@@ -308,30 +310,181 @@ const unregisterRace = async (username, raceId) => {
     return updatedInfo;
 };
 
-const addTrainingPlan = async (id, raceId) => {
-    exists(id, 'id');
-    exists(raceId, 'raceId');
-    id = notStringOrEmpty(id, 'id');
-    if (!ObjectId.isValid(id)) throw 'invalid object ID'; // check for valid ID
-    raceId = notStringOrEmpty(raceId, 'raceId');
-    const userCollection = await users();
-    const user = await userCollection.findOne({ _id: new ObjectId(id) });
-    // already in list??  --------------------------------
+const addTrainingPlan = async (username, raceId, maxMileageYet) => {
+    username = help.notStringOrEmpty(username, 'username');
+    if (!ObjectId.isValid(raceId)) throw 'invalid object ID'; 
+    raceId = help.notStringOrEmpty(raceId, 'raceId');
 
-    // if not in list, add to list
-    let trainPlans = user.trainingPlans.push(raceId);
-    const updatedUser = {
-        trainingPlans: trainPlans
-    };
+    const userCollection = await users();
+    const user = await userCollection.findOne({ username: username });
+    if (!user) throw 'User not found' // checks if user is not found
+    // user.registeredRaces = user.registeredRaces.filter(id => id !== raceId);
+    if(!maxMileageYet){
+        maxMileageYet = 0
+    } else{
+        maxMileageYet = help.isValidNumber(maxMileageYet, 'max mileage yet');
+    }
+
+    const { 
+        raceName,
+        raceCreator, 
+        raceCity, 
+        raceState, 
+        raceDate, 
+        raceTime, 
+        distance, 
+        terrain, 
+        raceUrl,
+        registeredUsers
+    } = await race.get(raceId);
+    
+    // 4 weeks
+    let base5k = [[0, 1, 1, 1, 0, 1, 2], [0, 1, 2, 1, 0, 1, 2], [0, 1, 2, 1, 0, 1, 2.5], [0, 2, 2, 1, 0, 2, 3.1]];
+    // 12 weeks
+    let baseHalf = [[0, 1, 1, 1, 0, 1, 2], [0, 1, 2, 1, 0, 1, 3], [0, 3, 2, 3, 0, 1, 4], [0, 3.5, 2, 3.5, 0, 1, 5], [0, 3.5, 2, 3.5, 0, 1, 5], [0, 4, 2, 4, 0, 1, 6], 
+    [0, 4, 2, 4, 1, 0, 3.1], [0, 4.5, 3, 4.5, 0, 1, 7], [0, 4.5, 3, 4.5, 0, 1, 8], [0, 5, 3, 5, 0, 1, 9], [0, 5, 3, 5, 0, 1, 10], [0, 4, 3, 2, 0, 0, 13.1]];
+    // 18 weeks
+    let baseMarathon = [[0, 1, 1, 1, 0, 1, 2], [0, 1, 2, 1, 0, 1, 3], [0, 3, 2, 3, 0, 1, 4], [0, 3.5, 2, 3.5, 0, 1, 5], [0, 4.5, 3, 4.5, 0, 1, 7], [0, 5, 3, 5, 0, 1, 9], [0, 5, 3, 5, 3, 0, 10], [0, 4, 3, 2, 4, 0, 13.2], 
+    [0, 3, 7, 4, 6, 0, 10], [0, 3, 7, 4, 0, 3, 15], [0, 4, 8, 5, 0, 3, 16], [0, 4, 8, 5, 0, 3, 12], [0, 4, 9, 5, 0, 3, 18], [0, 5, 9, 5, 0, 3, 14], [0, 5, 10, 5, 0, 4, 20], [0, 5, 8, 4, 0, 3, 12], [0, 4, 6, 3, 0, 1, 8],[0, 3, 4, 2, 0, 1, 26.2]];
+    // what was users last greatest mileage, compare FROM START TO END of above training arrays 
+    let plan = [];
+    switch (distance) {
+        case "5K": 
+            plan = base5k;
+            break;
+        case "Half Marathon": 
+            plan = baseHalf;
+            break;
+        case "Marathon": 
+            plan = baseMarathon;
+            break;
+        default: 
+            throw `Not a valid distance`;
+    }
+    if(maxMileageYet >= plan[1][6]){
+        for (let i = 1; i < plan.length-1; i++){
+            if(i === (plan.length - 1)){
+                plan = [plan[plan.length - 1]];
+                break;
+            } else if(maxMileageYet <= plan[i][6]){
+                plan = plan.slice(i, plan.length);
+                break;
+            }
+        }
+    }
+
+    let weeksUntil = Math.floor((new Date(raceDate) - Date.now())/1000/60/60/24/7);
+    let errorMsg = "";
+    
+    if (weeksUntil <= 0){
+        plan = [];
+        errorMsg = `This race data already passed.`;
+    } else if (weeksUntil < plan.length){
+        plan = plan.slice(0, weeksUntil);
+        errorMsg = `You can not safely train for the entire ${distance} mile race. Train up until ${plan[plan.length-1][6]} miles and then you have to walk.`;
+    } else {
+        let div = Math.floor((weeksUntil - plan.length) / plan.length);
+        let mod = weeksUntil % plan.length;
+        if (plan.length === 1){
+            plan = Array(weeksUntil).fill(plan[0]);
+        } else{
+            plan = plan.map((week, ind) => {
+                if(ind === plan.length - 1){
+                    return Array(week);
+                } else if (plan.length - mod - 1 <= ind){
+                    return Array(2 + div).fill(week);
+                } else{
+                    return Array(1 + div).fill(week);
+                }
+            }).flat();
+        }
+    }
+    
+    let plans = user.trainingPlans;
+    plans[`${raceId}`] = plan;
+    if (Object.keys(plans).length === 0){
+        plan = [];
+    } else if(Object.keys(plans).length === 1){
+        plan = Object.values(plans)[0];
+    } else {
+        plan = [0, [[0,0,0,0,0,0,0]]];
+        for (const [key, val] of Object.entries(plans)) {
+            if (plan[1].join() === [[0,0,0,0,0,0,0]].join()) {
+                plan = [key, val];
+            } else {
+                let r1 = await race.get(key);
+                let r2 = await race.get(plan[0]);
+
+                if (val[val.length - 1][6] === plan[1][plan[1].length - 1][6]) {
+                    plan = r1.raceDate < r2.raceDate ? [key, val] : plan;
+                } else {
+                    plan = val[val.length - 1][6] > plan[1][plan[1].length - 1][6] ? [key, val] : plan;
+                }
+            }
+        }
+    }
+    
     const updatedInfo = await userCollection.findOneAndUpdate(
-        { _id: new ObjectId(id) },
-        { $set: updatedUser },
+        { username: username },
+        { $set: { 
+            currPlan: plan[1],
+            trainingPlans: plans
+        }},
         { returnDocument: 'after' }
     );
     if (!updatedInfo) {
         throw 'could not update user successfully';
     }
-    updatedInfo._id = updatedInfo._id.toString();
+    return updatedInfo;
+};
+
+// update database with times from training page
+
+const removeTrainingPlan = async (username, raceId) => {
+    username = help.notStringOrEmpty(username, 'username');
+    if (!ObjectId.isValid(raceId)) throw 'invalid object ID'; 
+    raceId = help.notStringOrEmpty(raceId, 'raceId');
+
+    const userCollection = await users();
+    const user = await userCollection.findOne({ username: username });
+    if (!user) throw 'User not found' // checks if user is not found
+
+    let plan;
+    let plans = user.trainingPlans;
+    delete plans[`${raceId}`];
+    if (Object.keys(plans).length === 0){
+        plan = [];
+    } else if(Object.keys(plans).length === 1){
+        plan = Object.values(plans)[0];
+    } else {
+        plan = [0, [[0,0,0,0,0,0,0]]];
+        for (const [key, val] of Object.entries(plans)) {
+            if (plan[1].join() === [[0,0,0,0,0,0,0]].join()) {
+                plan = [key, val];
+            } else {
+                let r1 = await race.get(key);
+                let r2 = await race.get(plan[0]);
+
+                if (val[val.length - 1][6] === plan[1][plan[1].length - 1][6]) {
+                    plan = r1.raceDate < r2.raceDate ? [key, val] : plan;
+                } else {
+                    plan = val[val.length - 1][6] > plan[1][plan[1].length - 1][6] ? [key, val] : plan;
+                }
+            }
+        }
+    }
+
+    const updatedInfo = await userCollection.findOneAndUpdate(
+        { username: username },
+        { $set: { 
+            currPlan: plan[1],
+            trainingPlans: plans
+        }},
+        { returnDocument: 'after' }
+    );
+    if (!updatedInfo) {
+        throw 'could not update user successfully';
+    }
     return updatedInfo;
 };
 
@@ -350,7 +503,7 @@ const check = async (username, password) => {
     return null;
 }
 
-export const addReview = async (username, raceId, comment) => {
+export const addReview = async (username, raceId, comment, rating) => {
     const userCollection = await users();
     try {
         comment = help.notStringOrEmpty(comment, 'comment');
@@ -364,7 +517,7 @@ export const addReview = async (username, raceId, comment) => {
         const raceCollection = await races();
         const race = await raceCollection.findOne({ _id: new ObjectId(raceId) });
         const raceName = race.raceName
-        const newComment = { username, raceName, raceId, comment };
+        const newComment = { username, raceName, raceId, comment, rating };
         if (user) {
             user.reviews.push(newComment)
         }       
@@ -388,13 +541,13 @@ export const addReview = async (username, raceId, comment) => {
     }
 }
 
-export const removeReview = async (username, raceId, comment) => {
+export const removeReview = async (username, raceId, comment, rating) => {
     const userCollection = await users();
     try {
         comment = help.notStringOrEmpty(comment, 'comment');
         const user = await userCollection.findOne({ username: username });
     
-        const indexToRemove = user.reviews.findIndex(item => item.username === username && item.comment === comment);
+        const indexToRemove = user.reviews.findIndex(item => item.username === username && item.comment === comment && item.rating === rating && item.raceId === raceId);
         if (indexToRemove !== -1) {
         user.reviews.splice(indexToRemove, 1);
         }
@@ -417,24 +570,4 @@ export const removeReview = async (username, raceId, comment) => {
     }
 }
 
-export { create, getAll, get, updateEmail, updateState, updateGender, updateSocial, updateSystem, updatePassword, registerRace, unregisterRace, addTrainingPlan, check };
-
-// create("jasper", "tumbokon", "jaspert", "jasperjay0628@gmail.com", "NJ", "male", "06/28/2003", "twitter", "jsprjay", "metric", "YourMom2$")
-//     .then((result) => {
-//         // This function will execute when the promise is resolved
-//         console.log(result); // Print the resolved value
-//     })
-//     .catch((error) => {
-//         // This function will execute if the promise is rejected
-//         console.error("Error occurred:", error);
-//     });
-
-// updateGender('jaspert', 'female')
-// .then((result) => {
-//         // This function will execute when the promise is resolved
-//         console.log(result); // Print the resolved value
-//     })
-//     .catch((error) => {
-//         // This function will execute if the promise is rejected
-//         console.error("Error occurred:", error);
-//     });
+export { create, getAll, get, updateEmail, updateState, updateGender, updateSocial, updateSystem, updatePassword, registerRace, unregisterRace, addTrainingPlan, removeTrainingPlan, check };

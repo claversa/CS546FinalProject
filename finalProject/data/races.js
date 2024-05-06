@@ -205,10 +205,10 @@ export const updateDistance = async (id, newDistance) => {
     newDistance = help.notStringOrEmpty(newDistance, 'newDistance');
     const raceCollection = await races();
     const race = await raceCollection.findOne({ _id: new ObjectId(id) });
-    if (newDistance === race.raceDistance) throw `Error: Race distance is already ${race.raceDistance}`
+    if (newDistance === race.distance) throw `Error: Race distance is already ${race.distance}`
     const updatedInfo = await raceCollection.findOneAndUpdate(
         { _id: new ObjectId(id) },
-        { $set: { raceDistance: newDistance } },
+        { $set: { distance: newDistance } },
         { returnDocument: 'after' }
     );
     if (!updatedInfo) {
@@ -226,7 +226,7 @@ export const updateTerrain = async (id, newTerrain) => {
     if (newTerrain === race.raceTerrain) throw `Error: Race terrain is already ${race.raceTerrain}`
     const updatedInfo = await raceCollection.findOneAndUpdate(
         { _id: new ObjectId(id) },
-        { $set: { raceTerrain: newTerrain } },
+        { $set: { terrain: newTerrain } },
         { returnDocument: 'after' }
     );
     if (!updatedInfo) {
