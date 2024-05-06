@@ -22,7 +22,7 @@
         }
 
         // race dates
-        let raceDates = {{{ raceDate }}}; 
+        let raceDates = {{{ raceDate }}};
         function formatTime(days, hours, minutes, seconds) {
             return `${days}d ${hours}h ${minutes}m ${seconds}s`;
         }
@@ -41,7 +41,7 @@
                 container.innerHTML = formatTime(days, hours, minutes, seconds);
                 if (distance < 0) {
                     clearInterval(intervalId);
-                    container.innerHTML = "EXPIRED";
+                    container.innerHTML = "";
                 }
             }, 1000);
         }
@@ -55,7 +55,7 @@
             updateCountdown(countdownDate, countdownElement);
         });
 
-  
+
         let confettiBtn = document.querySelector(".confetti-btn");
         confettiBtn.addEventListener("click", triggerConfetti);
     </script>
