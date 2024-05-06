@@ -1,196 +1,130 @@
-<h1>Edit Profile</h1>
+<div class="container">
+    <h1>Edit Profile</h1>
 
-<form method="POST" class='flex_container' action="../routes/profileRoutes.js">
-    <!--Gender drop down-->
-    <label for="gender">GENDER:</label>
-    <select id="gender" class="gender">
-        <option value="placeholder" selected>CLICK TO SELECT</option>
-        <option value="male">MALE</option>
-        <option value="female">FEMALE</option>
-        <option value="preferNot">PREFER NOT TO SAY</option>
-    </select>
-    <label for="social_platform">SOCIAL MEDIA PLATFORM</label>
-    <select name="social_platform" id="social_platform" class="social_platform">
-        <option value="placeholder" selected>CLICK TO SELECT</option>
-        <option value="instagram">INSTAGRAM</option>
-        <option value="facebook">FACEBOOK</option>
-        <option value="twitter">TWITTER</option>
-    </select>
-    <label for="social_handle">SOCIAL MEDIA HANDLE</label>
-    <input type="text" id="social_handle" class="social_handle">
-    <!--Measurement System Dropdown-->
-    <label for="system">MEASUREMENT SYSTEM:</label>
-    <select id="system" class="system">
-        <option value="placeholder" selected>CLICK TO SELECT</option>
-        <option value="metric">METRIC</option>
-        <option value="imperial">IMPERIAL</option>
-    </select>
-    <!--State DropDown-->
-    <label for="state">HOMESTATE:</label>
-    <select id="state" class="state">
-        <option value="placeholder" selected>CLICK TO SELECT</option>
-        <option value="AL">AL</option>
-        <option value="AK">AK</option>
-        <option value="AZ">AZ</option>
-        <option value="AR">AR</option>
-        <option value="CA">CA</option>
-        <option value="CO">CO</option>
-        <option value="CT">CT</option>
-        <option value="DE">DE</option>
-        <option value="DC">DC</option>
-        <option value="FL">FL</option>
-        <option value="GA">GA</option>
-        <option value="HI">HI</option>
-        <option value="ID">ID</option>
-        <option value="IL">IL</option>
-        <option value="IN">IN</option>
-        <option value="IA">IA</option>
-        <option value="KS">KS</option>
-        <option value="KY">KY</option>
-        <option value="LA">LA</option>
-        <option value="ME">ME</option>
-        <option value="MD">MD</option>
-        <option value="MA">MA</option>
-        <option value="MI">MI</option>
-        <option value="MN">MN</option>
-        <option value="MS">MS</option>
-        <option value="MO">MO</option>
-        <option value="MT">MT</option>
-        <option value="NE">NE</option>
-        <option value="NV">NV</option>
-        <option value="NH">NH</option>
-        <option value="NJ">NJ</option>
-        <option value="NM">NM</option>
-        <option value="NY">NY</option>
-        <option value="NC">NC</option>
-        <option value="ND">ND</option>
-        <option value="OH">OH</option>
-        <option value="OK">OK</option>
-        <option value="OR">OR</option>
-        <option value="PA">PA</option>
-        <option value="RI">RI</option>
-        <option value="SC">SC</option>
-        <option value="SD">SD</option>
-        <option value="TN">TN</option>
-        <option value="TX">TX</option>
-        <option value="UT">UT</option>
-        <option value="VT">VT</option>
-        <option value="VA">VA</option>
-        <option value="WA">WA</option>
-        <option value="WV">WV</option>
-        <option value="WI">WI</option>
-        <option value="WY">WY</option>
-    </select>
-    <label for="password">PASSWORD:</label>
-    <input type="password" id="password" class="password" onmousedown="this.type='text'"
-        onmouseup="this.type='password'" onmousemove="this.type='password'">
-</form>
+    <form method="POST" class="profile-form" action="/editGender/{{username}}">
+        <label for="gender">GENDER:</label>
+        <select id="gender" class="gender">
+            <option value="placeholder" selected>CLICK TO SELECT</option>
+            <option value="male">MALE</option>
+            <option value="female">FEMALE</option>
+            <option value="other">OTHER</option>
+            <option value="preferNot">PREFER NOT TO SAY</option>
+        </select>
+        <button type="submit">Save</button>
+    </form>
 
+    <form method="POST" class="profile-form">
+        <label for="system">MEASUREMENT SYSTEM:</label>
+        <select id="system" class="system">
+            <option value="placeholder" selected>CLICK TO SELECT</option>
+            <option value="metric">METRIC</option>
+            <option value="imperial">IMPERIAL</option>
+        </select>
+        <button type="submit">Save</button>
+    </form>
 
-<form id="profile-form">
-    <div>
-        <label>First Name: <input type="text" id="first" name="first" value="{{first}}" disabled></label>
-    </div>
-    <div>
-        <label>Last Name: <input type="text" id="last" name="last" value="{{last}}" disabled></label>
-    </div>
-    <div>
-        <label>Username: <input type="text" id="username" name="username" value="{{username}}" disabled></label>
-    </div>
-    <div>
-        <label>Email: <input type="email" id="email" name="email" value="{{email}}" disabled></label>
-    </div>
-    <div>
-        <label>Gender: <input type="text" id="gender" name="gender" value="{{gender}}" disabled></label>
-    </div>
-    <div>
-        <label>Measurement System: <input type="text" id="system" name="system" value="{{system}}" disabled></label>
-    </div>
-    <div>
-        <label>Home State: <input type="text" id="state" name="state" value="{{state}}" disabled></label>
-    </div>
-    <div>
-        <label>Birthday: <input type="number" id="birthday" name="birthday" value="{{birthday}}" disabled></label>
-    </div>
-    <div>
-        <label>Social Media Platform: <input type="text" id="socialPlatform" name="socialPlatform"
-                value="{{socialPlatform}}" disabled></label>
-    </div>
-    <div>
-        <label>Social Media Handle: <input type="text" id="socialHandle" name="socialHandle" value="{{socialHandle}}"
-                disabled></label>
-    </div>
-    <button type="button" id="edit-button">Edit</button>
-    <button type="submit" id="save-button" disabled>Save</button>
-</form>
-<div id="response"></div>
+    <form method="POST" class="profile-form">
+        <label for="state">HOMESTATE:</label>
+        <select id="state" class="state">
+            <option value="placeholder" selected>CLICK TO SELECT</option>
+            <option value="AL">AL</option>
+            <option value="AK">AK</option>
+            <option value="AZ">AZ</option>
+            <option value="AR">AR</option>
+            <option value="CA">CA</option>
+            <option value="CO">CO</option>
+            <option value="CT">CT</option>
+            <option value="DE">DE</option>
+            <option value="DC">DC</option>
+            <option value="FL">FL</option>
+            <option value="GA">GA</option>
+            <option value="HI">HI</option>
+            <option value="ID">ID</option>
+            <option value="IL">IL</option>
+            <option value="IN">IN</option>
+            <option value="IA">IA</option>
+            <option value="KS">KS</option>
+            <option value="KY">KY</option>
+            <option value="LA">LA</option>
+            <option value="ME">ME</option>
+            <option value="MD">MD</option>
+            <option value="MA">MA</option>
+            <option value="MI">MI</option>
+            <option value="MN">MN</option>
+            <option value="MS">MS</option>
+            <option value="MO">MO</option>
+            <option value="MT">MT</option>
+            <option value="NE">NE</option>
+            <option value="NV">NV</option>
+            <option value="NH">NH</option>
+            <option value="NJ">NJ</option>
+            <option value="NM">NM</option>
+            <option value="NY">NY</option>
+            <option value="NC">NC</option>
+            <option value="ND">ND</option>
+            <option value="OH">OH</option>
+            <option value="OK">OK</option>
+            <option value="OR">OR</option>
+            <option value="PA">PA</option>
+            <option value="RI">RI</option>
+            <option value="SC">SC</option>
+            <option value="SD">SD</option>
+            <option value="TN">TN</option>
+            <option value="TX">TX</option>
+            <option value="UT">UT</option>
+            <option value="VT">VT</option>
+            <option value="VA">VA</option>
+            <option value="WA">WA</option>
+            <option value="WV">WV</option>
+            <option value="WI">WI</option>
+            <option value="WY">WY</option>
+        </select>
+        <button type="submit">Save</button>
+    </form>
+
+    <form method="POST" class="profile-form">
+        <label for="social_platform">SOCIAL MEDIA PLATFORM</label>
+        <select name="social_platform" id="social_platform" class="social_platform">
+            <option value="placeholder" selected>CLICK TO SELECT</option>
+            <option value="instagram">INSTAGRAM</option>
+            <option value="facebook">FACEBOOK</option>
+            <option value="twitter">TWITTER</option>
+        </select>
+        <button type="submit">Save</button>
+    </form>
+
+    <form method="POST" class="profile-form">
+        <label for="social_handle">SOCIAL MEDIA HANDLE</label>
+        <input type="text" id="social_handle" class="social_handle">
+        <button type="submit">Save</button>
+    </form>
+
+    <form method="POST" class="profile-form">
+        <label for="privacy_setting">PRIVACY SETTING</label>
+        <input type="checkbox" id="privacy_setting" class="privacy_setting" value="true">
+        <button type="submit">Save</button>
+    </form>
+
+    <div id="response"></div>
+</div>
 
 <script>
     $(document).ready(function () {
-        let readOnly = ['username', 'email', 'birthday'];
-        // can edit when  "Edit" button  clicked
-        $('#edit-button').on('click', function () {
-            // at first enable everything
-            $('input').prop('disabled', false);
+        $('.profile-form').on('submit', function (event) {
+            event.preventDefault();
 
-            // then disable read-only
-            readOnly.forEach(function (fieldID) {
-                $('#' + fieldID).prop('disabled', true);
-            });
+            let formData = $(this).serialize();
+            let action = $(this).attr('action');
 
-            //save button
-            $('#save-button').prop('disabled', false);
-        });
-
-        // Handle form submission
-        $('#profile-form').on('submit', function (event) {
-            event.preventDefault(); // Prevent submit
-
-            // Collect form data
-            let first = $('#first').val().trim();
-            let last = $('#last').val().trim();
-            let gender: $('#gender').val().trim();
-            let system: $('#system').val().trim();
-            let state: $('#state').val().trim();
-            let socialHandle: $('#socialHandle').val().trim();
-
-            // validate data HERE!!!!!!!
-            if (!first) throw "Error: must provide first name";
-            if (!last) throw "Error: must provide last name";
-            if (!gender) throw "Error: must provide gender";
-            if (!system) throw "Error: must provide system";
-            if (!state) throw "Error: must provide state";
-            if (!socialHandle) throw "Error: must provide socialHandle";
-
-
-            let formData = {
-                first: first,
-                last: last,
-                username: username,
-                email: email,
-                gender: gender,
-                system: system,
-                state: state,
-                birthday: birthday,
-                socialHandle: socialHandle,
-            };
-
-
-            // Make an AJAX request to update the profile
             $.ajax({
-                url: '/edit-profile', // DOES IT GO HERE????
+                url: action,
                 method: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(formData), // Convert form data to JSON
+                data: formData,
                 success: function (response) {
                     $('#response').text(response.message);
-                    $('input').prop('disabled', true); // Disable the input fields
-                    $('#save-button').prop('disabled', true); // Disable the save button
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
-                    // Handle errors
-                    console.log('Error:', textStatus, errorThrown);
-                    $('#response').text('Error updating profile');
+                    $('#response').text('Error: ' + errorThrown);
                 }
             });
         });

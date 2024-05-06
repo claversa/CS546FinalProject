@@ -5,7 +5,8 @@
     <h3>MEASUREMENT SYSTEM: {{{system}}}</h3>
     <h3>HOME STATE: {{{state}}}</h3>
     <h3>AGE: {{{age}}}</h3>
-    <h3>{{{socialPlatform}}}HANDLE: {{{socialHandle}}}</h3>
+    <h3>{{{socialPlatform}}} HANDLE: {{{socialHandle}}}</h3>
+    <h3>PRIVACY: {{#if private}}Private{{else}}Public{{/if}}</h3>
     <h3>REGISTERED RACES:</h3>
     <ul class="horizontal-list">
         {{#each registeredRaces}}
@@ -14,20 +15,38 @@
         </a>
         {{/each}}
     </ul>
-    <button>EDIT</button>
+
+    {{#if owner}}
+        <form action="/editProfile" method="GET" class="editProfile">
+        <button type="submit">EDIT</button>
+        </form>
+        <form action="/profile/delete/{{username}}" method="POST" class="editProfile">
+        <button type="submit">DELETE</button>
+        </form> <br><br>
+    {{/if}}
+
+    <h3>COMPLETED RACES:</h3>
+    <ul class="horizontal-list">
+        {{#each completedRaces}}
+        <a href="/race/{{this.id}}" class="race-link">
+            <p>{{this.name}}</p>
+        </a>
+        {{/each}}
+    </ul>
 
     <h4>REVIEWS:</h4>
-   {{#each reviews}}
-<p class="appears">
-    Race: <a href="/race/{{this.raceId}}" class="race-link">{{this.raceName}}</a> Rating: {{this.rating}} Comment: {{this.comment}}
-    {{#eq this.username ../user.username}}
-</p>
-<form action="/removeReview/{{this.raceId}}" method="POST" class="delete-review-form">
-    <input type="hidden" name="review" value="{{this.comment}}">
-    <input type="hidden" name="rating" value="{{this.rating}}">
-    <button type="submit">Delete</button>
-</form>
-{{/eq}}
+    {{#each reviews}}
+    <p class="appears">
+        Race: <a href="/race/{{this.raceId}}" class="race-link">{{this.raceName}}</a> Rating: {{this.rating}} Comment:
+        {{this.comment}}
+        {{#eq this.username ../user.username}}
+    </p>
+    <form action="/removeReview/{{this.raceId}}" method="POST" class="delete-review-form">
+        <input type="hidden" name="review" value="{{this.comment}}">
+        <input type="hidden" name="rating" value="{{this.rating}}">
+        <button type="submit">Delete</button>
+    </form>
+    {{/eq}}
 
-{{/each}}
+    {{/each}}
 </div>

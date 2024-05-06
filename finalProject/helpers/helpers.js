@@ -22,11 +22,12 @@ export let validDate = (date) => { // got this function from https://www.freecod
     return !isNaN(dateObject.getTime()) && dateObject.getFullYear() === year && dateObject.getMonth() === month - 1 && dateObject.getDate() === day;
 }
 
-export let isDateAfterToday = (date) => {
+export let isDateAfterToday = (date, militaryTime) => {
+    const [hour, minute] = militaryTime.split(':').map(Number);
     const today = new Date();
-    today.setUTCHours(0, 0, 0, 0);
+    today.setUTCHours(hour, minute, 0, 0);
     const inputDate = new Date(date);
-    inputDate.setUTCHours(0, 0, 0, 0);
+    inputDate.setUTCHours(hour, minute, 0, 0);
     return inputDate > today;
 }
 
@@ -40,7 +41,7 @@ export let dateAway = (date) => {
 
 export let validURL = (val) => {
     // regex for allowed url patterns
-    const urlRegex = /^(?:https?:\/\/)?(?:www\.)?[\w.-]+\.[a-zA-Z]{2,}(?:\/[\w-./?=&%+]*)?$/;
+    const urlRegex = /^https:\/\/(?:www\.)?[\w.-]+\.[a-zA-Z]{2,}(?:\/[\w-./?=&%+]*)?$/;
     if (!urlRegex.test(val)) throw `Error: ${val} is an invalid website URL`;
 }
 
@@ -133,7 +134,7 @@ export let validPassword = (password) => {
 };
 
 export let validUsername = (username) => {
-    const usernameRegex = /^[a-zA-Z]{5,10}$/;
-    if (!usernameRegex.test(username)) { throw "Error: Please provide a valid username with between 5-10 characters" };
+    const usernameRegex = /^[a-zA-Z]{2,10}$/;
+    if (!usernameRegex.test(username)) { throw "Error: Please provide a valid username with between 2-10 characters" };
     return username.toLowerCase();
 };
