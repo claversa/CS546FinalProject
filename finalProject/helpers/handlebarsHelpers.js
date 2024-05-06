@@ -1,12 +1,12 @@
-import Handlebars from 'handlebars';
+import Handlebars from "handlebars";
 
-Handlebars.registerHelper('add', function(value, addition) {
+Handlebars.registerHelper("add", function (value, addition) {
   return value + addition;
 });
 
-Handlebars.registerHelper('eq', function(arg1, arg2, options) {
+Handlebars.registerHelper("eq", function (arg1, arg2, options) {
   if (arg1 === arg2) {
-      return options.fn(this);
+    return options.fn(this);
   }
 });
 
