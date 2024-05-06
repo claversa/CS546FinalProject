@@ -83,7 +83,7 @@
     <button type="submit">EDIT</button>
 </form>
 
-
+{{!-- SHOULND't BE ABLE TO EDIT DISTANCE, should have to delete and remake race
 <form action="/race/editDistance/{{raceId}}" method="POST" class="editRace">
     <label for="distance">DISTANCE: {{{distance}}}</label><br><br>
     <select name="distance" id="distance" class="distance">
@@ -93,7 +93,7 @@
         <option value="Marathon">Marathon</option>
     </select><br><br>
     <button type="submit">EDIT</button>
-</form>
+</form> --}}
 
 <form action="/race/editTerrain/{{raceId}}" method="POST" class="editRace">
     <label for="terrain">TERRAIN: {{{terrain}}}</label><br><br>

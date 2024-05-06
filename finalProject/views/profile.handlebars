@@ -15,6 +15,7 @@
         </a>
         {{/each}}
     </ul>
+
     {{#if owner}}
         <form action="/editProfile" method="GET" class="editProfile">
         <button type="submit">EDIT</button>
@@ -23,6 +24,15 @@
         <button type="submit">DELETE</button>
         </form> <br><br>
     {{/if}}
+
+    <h3>COMPLETED RACES:</h3>
+    <ul class="horizontal-list">
+        {{#each completedRaces}}
+        <a href="/race/{{this.id}}" class="race-link">
+            <p>{{this.name}}</p>
+        </a>
+        {{/each}}
+    </ul>
 
     <h4>REVIEWS:</h4>
     {{#each reviews}}
