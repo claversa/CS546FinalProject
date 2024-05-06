@@ -4,6 +4,7 @@ import configRoutes from './routes/index.js';
 import exphbs from 'express-handlebars';
 import session from 'express-session';
 import Handlebars from './helpers/handlebarsHelpers.js';
+import * as user from './data/users.js'
 
 
 const app = express();
@@ -58,6 +59,22 @@ app.use(async (req, res, next) => {
     if (req.path == '/createProfile') {
         if (req.session.user) {
             return res.redirect(`/profile/${req.session.user.username}`);
+        }
+    }
+    next();
+});
+
+app.use(async (req, res, next) => {
+    if (req.path.startsWith('/race/edit')) {
+        if (req.session.user) {   
+            try {
+                const ok = await user.checkUser(req.session.user.username, req.path)
+                if (!ok) {
+                    return res.redirect('/error?message=Access Denied');
+                }
+            } catch {
+                return res.redirect('/error?message=Cannot find race');
+            }
         }
     }
     next();

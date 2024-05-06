@@ -204,7 +204,6 @@ router.route('/addrace')
         terrain,
         raceUrl); // create race
       // take user to homepage but now logged in
-      console.log(newRace)
       res.redirect(`/race/${newRace._id}`);
     }
     catch (e) {
@@ -214,15 +213,40 @@ router.route('/addrace')
   });
 
 router.route('/searchraces').post(async (req, res) => {
-  let search = req.body.search;
   try {
+    let search = req.body.search;
     search = help.notStringOrEmpty(search, 'race search');
   }
   catch (e) {
     res.status(404).render('raceSearch', { title: "Error", class: "not-found", search: "Please put a valid search so no blanks", user: req.session.user, otherCSS: "/public/raceSearch.css" });
+    return;
   }
   try {
+    let search = req.body.search;
     const races = await data.search(search);
+    if (!races || races.length === 0) {
+      res.status(404).render('raceSearch', { title: "Error", search: `We're sorry, but no results were found for ${search}`, class: 'not-found', user: req.session.user, otherCSS: "/public/raceSearch.css" });
+      return;
+    }
+    if (races.length > 20) races = races.slice(0, 20);
+    res.render('raceSearch', { title: "Search", class: "search", races, user: req.session.user, search, otherCSS: "/public/raceSearch.css" });
+  } catch (error) {
+    res.status(500).render('error', { title: "Error", error: 'Internal Server Error', class: 'error', user: req.session.user, otherCSS: "/public/error.css" });
+  }
+});
+
+router.route('/searchState').post(async (req, res) => {
+  let search = req.body.search;
+  try {
+    search = help.notStringOrEmpty(search, 'race search');
+    search = help.validState(search)
+  }
+  catch (e) {
+    res.status(404).render('raceSearch', { title: "Error", class: "not-found", search: "Please select a state", user: req.session.user, otherCSS: "/public/raceSearch.css" });
+    return;
+  }
+  try {
+    const races = await data.searchByState(search);
     if (!races || races.length === 0) {
       res.status(404).render('raceSearch', { title: "Error", search: `We're sorry, but no results were found for ${search}`, class: 'not-found', user: req.session.user, otherCSS: "/public/raceSearch.css" });
       return;
@@ -241,8 +265,13 @@ router.route('/:id').get(async (req, res) => {
   }
   catch (e) {
     res.status(404).render('error', { title: "Error", class: "error", error: "Not valid race", user: req.session.user, otherCSS: "/public/error.css" });
+    return;
   }
   try {
+    if (raceId === "searchraces" || raceId === "searchState") {
+      res.status(404).render('raceSearch', { title: "Error", class: "not-found", search: "Please search again", user: req.session.user, otherCSS: "/public/raceSearch.css" });
+      return;
+    }
     let raceData = await data.get(raceId);
 
     if (raceData) {
@@ -254,7 +283,7 @@ router.route('/:id').get(async (req, res) => {
     }
   }
   catch (e) {
-    res.status(404).render('error', { title: "Error", class: "not-found", error: e.toString(), user: req.session.user, otherCSS: "/public/error.css" });
+    res.status(404).render('error', { title: "Error", class: "not-found", error: "Race not found", user: req.session.user, otherCSS: "/public/error.css" });
   }
 });
 

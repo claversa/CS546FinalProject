@@ -362,14 +362,14 @@ const addTrainingPlan = async (username, raceId, maxMileageYet) => {
         default: 
             throw `Not a valid distance`;
     }
+    
     if(maxMileageYet >= plan[1][6]){
-        for (let i = 1; i < plan.length-1; i++){
-            if(i === (plan.length - 1)){
-                plan = [plan[plan.length - 1]];
-                break;
-            } else if(maxMileageYet <= plan[i][6]){
-                plan = plan.slice(i, plan.length);
-                break;
+        for (let i = 0; i < plan.length; i++) {
+            if (maxMileageYet <= plan[i][6]) {
+              plan = plan.slice(i, plan.length);
+              break;
+            } else if (i === plan.length - 1){
+              plan = plan.slice(i, plan.length);
             }
         }
     }
@@ -423,12 +423,13 @@ const addTrainingPlan = async (username, raceId, maxMileageYet) => {
                 }
             }
         }
+        plan = plan[1];
     }
     
     const updatedInfo = await userCollection.findOneAndUpdate(
         { username: username },
         { $set: { 
-            currPlan: plan[1],
+            currPlan: plan,
             trainingPlans: plans
         }},
         { returnDocument: 'after' }
@@ -473,12 +474,13 @@ const removeTrainingPlan = async (username, raceId) => {
                 }
             }
         }
+        plan = plan[1];
     }
 
     const updatedInfo = await userCollection.findOneAndUpdate(
         { username: username },
         { $set: { 
-            currPlan: plan[1],
+            currPlan: plan,
             trainingPlans: plans
         }},
         { returnDocument: 'after' }
@@ -566,6 +568,21 @@ export const removeReview = async (username, raceId, comment, rating) => {
         }
         updatedInfo._id = updatedInfo._id.toString();
         return updatedInfo;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const checkUser = async (username, path) => {
+    try {
+        const pathArray = path.split('/');
+        const raceId = pathArray[pathArray.length - 1];
+        const raceCollection = await races();
+        const race = await raceCollection.findOne({ _id: new ObjectId(raceId) });
+        if (race.username === username) {
+            return true;
+        }
+        return false;
     } catch (error) {
         throw error;
     }
