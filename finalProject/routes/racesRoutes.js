@@ -28,7 +28,7 @@ router.route('/edit/:raceId').get(async (req, res) => {
       errorMessage = req.session.errorMessage;
       delete req.session.errorMessage;
     }
-    const raceId = req.params.raceId;
+    const raceId = xss(req.params.raceId);
     const raceData = await data.get(raceId);
     res.render('editRace', { title: raceData.raceName, name: raceData.raceName, user: req.session.user, error: errorMessage, name: raceData.raceName, city: raceData.raceCity, state: raceData.raceState, date: raceData.raceDate, time: raceData.raceTime, distance: raceData.distance, terrain: raceData.terrain, URL: raceData.raceUrl, otherCSS: "/public/editRace.css", raceId });
   }
