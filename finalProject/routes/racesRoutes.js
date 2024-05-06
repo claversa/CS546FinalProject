@@ -245,12 +245,6 @@ router.route('/addrace')
     }
 
     try {
-      username = help.notStringOrEmpty(username, "username");
-    } catch (e) {
-      errors.push(`invalid username`);
-    }
-
-    try {
       raceCity = help.notStringOrEmpty(raceCity, "race city");
     } catch (e) {
       errors.push(`invalid race city`);
