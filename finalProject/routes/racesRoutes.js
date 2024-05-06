@@ -104,10 +104,13 @@ router.route('/editDistance/:raceId').post(async (req, res) => {
 
 router.route('/editTerrain/:raceId').post(async (req, res) => {
   try {
-    const terrain = req.body.terrain;
-    if (!terrain || !Array.isArray(terrain)) throw "Array cannot be empty";
+    let terrain = req.body.terrain;
+    if (!terrain) throw "Array cannot be empty";
+    if (!Array.isArray(terrain)) {
+      terrain = [terrain];
+    }
     const raceId = req.params.raceId;
-    const raceData = await data.upateTerrain(raceId, terrain);
+    const raceData = await data.updateTerrain(raceId, terrain);
     res.render('editRace', { title: raceData.raceName, name: raceData.raceName, user: req.session.user, error: "", name: raceData.raceName, city: raceData.raceCity, state: raceData.raceState, date: raceData.raceDate, time: raceData.raceTime, distance: raceData.distance, terrain: raceData.terrain, URL: raceData.raceUrl, otherCSS: "/public/editRace.css", raceId });
   }
   catch (e) {

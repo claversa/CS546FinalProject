@@ -350,7 +350,7 @@ const check = async (username, password) => {
     return null;
 }
 
-export const addReview = async (username, raceId, comment) => {
+export const addReview = async (username, raceId, comment, rating) => {
     const userCollection = await users();
     try {
         comment = help.notStringOrEmpty(comment, 'comment');
@@ -364,7 +364,7 @@ export const addReview = async (username, raceId, comment) => {
         const raceCollection = await races();
         const race = await raceCollection.findOne({ _id: new ObjectId(raceId) });
         const raceName = race.raceName
-        const newComment = { username, raceName, raceId, comment };
+        const newComment = { username, raceName, raceId, comment, rating };
         if (user) {
             user.reviews.push(newComment)
         }       
@@ -388,13 +388,13 @@ export const addReview = async (username, raceId, comment) => {
     }
 }
 
-export const removeReview = async (username, raceId, comment) => {
+export const removeReview = async (username, raceId, comment, rating) => {
     const userCollection = await users();
     try {
         comment = help.notStringOrEmpty(comment, 'comment');
         const user = await userCollection.findOne({ username: username });
     
-        const indexToRemove = user.reviews.findIndex(item => item.username === username && item.comment === comment);
+        const indexToRemove = user.reviews.findIndex(item => item.username === username && item.comment === comment && item.rating === rating && item.raceId === raceId);
         if (indexToRemove !== -1) {
         user.reviews.splice(indexToRemove, 1);
         }

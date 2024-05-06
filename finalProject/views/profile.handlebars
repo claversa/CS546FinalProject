@@ -19,10 +19,10 @@
     <h4>REVIEWS:</h4>
    {{#each reviews}}
 <p class="appears">
-    Profile: <a href="/profile/{{this.username}}" class="profile-link">{{this.username}}</a> Rating: {{this.rating}} Comment: {{this.comment}}
+    Race: <a href="/race/{{this.raceId}}" class="race-link">{{this.raceName}}</a> Rating: {{this.rating}} Comment: {{this.comment}}
     {{#eq this.username ../user.username}}
 </p>
-<form action="/removeReview/{{../raceId}}" method="POST" class="delete-review-form">
+<form action="/removeReview/{{this.raceId}}" method="POST" class="delete-review-form">
     <input type="hidden" name="review" value="{{this.comment}}">
     <input type="hidden" name="rating" value="{{this.rating}}">
     <button type="submit">Delete</button>
