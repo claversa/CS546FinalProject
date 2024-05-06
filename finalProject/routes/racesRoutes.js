@@ -197,14 +197,86 @@ router.route('/addrace')
     }
     let raceUrl = xss(raceInfo.raceUrl);
 
-    // CHECK ALL THESE ^^^^^^^^^^^^^^66
-    // -------------------- check
-    // try {
-    //   help.checkString(movieName, "movie name");
-    // }
-    // catch (e) {
-    //   res.status(400).render('error', { title: "Error", class: "error", error: e.toString() });
-    // }
+    const errors = [];
+
+    if (typeof terrain === 'string') {
+      terrain = [terrain];
+    }
+
+    try {
+      raceName = help.notStringOrEmpty(raceName, "race name");
+    } catch (e) {
+      errors.push(`invalid race name`);
+    }
+
+    try {
+      username = help.notStringOrEmpty(username, "username");
+    } catch (e) {
+      errors.push(`invalid username`);
+    }
+
+    try {
+      raceCity = help.notStringOrEmpty(raceCity, "race city");
+    } catch (e) {
+      errors.push(`invalid race city`);
+    }
+
+    try {
+      raceState = help.notStringOrEmpty(raceState, "race state");
+      raceState = help.validState(raceState);
+    } catch (e) {
+      errors.push(`invalid race state`);
+    }
+
+    try {
+      raceTime = help.notStringOrEmpty(raceTime, "race time");
+      raceTime = help.validTime(raceTime);
+    } catch (e) {
+      errors.push(`invalid race time`);
+    }
+
+    try {
+      terrain = help.arraysWithStringElem(terrain, "terrain");
+      let validTerrain = ["Street", "Grass", "Beach", "Rocky", "Inclined", "Muddy"];
+      for (let ter of terrain) {
+        if (!(validTerrain.includes(ter))) {
+          throw "Error: Invalid terrain";
+        }
+      }
+    } catch (e) {
+      errors.push(`invalid terrain`);
+    }
+
+    try {
+      raceUrl = help.notStringOrEmpty(raceUrl, "race URL");
+      help.validURL(raceUrl);
+    } catch (e) {
+      errors.push(`invalid race URL: must be of form https://www.{url}.{com,org,etc}`);
+    }
+
+    try {
+      // Validate date
+      help.validDate(raceDate);
+      if (!help.isDateAfterToday(raceDate, raceTime)) throw "Error: Race date must be after today's date";
+    } catch (e) {
+      errors.push(`invalid race : must be valid format and after today's date and time`);
+    }
+
+    try {
+      // Validate distance
+      let validDist = ["5K", "Half Marathon", "Marathon"];
+      if (!(validDist.includes(distance))) {
+        throw "Error: Invalid distance";
+      }
+    } catch (e) {
+      errors.push(`invalid distance`);
+    }
+
+
+    // Check for errors and handle accordingly
+    if (errors.length > 0) {
+      res.status(404).render('addRace', { title: "Error", class: "not-found", error: errors, user: req.session.user, otherCSS: "/public/addRace.css" });
+    }
     try {
       let newRace = await data.create(
         raceName,

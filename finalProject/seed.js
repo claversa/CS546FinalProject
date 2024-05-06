@@ -209,3 +209,4 @@ catch (e) {
     console.log("Couldn't seed races");
 }
 
+console.log("Seed completed, database loaded...Please quit with ctrl + C or equivalent command")
