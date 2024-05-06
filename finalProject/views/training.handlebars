@@ -1,34 +1,97 @@
 <body>
-    <h1>Training Plan</h1>
-    <table class="center">
-      <thead>
+  <h1>Training Plan</h1>
+  <button type="submit" id="saveButton">Save</button>
+  <input type="hidden" id="currTimes" name="currTimes" value={{plans}}>
+  <table class="center">
+    <thead>
+      <tr>
+        <th>Week</th>
+        <th>Monday</th>
+        <th>Tuesday</th>
+        <th>Wednesday</th>
+        <th>Thursday</th>
+        <th>Friday</th>
+        <th>Saturday</th>
+        <th>Sunday</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each plans}}
         <tr>
-          <th>Week</th>
-          <th>Monday</th>
-          <th>Tuesday</th>
-          <th>Wednesday</th>
-          <th>Thursday</th>
-          <th>Friday</th>
-          <th>Saturday</th>
-          <th>Sunday</th>
+          <td>{{add @index 1}}</td>
+          {{#each this}}
+            <td>
+              {{#if this}}
+                {{this.mile}} miles<br>
+                <input type="text" name="time" placeholder="Time" data-week="{{@../index}}" data-day="{{@index}}" value="">
+              {{else}}
+                <p>Rest Day!</p>
+              {{/if}}
+            </td>
+          {{/each}}
         </tr>
-      </thead>
-      <tbody>
-        {{#each plans}}
-          <tr>
-            <td>{{add @index 1}}</td>
-            {{#each this}}
-              <td>
-                {{#if this}}
-                  {{this}} miles<br>
-                  <input type="text" name="time" placeholder="Time">
-                {{else}}
-                  <p>Rest Day!</p>
-                {{/if}}
-              </td>
-            {{/each}}
-          </tr>
-        {{/each}}
-      </tbody>
-    </table>
+      {{/each}}
+    </tbody>
+  </table>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const saveButton = document.getElementById("saveButton");
+      saveButton.addEventListener("click", function() {
+        const inputs = document.querySelectorAll("input[name='time']");
+        let isValid = true;
+        inputs.forEach(input => {
+          const value = input.value;
+          if (!/^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)?$/.test(value) && value !== "") {
+            input.value = "";
+            isValid = false;
+          }
+        });
+        if (!isValid) {
+          alert("Invalid time format! Please enter time in HH:MM:SS format.");
+          return;
+        }
+        const updatedTimes = [];
+        inputs.forEach(input => {
+          const week = input.dataset.week;
+          const day = input.dataset.day;
+          const value = input.value;
+          const weekIndex = parseInt(week);
+          const dayIndex = parseInt(day) - 1;
+          if (!updatedTimes[weekIndex]) {
+            updatedTimes[weekIndex] = ["", "", "", "", "", ""];
+          }
+          updatedTimes[weekIndex][dayIndex] = value === "" ? "" : value;
+        });
+        const currTimesInput = document.getElementById("currTimes");
+        console.log("currTimesInput.value:", currTimesInput.value);
+        const currTimes = JSON.parse(currTimesInput.value);
+        const mergedTimes = updatedTimes.map((week, weekIndex) =>
+          week.map((time, dayIndex) => {
+            return {
+              mile: currTimes[weekIndex][dayIndex].mile,
+              time: time === "" ? null : time
+            };
+          })
+        );
+        console.log(mergedTimes);
+        fetch('/training', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ times: mergedTimes })
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          // Optional: Handle the response if needed
+        })
+        .catch(error => {
+          console.error('There was a problem with the fetch operation:', error);
+        });
+      });
+    });
+  </script>
 </body>
