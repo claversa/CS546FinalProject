@@ -480,10 +480,7 @@ const addTrainingPlan = async (username, raceId, maxMileageYet) => {
         if (val[val.length - 1][6].mile === plan[1][plan[1].length - 1][6].mile) {
           plan = r1.raceDate < r2.raceDate ? [key, val] : plan;
         } else {
-          plan =
-            val[val.length - 1][6].mile > plan[1][plan[1].length - 1][6].mile
-              ? [key, val]
-              : plan;
+          plan = val[val.length - 1][6].mile > plan[1][plan[1].length - 1][6].mile ? [key, val] : plan;
         }
       }
     }
@@ -536,16 +533,12 @@ const removeTrainingPlan = async (username, raceId) => {
         ) {
           plan = r1.raceDate < r2.raceDate ? [key, val] : plan;
         } else {
-          plan =
-            val[val.length - 1][6].mile > plan[1][plan[1].length - 1][6].mile
-              ? [key, val]
-              : plan;
+          plan = val[val.length - 1][6].mile > plan[1][plan[1].length - 1][6].mile ? [key, val] : plan;
         }
       }
     }
     plan = plan[1];
   }
-
 
   const updatedInfo = await userCollection.findOneAndUpdate(
     { username: username },
@@ -568,6 +561,7 @@ const updateTrainingTimes = async (username, plan) => {
   const userCollection = await users();
   const user = await userCollection.findOne({ username: username });
   if (!user) throw "User not found"; // checks if user is not found
+  console.log(plan);
   for (let week of plan) {
     if (week.length !== 7) {
       throw 'invalid week';

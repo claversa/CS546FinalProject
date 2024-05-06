@@ -262,6 +262,7 @@ router.route("/training").get(async (req, res) => {
     otherCSS: "/public/training.css",
     user: req.session.user,
     plans: user.currPlan,
+    othArr: JSON.stringify(user.currPlan)
   });
 });
 
@@ -287,6 +288,7 @@ router.route("/training").post(async (req, res) => {
     otherCSS: "/public/training.css",
     user: req.session.user,
     plans: user.currPlan,
+    othArr: JSON.stringify(user.currPlan)
   });
 });
 
