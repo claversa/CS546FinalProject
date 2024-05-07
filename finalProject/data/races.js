@@ -17,9 +17,6 @@ export const create = async (
 
     const errors = [];
 
-    if (typeof terrain === 'string') {
-        terrain = [terrain];
-    }
 
     try {
         raceName = help.notStringOrEmpty(raceName, "race name");
@@ -53,16 +50,29 @@ export const create = async (
         errors.push(`invalid race time`);
     }
 
+    let validTerrain = ["Street", "Grass", "Beach", "Rocky", "Inclined", "Muddy"];
     try {
-        terrain = help.arraysWithStringElem(terrain, "terrain");
-        let validTerrain = ["Street", "Grass", "Beach", "Rocky", "Inclined", "Muddy"];
-        for (let ter of terrain) {
-            if (!(validTerrain.includes(ter))) {
-                throw "Error: Invalid terrain";
+        if (!Array.isArray(terrain) || terrain.size === 1) {
+            console.log("2");
+
+            terrain = [terrain];
+            if (!(validTerrain.includes(terrain))) throw "Error: Invalid terrain";
+
+        }
+        else {
+            terrain = help.arraysWithStringElem(terrain, "terrain");
+            for (let ter of terrain) {
+                console.log("3");
+
+                if (!(validTerrain.includes(ter))) {
+                    console.log("4");
+
+                    throw "Error: Invalid terrain";
+                }
             }
         }
     } catch (e) {
-        errors.push(`invalid terrain`);
+        errors.push(`invalid terrain 1`);
     }
 
     try {
