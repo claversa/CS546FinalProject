@@ -452,29 +452,34 @@ const addTrainingPlan = async (username, raceId, maxMileageYet) => {
     registeredUsers
   } = await race.get(raceId);
 
-  // 4 weeks
-  let base5k = [[0, 1, 1, 1, 0, 1, 2], [0, 1, 2, 1, 0, 1, 2], [0, 1, 2, 1, 0, 1, 2.5], [0, 2, 2, 1, 0, 2, 3.1]];
-  // 12 weeks
-  let baseHalf = [[0, 1, 1, 1, 0, 1, 2], [0, 1, 2, 1, 0, 1, 3], [0, 3, 2, 3, 0, 1, 4], [0, 3.5, 2, 3.5, 0, 1, 5], [0, 3.5, 2, 3.5, 0, 1, 5], [0, 4, 2, 4, 0, 1, 6],
-  [0, 4, 2, 4, 1, 0, 3.1], [0, 4.5, 3, 4.5, 0, 1, 7], [0, 4.5, 3, 4.5, 0, 1, 8], [0, 5, 3, 5, 0, 1, 9], [0, 5, 3, 5, 0, 1, 10], [0, 4, 3, 2, 0, 0, 13.1]];
-  // 18 weeks
-  let baseMarathon = [[0, 1, 1, 1, 0, 1, 2], [0, 1, 2, 1, 0, 1, 3], [0, 3, 2, 3, 0, 1, 4], [0, 3.5, 2, 3.5, 0, 1, 5], [0, 4.5, 3, 4.5, 0, 1, 7], [0, 5, 3, 5, 0, 1, 9], [0, 5, 3, 5, 3, 0, 10], [0, 4, 3, 2, 4, 0, 13.2],
-  [0, 3, 7, 4, 6, 0, 10], [0, 3, 7, 4, 0, 3, 15], [0, 4, 8, 5, 0, 3, 16], [0, 4, 8, 5, 0, 3, 12], [0, 4, 9, 5, 0, 3, 18], [0, 5, 9, 5, 0, 3, 14], [0, 5, 10, 5, 0, 4, 20], [0, 5, 8, 4, 0, 3, 12], [0, 4, 6, 3, 0, 1, 8], [0, 3, 4, 2, 0, 1, 26.2]];
-  // what was users last greatest mileage, compare FROM START TO END of above training arrays 
-  let plan = [];
-  switch (distance) {
-    case "5K":
-      plan = base5k;
-      break;
-    case "Half Marathon":
-      plan = baseHalf;
-      break;
-    case "Marathon":
-      plan = baseMarathon;
-      break;
-    default:
-      throw `Not a valid distance`;
-  }
+    // 4 weeks
+    let base5k = [[0, 1, 1, 1, 0, 1, 2], [0, 1, 2, 1, 0, 1, 2], [0, 1, 2, 1, 0, 1, 2.5], [0, 2, 2, 1, 0, 2, 3.1]];
+    // 12 weeks
+    let baseHalf = [[0, 1, 1, 1, 0, 1, 2], [0, 1, 2, 1, 0, 1, 3], [0, 3, 2, 3, 0, 1, 4], [0, 3.5, 2, 3.5, 0, 1, 5], [0, 3.5, 2, 3.5, 0, 1, 5], [0, 4, 2, 4, 0, 1, 6],
+    [0, 4, 2, 4, 1, 0, 3.1], [0, 4.5, 3, 4.5, 0, 1, 7], [0, 4.5, 3, 4.5, 0, 1, 8], [0, 5, 3, 5, 0, 1, 9], [0, 5, 3, 5, 0, 1, 10], [0, 4, 3, 2, 0, 0, 13.1]];
+    // 18 weeks
+    let baseMarathon = [[0, 1, 1, 1, 0, 1, 2], [0, 1, 2, 1, 0, 1, 3], [0, 3, 2, 3, 0, 1, 4], [0, 3.5, 2, 3.5, 0, 1, 5], [0, 4.5, 3, 4.5, 0, 1, 7], [0, 5, 3, 5, 0, 1, 9], [0, 5, 3, 5, 3, 0, 10], [0, 4, 3, 2, 4, 0, 13.2],
+    [0, 3, 7, 4, 6, 0, 10], [0, 3, 7, 4, 0, 3, 15], [0, 4, 8, 5, 0, 3, 16], [0, 4, 8, 5, 0, 3, 12], [0, 4, 9, 5, 0, 3, 18], [0, 5, 9, 5, 0, 3, 14], [0, 5, 10, 5, 0, 4, 20], [0, 5, 8, 4, 0, 3, 12], [0, 4, 6, 3, 0, 1, 8], [0, 3, 4, 2, 0, 1, 26.2]];
+    // what was users last greatest mileage, compare FROM START TO END of above training arrays 
+    let plan = [];
+    switch (distance) {
+        case "5K":
+            plan = base5k;
+            break;
+        case "Half Marathon":
+            plan = baseHalf;
+            break;
+        case "Marathon":
+            plan = baseMarathon;
+            break;
+        default:
+            throw `Not a valid distance`;
+    }
+    if(user.system === "metric"){
+      plan = plan.map((row) =>
+        row.map((value) => Math.round(help.imperialToMetric(value, "Mile") * 10) / 10 )
+      );
+    }
 
   if (maxMileageYet >= plan[1][6]) {
     for (let i = 0; i < plan.length; i++) {
@@ -495,9 +500,7 @@ const addTrainingPlan = async (username, raceId, maxMileageYet) => {
     errorMsg = `This race data already passed.`;
   } else if (weeksUntil < plan.length) {
     plan = plan.slice(0, weeksUntil);
-    errorMsg = `You can not safely train for the entire ${distance} mile race. Train up until ${
-      plan[plan.length - 1][6]
-    } miles and then you have to walk.`;
+    errorMsg = `You can not safely train for the entire race. Train up until ${plan[plan.length - 1][6]} distance and then you have to walk.`;
   } else {
     let div = Math.floor((weeksUntil - plan.length) / plan.length);
     let mod = weeksUntil % plan.length;
@@ -517,7 +520,6 @@ const addTrainingPlan = async (username, raceId, maxMileageYet) => {
         .flat();
     }
   }
-
   
   let times = plan.map((arr) => arr.map(() => ""));
   let combinedArray = plan.map((mileArray, index) => {
