@@ -455,6 +455,7 @@ const addTrainingPlan = async (username, raceId, maxMileageYet) => {
     }
   }
 
+  
   let times = plan.map((arr) => arr.map(() => ""));
   let combinedArray = plan.map((mileArray, index) => {
     let timeArray = times[index];
