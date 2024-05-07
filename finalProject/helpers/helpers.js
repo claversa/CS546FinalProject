@@ -133,8 +133,15 @@ export let validPassword = (password) => {
     return password;
 };
 
+
 export let validUsername = (username) => {
     const usernameRegex = /^[a-zA-Z]{2,10}$/;
-    if (!usernameRegex.test(username)) { throw "Error: Please provide a valid username with between 2-10 characters" };
+    if (!usernameRegex.test(username)) { throw "Error: Please provide a valid username with between 2-10 letters" };
     return username.toLowerCase();
+};
+
+export let validSocial = (social) => {
+    const socialRegex = /^@\w{1,12}$/;
+    if (!socialRegex.test(social)) { throw "Error: Please provide a valid social media tag with '@' and less than 13 characters" };
+    return social;
 };
