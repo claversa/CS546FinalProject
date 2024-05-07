@@ -61,3 +61,26 @@ li {
     display: inline-block;
 
 }
+
+button {
+    text-align: center;
+    color: var(--inputText);
+    /* border-radius: 4px; */
+    background-color: var(--input);
+    padding: 5px;
+    width: 100px;
+    cursor: grab;
+}
+
+button:hover {
+    color: var(--input);
+    background-color: var(--hover);
+}
+
+.state {
+    color: var(--bg);
+    background-color: var(--input);
+    padding: 10px;
+    width: fit-content;
+
+}

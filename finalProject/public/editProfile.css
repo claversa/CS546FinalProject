@@ -1,0 +1,112 @@
+:root {
+    --input: #F39803;
+    --labels: #FCA311;
+    --bg: #2F4D8A;
+    --inputText: #2F4D8A;
+    --hover: #213358;
+    --hoverText: #FCA311;
+}
+
+
+input[type=text] {
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    border: none;
+    background-color: var(--input);
+    color: var(--bg);
+    font-size: 16px;
+    border-radius: 4px;
+    text-align: center;
+}
+
+
+option,
+select {
+    font-family: 'Courier New', Courier, monospace;
+    padding: 12px 20px;
+    margin: 8px 0;
+    margin: 8px 0;
+    background-color: var(--input);
+    color: var(--inputText);
+    font-size: 16px;
+    border-radius: 4px;
+    text-align: center;
+}
+
+
+option:hover {
+    outline-color: #FEC0AA;
+}
+
+
+label,
+h4 {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 20px;
+    padding: 12px 20px;
+    margin: 8px 0;
+    background-color: var(--labels);
+    color: var(--inputText);
+    width: fit-content;
+    border-radius: 4px;
+}
+
+button {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 20px;
+    padding: 12px 20px;
+    /* margin: 8px 0; */
+    background-color: var(--labels);
+    color: var(--inputText);
+    width: fit-content;
+    border-radius: 4px;
+}
+
+
+input[type=text]:hover,
+select:hover,
+button:hover {
+    background-color: var(--hover);
+    color: var(--hoverText);
+}
+
+input[type="checkbox"] {
+    box-sizing: border-box;
+    width: 20px;
+    height: 20px;
+    margin: 6px;
+    padding: 0;
+    border: 2px solid var(--input);
+    appearance: none;
+    background-color: transparent;
+    outline: none;
+    transition: outline 0.1s;
+}
+
+input[type="checkbox"]:checked {
+    background-color: var(--input);
+    padding: 2px;
+}
+
+.checkboxes {
+    padding-bottom: 5px;
+    background-color: transparent;
+    color: var(--input);
+}
+
+select,
+option,
+input[type="time"] {
+    background-color: var(--input);
+    color: var(--bg);
+    padding: 10px;
+}
+
+.container {
+    padding-top: 20px;
+    padding-bottom: 50px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}

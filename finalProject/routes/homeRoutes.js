@@ -1,9 +1,11 @@
 import { Router } from "express";
 const router = Router();
 // Data file for the data functions
-import * as racesFuns from "../data/races.js"; // need stuff from race db
-import * as help from "../helpers/helpers.js";
-import * as data from "../data/users.js";
+import * as racesFuns from '../data/races.js'; // need stuff from race db
+import * as help from "../helpers/helpers.js"
+import * as data from '../data/users.js';
+import { ObjectId } from "mongodb";
+import xss from 'xss';
 
 router.route("/").get(async (req, res) => {
   //render the home handlebars file
@@ -20,12 +22,18 @@ router.route("/").get(async (req, res) => {
   }); // NO ERROR
 });
 
-router.route("/comment/:raceId").post(async (req, res) => {
+router.route('/editProfile').get(async (req, res) => {
+  res.render('editProfile', { title: "Edit Profile", user: req.session.user, error: "", otherCSS: "" });
+});
+
+router.route('/comment/:raceId').post(async (req, res) => {
   try {
-    const raceId = req.params.raceId;
-    const comment = req.body.comment;
-    await racesFuns.addComment(req.session.user.username, raceId, comment);
-    res.redirect(`/race/${raceId}`);
+    const raceId = xss(req.params.raceId);
+    if (!ObjectId.isValid(raceId)) throw 'invalid race ID';
+    let comment = xss(req.body.comment);
+    comment = help.notStringOrEmpty(comment);
+    await racesFuns.addComment(req.session.user.username, raceId, comment)
+    res.redirect(`/race/${raceId}`)
   } catch (error) {
     res.status(403).render("error", {
       title: "Error",
@@ -38,10 +46,12 @@ router.route("/comment/:raceId").post(async (req, res) => {
 
 router.route("/uncomment/:raceId").post(async (req, res) => {
   try {
-    const raceId = req.params.raceId;
-    const comment = req.body.comment;
-    await racesFuns.removeComment(req.session.user.username, raceId, comment);
-    res.redirect(`/race/${raceId}`);
+    const raceId = xss(req.params.raceId);
+    if (!ObjectId.isValid(raceId)) throw 'invalid race ID';
+    let comment = xss(req.body.comment);
+    comment = help.notStringOrEmpty(comment);
+    await racesFuns.removeComment(req.session.user.username, raceId, comment)
+    res.redirect(`/race/${raceId}`)
   } catch (error) {
     res.status(403).render("error", {
       title: "Error",
@@ -54,17 +64,16 @@ router.route("/uncomment/:raceId").post(async (req, res) => {
 
 router.route("/review/:raceId").post(async (req, res) => {
   try {
-    const raceId = req.params.raceId;
-    const comment = req.body.review;
-    const rating = req.body.rating;
-    await racesFuns.addReview(
-      req.session.user.username,
-      raceId,
-      comment,
-      rating
-    );
-    await data.addReview(req.session.user.username, raceId, comment, rating);
-    res.redirect(`/race/${raceId}`);
+    const raceId = xss(req.params.raceId);
+    if (!ObjectId.isValid(raceId)) throw 'invalid race ID';
+    let comment = xss(req.body.review);
+    comment = help.notStringOrEmpty(comment);
+    let rating = xss(req.body.rating);
+    let validRating = ["1", "2", "3", "4", "5"];
+    if (!validRating.includes(rating)) throw "Error: invalid rating";
+    await racesFuns.addReview(req.session.user.username, raceId, comment, rating)
+    await data.addReview(req.session.user.username, raceId, comment, rating)
+    res.redirect(`/race/${raceId}`)
   } catch (error) {
     res.status(403).render("error", {
       title: "Error",
@@ -77,17 +86,16 @@ router.route("/review/:raceId").post(async (req, res) => {
 
 router.route("/removeReview/:raceId").post(async (req, res) => {
   try {
-    const raceId = req.params.raceId;
-    const comment = req.body.review;
-    const rating = req.body.rating;
-    await racesFuns.removeReview(
-      req.session.user.username,
-      raceId,
-      comment,
-      rating
-    );
-    await data.removeReview(req.session.user.username, raceId, comment, rating);
-    res.redirect(`/race/${raceId}`);
+    const raceId = xss(req.params.raceId);
+    if (!ObjectId.isValid(raceId)) throw 'invalid race ID';
+    let comment = xss(req.body.review);
+    comment = help.notStringOrEmpty(comment);
+    let rating = xss(req.body.rating);
+    let validRating = ["1", "2", "3", "4", "5"];
+    if (!validRating.includes(rating)) throw "Error: invalid rating";
+    await racesFuns.removeReview(req.session.user.username, raceId, comment, rating)
+    await data.removeReview(req.session.user.username, raceId, comment, rating)
+    res.redirect(`/race/${raceId}`)
   } catch (error) {
     res.status(403).render("error", {
       title: "Error",
@@ -100,7 +108,8 @@ router.route("/removeReview/:raceId").post(async (req, res) => {
 
 router.route("/register/:raceId").post(async (req, res) => {
   try {
-    const raceId = req.params.raceId;
+    const raceId = xss(req.params.raceId);
+    if (!ObjectId.isValid(raceId)) throw 'invalid race ID';
     await racesFuns.registerUser(req.session.user.username, raceId);
     await data.registerRace(req.session.user.username, raceId);
     await data.addTrainingPlan(
@@ -121,7 +130,8 @@ router.route("/register/:raceId").post(async (req, res) => {
 
 router.route("/unregister/:raceId").post(async (req, res) => {
   try {
-    const raceId = req.params.raceId;
+    const raceId = xss(req.params.raceId);
+    if (!ObjectId.isValid(raceId)) throw 'invalid race ID';
     await racesFuns.unregisterUser(req.session.user.username, raceId);
     await data.unregisterRace(req.session.user.username, raceId);
     await data.removeTrainingPlan(req.session.user.username, raceId);
@@ -136,14 +146,9 @@ router.route("/unregister/:raceId").post(async (req, res) => {
   }
 });
 
-router.route("/error").get(async (req, res) => {
-  const error = req.query.message || "Error";
-  res.status(403).render("error", {
-    title: "Error",
-    error,
-    user: req.session.user,
-    otherCSS: "/public/error.css",
-  });
+router.route('/error').get(async (req, res) => {
+  const error = xss(req.query.message) || 'Error';
+  res.status(403).render('error', { title: "Error", error, user: req.session.user, otherCSS: "/public/error.css" });
 });
 
 router
@@ -160,25 +165,111 @@ router
   .post(async (req, res) => {
     //code here for POST this is where profile form will be submitting new user and then call your data function passing in the profile info   and then rendering the search results of up to 20 Movies.
     const profileInfo = req.body; // form info!
-    let first = profileInfo.firstName;
-    let last = profileInfo.lastName;
-    let username = profileInfo.username;
-    let email = profileInfo.email;
-    let birthday = profileInfo.birthday;
-    let state = profileInfo.state;
-    let gender = profileInfo.gender;
-    let system = profileInfo.system;
-    let socialPlatform = profileInfo.social_platform;
-    let socialHandle = profileInfo.social_handle;
-    let password = profileInfo.password;
-    // CHECK ALL THESE ^^^^^^^^^^^^^^66
-    // -------------------- check
-    // try {
-    //   help.checkString(movieName, "movie name");
-    // }
-    // catch (e) {
-    //   res.status(400).render('error', { title: "Error", class: "error", error: e.toString() });
-    // }
+    let first = xss(profileInfo.firstName);
+    let last = xss(profileInfo.lastName);
+    let username = xss(profileInfo.username);
+    let email = xss(profileInfo.email);
+    let birthdate = xss(profileInfo.birthday);
+    let state = xss(profileInfo.state);
+    let gender = xss(profileInfo.gender);
+    let system = xss(profileInfo.system);
+    let socialPlatform = xss(profileInfo.social_platform);
+    let socialHandle = xss(profileInfo.social_handle);
+    let password = xss(profileInfo.password);
+
+    const errors = [];
+    try {
+      first = help.notStringOrEmpty(first, "firstName");
+    } catch (e) {
+      errors.push(`invalid firstName`);
+    }
+
+    try {
+      last = help.notStringOrEmpty(last, "lastName");
+    } catch (e) {
+      errors.push(`invalid lastName`);
+    }
+
+    try {
+      username = help.notStringOrEmpty(username, "username");
+      username = help.validUsername(username);
+    } catch (e) {
+      errors.push(`invalid username: username must have between 2 and 10 characters`);
+    }
+
+    try {
+      email = help.notStringOrEmpty(email, "email");
+      email = help.validEmail(email);
+    } catch (e) {
+      errors.push(`invalid email`);
+    }
+
+    try {
+      state = help.notStringOrEmpty(state, "state");
+      state = help.validState(state);
+    } catch (e) {
+      errors.push(`invalid state`);
+    }
+
+    try {
+      gender = help.notStringOrEmpty(gender, "gender");
+      if (gender !== "male" && gender !== "female" && gender !== "other" && gender !== "preferNot") {
+        errors.push('invalid gender response');
+      }
+    } catch (e) {
+      errors.push(`invalid gender`);
+    }
+
+    try {
+      socialPlatform = help.notStringOrEmpty(socialPlatform, "social platform");
+      const validPlatforms = ["twitter", "facebook", "instagram"];
+      if (!validPlatforms.includes(socialPlatform)) {
+        errors.push('invalid social platform');
+      }
+    } catch (e) {
+      errors.push(`invalid social platform`);
+    }
+
+    try {
+      socialHandle = help.notStringOrEmpty(socialHandle, "social handle");
+    } catch (e) {
+      errors.push(`invalid social handle`);
+    }
+
+    try {
+      system = help.notStringOrEmpty(system, "system");
+      if (system !== "metric" && system !== "imperial") {
+        errors.push('invalid measurement system');
+      }
+    } catch (e) {
+      errors.push(`invalid system`);
+    }
+
+    try {
+      password = help.notStringOrEmpty(password, "password");
+      password = help.validPassword(password);
+    } catch (e) {
+      errors.push(`invalid password: password must have at least 8 characters with at least 1 uppercase letter, number, and special character`);
+    }
+
+    let age;
+    try {
+      birthdate = help.notStringOrEmpty(birthdate, "birthdate");
+      help.validBirthdate(birthdate);
+      age = help.calculateAge(birthdate);
+      if (age < 13) {
+        errors.push("Age must be above 13 to register");
+      }
+    } catch (e) {
+      errors.push(`invalid birthdate`);
+    }
+
+
+    if (errors.length > 0) {
+      // console.log('Errors found:', errors);
+      return res.render('createProfile', { title: "Create Profile", user: req.session.user, error: errors, otherCSS: "/public/createProfile.css" });
+    }
+
     try {
       let newUser = await data.create(
         first,
@@ -187,7 +278,7 @@ router
         email,
         state,
         gender,
-        birthday,
+        birthdate,
         socialPlatform,
         socialHandle,
         system,
@@ -223,11 +314,22 @@ router
   })
   .post(async (req, res) => {
     const loginInfo = req.body; // form info!
-    let username = loginInfo.username;
-    let password = loginInfo.password;
+    let username = xss(loginInfo.username);
+    let password = xss(loginInfo.password);
+    let errors = [];
     try {
-      // HERE
-      let validation = await data.check(username, password);
+      username = help.notStringOrEmpty(username, "username");
+      username = username.toLowerCase();
+    } catch (e) {
+      errors.push(`username or password is incorrect`);
+    }
+    try {
+      password = help.notStringOrEmpty(password, "password");
+    } catch (e) {
+      errors.push(`username or password is incorrect`);
+    }
+    try {
+      let validation = await data.check(username, password)
       if (validation) {
         req.session.user = { username: username };
         // take user to homepage but now logged in
@@ -318,51 +420,23 @@ router.route("/countdown").get(async (req, res) => {
   } else {
     let farAway = Infinity;
     let race, date, time;
+    let countdownDates = [];
 
     // Iterate over the races
     for (let raceId of races) {
       try {
         race = await racesFuns.get(raceId);
-        let tempDate = race.raceDate;
-        let tempTime = race.raceTime;
-
-        // Calculate time difference in days
-        let tempAway = help.dateAway(tempDate);
-
-        // Compare dates
-        if (tempAway < farAway) {
-          farAway = tempAway;
-          date = tempDate;
-          time = tempTime;
-        } else if (tempAway === farAway) {
-          // If the races are on the same day, compare times
-          let currentRaceTime = new Date(`${date} ${time}`);
-          let tempRaceTime = new Date(`${tempDate} ${tempTime}`);
-
-          // Compare the times
-          if (tempRaceTime < currentRaceTime) {
-            date = tempDate;
-            time = tempTime;
-          }
-        }
-      } catch (e) {
-        return res.render("error", {
-          title: "Error",
-          user: req.session.user,
-          error: e,
-          otherCSS: "/public/error.css",
-        });
+        let date = race.raceDate;
+        let time = race.raceTime;
+        let countdownDate = new Date(`${date} ${time}`)
+        countdownDates.push(countdownDate)
+      }
+      catch (e) {
+        return res.render("error", { title: "Error", user: req.session.user, error: e, otherCSS: "/public/error.css" })
       }
     }
-    let countdownDate = new Date(`${date} ${time}`);
-    return res.render("countdown", {
-      title: "Race Day Countdown",
-      user: req.session.user,
-      error: "",
-      hasRaces: true,
-      raceDate: countdownDate,
-      otherCSS: "/public/countdown.css",
-    });
+    countdownDates.sort((a, b) => a - b); // sort soonest to latest
+    return res.render("countdown", { title: "Race Day Countdown", user: req.session.user, error: "", hasRaces: true, raceDate: JSON.stringify(countdownDates), otherCSS: "/public/countdown.css" });
   }
 });
 
