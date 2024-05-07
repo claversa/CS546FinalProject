@@ -292,7 +292,7 @@ router
         system,
         password
       ); // create user
-      console.log(newUser);
+
       // take user to homepage but now logged in
       res.redirect("./home");
     } catch (e) {

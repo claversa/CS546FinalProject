@@ -146,7 +146,6 @@ app.use(async (req, res, next) => {
             try {
                 const pathArray = req.path.split('/');
                 const username = pathArray[pathArray.length - 1];
-                console.log(username)
                 if (!(req.session.user.username === username)) {
                     return res.redirect('/error?message=Access Denied');
                 }
