@@ -486,7 +486,7 @@ const addTrainingPlan = async (username, raceId, maxMileageYet) => {
 
                 if (val[val.length - 1][6].mile === plan[1][plan[1].length - 1][6].mile) {
                     plan = r1.raceDate < r2.raceDate ? [key, val] : plan;
-                } else {z
+                } else {
                     plan = val[val.length - 1][6].mile > plan[1][plan[1].length - 1][6].mile ? [key, val] : plan;
                 }
             }
