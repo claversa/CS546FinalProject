@@ -19,7 +19,7 @@ const seedUsers = async () => {
                 socialPlatform: 'instagram',
                 socialHandle: '@tysaito',
                 system: 'imperial',
-                password: 'Password123!',
+                password: 'Test123!',
             },
             {
                 firstName: 'Caroline',
@@ -32,7 +32,7 @@ const seedUsers = async () => {
                 socialPlatform: 'twitter',
                 socialHandle: '@carolinelaversa',
                 system: 'metric',
-                password: 'Password456!',
+                password: 'Test123!',
             },
             {
                 firstName: 'Dean',
@@ -45,7 +45,7 @@ const seedUsers = async () => {
                 socialPlatform: 'facebook',
                 socialHandle: 'dean.fil',
                 system: 'imperial',
-                password: 'Password789!',
+                password: 'Test123!',
             },
         ];
 
@@ -149,7 +149,7 @@ const seedRaces = async () => {
                 username: 'caroline',
                 raceCity: 'Malibu',
                 raceState: 'CA',
-                raceDate: '2024-07-12',
+                raceDate: '2024-02-12',
                 raceTime: '12:00',
                 distance: "Marathon",
                 terrain: ["Beach"],
