@@ -418,6 +418,11 @@ const addTrainingPlan = async (username, raceId, maxMileageYet) => {
         default:
             throw `Not a valid distance`;
     }
+    if(user.system === "metric"){
+      plan = plan.map((row) =>
+        row.map((value) => Math.round(help.imperialToMetric(value, "Mile") * 10) / 10 )
+      );
+    }
 
     if (maxMileageYet >= plan[1][6]) {
         for (let i = 0; i < plan.length; i++) {
@@ -438,9 +443,7 @@ const addTrainingPlan = async (username, raceId, maxMileageYet) => {
     errorMsg = `This race data already passed.`;
   } else if (weeksUntil < plan.length) {
     plan = plan.slice(0, weeksUntil);
-    errorMsg = `You can not safely train for the entire ${distance} mile race. Train up until ${
-      plan[plan.length - 1][6]
-    } miles and then you have to walk.`;
+    errorMsg = `You can not safely train for the entire race. Train up until ${plan[plan.length - 1][6]} distance and then you have to walk.`;
   } else {
     let div = Math.floor((weeksUntil - plan.length) / plan.length);
     let mod = weeksUntil % plan.length;
@@ -460,7 +463,6 @@ const addTrainingPlan = async (username, raceId, maxMileageYet) => {
         .flat();
     }
   }
-
   
   let times = plan.map((arr) => arr.map(() => ""));
   let combinedArray = plan.map((mileArray, index) => {

@@ -22,8 +22,12 @@
           {{#each this}}
             <td>
               {{#if this.mile}}
-                {{this.mile}} miles<br>
-                <input type="text" name="time" placeholder="Time" data-week="{{@../index}}" data-day="{{@index}}" value="{{this.time}}">
+                {{#if metric}}
+                  {{this.mile}} km<br>
+                {{else}}
+                  {{this.mile}} miles<br>
+                {{/if}}
+                  <input type="text" name="time" placeholder="Time" data-week="{{@../index}}" data-day="{{@index}}" value="{{this.time}}">
               {{else}}
                 <p>Rest Day!</p>
               {{/if}}
