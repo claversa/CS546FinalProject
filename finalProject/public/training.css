@@ -4,7 +4,8 @@ table {
   margin-left: 6.3%;
 }
 
-th, td {
+th,
+td {
   padding: 8px;
   text-align: center;
   border: 1px solid #ddd;
@@ -15,10 +16,23 @@ th {
 }
 
 input[type="text"] {
-  width: 30%; 
+  width: 30%;
   text-align: center;
 }
 
 h1 {
   text-align: center;
+}
+
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+#saveButton {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 5px 10px;
 }
