@@ -22,9 +22,15 @@ router.route("/").get(async (req, res) => {
   }); // NO ERROR
 });
 
-router.route('/editProfile').get(async (req, res) => {
-  res.render('editProfile', { title: "Edit Profile", user: req.session.user, error: "", otherCSS: "" });
-});
+router.route('/editProfile/:id').get(async (req, res) => {
+  const username = xss(req.params.id);
+  try {
+    const user = await data.get(username);
+    res.render('editProfile', { privacy: user.private, otherCSS: "/public/editProfile.css", username, title: "Edit Profile", user: req.session.user, error: "", gender: user.gender.toUpperCase(), system: user.system.toUpperCase(), state: user.state.toUpperCase(), socialHandle: user.socialHandle, socialPlatform: user.socialPlatform.toUpperCase(), private: user.private, user: req.session.user,  });
+  } catch{ 
+
+  }
+  });
 
 router.route('/comment/:raceId').post(async (req, res) => {
   try {

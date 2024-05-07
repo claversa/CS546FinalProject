@@ -170,23 +170,41 @@ const get = async (username) => {
     return user;
 };
 
-const updateSystem = async (username) => {
-  username = help.notStringOrEmpty(username, "username)");
-  const userCollection = await users();
-  const user = await userCollection.findOne({ username: username });
-  if (!user) throw "User not found"; // checks if user is not found
-  let newSystem = user.system === "metric" ? "imperial" : "metric"; // swap system val
 
-  const updatedInfo = await userCollection.findOneAndUpdate(
-    { username: username },
-    { $set: { system: newSystem } },
-    { returnDocument: "after" }
-  );
-  if (!updatedInfo) {
-    throw "could not update user successfully";
-  }
-  return updatedInfo;
+const updateSystem = async (username, system) => {
+    username = help.notStringOrEmpty(username, 'username)');
+    system = help.notStringOrEmpty(system, 'system');
+    if (system != "imperial" && system != "metric") throw 'Error: not a valid system!'
+    const userCollection = await users();
+    const user = await userCollection.findOne({ username: username });
+    if (!user) throw 'User not found' // checks if user is not found
+    if (user.system === system) throw "Error: same system as before"
+
+    const updatedInfo = await userCollection.findOneAndUpdate(
+        { username: username },
+        { $set: { system: system } },
+        { returnDocument: 'after' }
+    );
+    if (!updatedInfo) {
+        throw 'could not update user successfully';
+    }
+    return updatedInfo;
 };
+
+const deleteProfile = async (username) => {
+    const userCollection = await users();
+    try {
+        const deletedUser = await userCollection.deleteOne({ username: username });
+
+        if (deletedUser.deletedCount === 0) {
+            throw 'User not found or could not be deleted';
+        }
+
+        return { success: true, message: 'User deleted successfully' };
+    } catch (error) {
+        throw error;
+    }
+}
 
 // remove user ????
 // const remove = async (id) => {
@@ -272,25 +290,63 @@ const updateGender = async (username, newGender) => {
     return updatedInfo;
 };
 
-const updateSocial = async (username, newSocial) => {
-  username = help.notStringOrEmpty(username, "username");
-  newSocial = help.notStringOrEmpty(newSocial, "new social");
-  const userCollection = await users();
-  const user = await userCollection.findOne({ username: username });
-  if (!user) throw "User not found"; // checks if user is not found
-  // already set
-  if (newSocial.toLowerCase() === user.social.toLowerCase())
-    throw `Error: Social is already ${user.social}`;
-  const updatedInfo = await userCollection.findOneAndUpdate(
-    { username: username },
-    { $set: { social: newSocial } },
-    { returnDocument: "after" }
-  );
-  if (!updatedInfo) {
-    throw "could not update user successfully";
-  }
-  updatedInfo._id = updatedInfo._id.toString();
-  return updatedInfo;
+const updatePrivacy = async (username, newPrivacy) => {
+    username = help.notStringOrEmpty(username, 'username');
+    newPrivacy = help.notStringOrEmpty(newPrivacy, 'new privacy');
+    const userCollection = await users();
+    const user = await userCollection.findOne({ username: username });
+    if (!user) throw 'User not found' // checks if user is not found
+    if (newPrivacy !== "true" && newPrivacy !== "false") throw 'Error: not a valid privacy!'
+    if (newPrivacy === user.privacy) throw `Error: privacy is already ${user.private}`
+    const updatedInfo = await userCollection.findOneAndUpdate(
+        { username: username },
+        { $set: { private: newPrivacy } },
+        { returnDocument: 'after' }
+    );
+    if (!updatedInfo) {
+        throw 'could not update user successfully';
+    }
+    updatedInfo._id = updatedInfo._id.toString();
+    return updatedInfo;
+};
+
+const updatePlatform = async (username, newPlatform) => {
+    username = help.notStringOrEmpty(username, 'username');
+    newPlatform = help.notStringOrEmpty(newPlatform, 'new platform');
+    const userCollection = await users();
+    const user = await userCollection.findOne({ username: username });
+    if (!user) throw 'User not found' // checks if user is not found
+    if (newPlatform != "instagram" && newPlatform != "facebook" && newPlatform != "twitter") throw 'Error: not a valid platform!'
+    if (newPlatform.toLowerCase() === user.socialPlatform.toLowerCase()) throw `Error: Social is already ${user.socialPlatform}`
+    const updatedInfo = await userCollection.findOneAndUpdate(
+        { username: username },
+        { $set: { socialPlatform: newPlatform } },
+        { returnDocument: 'after' }
+    );
+    if (!updatedInfo) {
+        throw 'could not update user successfully';
+    }
+    updatedInfo._id = updatedInfo._id.toString();
+    return updatedInfo;
+};
+
+const updateHandle = async (username, newHandle) => {
+    username = help.notStringOrEmpty(username, 'username');
+    newHandle = help.notStringOrEmpty(newHandle, 'new handle');
+    const userCollection = await users();
+    const user = await userCollection.findOne({ username: username });
+    if (!user) throw 'User not found' // checks if user is not found
+    if (newHandle.toLowerCase() === user.socialHandle.toLowerCase()) throw `Error: Social is already ${user.socialPlatform}`
+    const updatedInfo = await userCollection.findOneAndUpdate(
+        { username: username },
+        { $set: { socialHandle: newHandle } },
+        { returnDocument: 'after' }
+    );
+    if (!updatedInfo) {
+        throw 'could not update user successfully';
+    }
+    updatedInfo._id = updatedInfo._id.toString();
+    return updatedInfo;
 };
 
 const updatePassword = async (username, newPassword) => {
@@ -433,29 +489,41 @@ const addTrainingPlan = async (username, raceId, maxMileageYet) => {
     let weeksUntil = Math.floor((new Date(raceDate) - Date.now()) / 1000 / 60 / 60 / 24 / 7);
     let errorMsg = "";
 
-    if (weeksUntil <= 0) {
-        plan = [];
-        errorMsg = `This race data already passed.`;
-    } else if (weeksUntil < plan.length) {
-        plan = plan.slice(0, weeksUntil);
-        errorMsg = `You can not safely train for the entire ${distance} mile race. Train up until ${plan[plan.length - 1][6]} miles and then you have to walk.`;
+  if (weeksUntil <= 0) {
+    plan = [];
+    errorMsg = `This race data already passed.`;
+  } else if (weeksUntil < plan.length) {
+    plan = plan.slice(0, weeksUntil);
+    errorMsg = `You can not safely train for the entire ${distance} mile race. Train up until ${
+      plan[plan.length - 1][6]
+    } miles and then you have to walk.`;
+  } else {
+    let div = Math.floor((weeksUntil - plan.length) / plan.length);
+    let mod = weeksUntil % plan.length;
+    if (plan.length === 1) {
+      plan = Array(weeksUntil).fill(plan[0]);
     } else {
-        let div = Math.floor((weeksUntil - plan.length) / plan.length);
-        let mod = weeksUntil % plan.length;
-        if (plan.length === 1) {
-            plan = Array(weeksUntil).fill(plan[0]);
-        } else {
-            plan = plan.map((week, ind) => {
-                if (ind === plan.length - 1) {
-                    return Array(week);
-                } else if (plan.length - mod - 1 <= ind) {
-                    return Array(2 + div).fill(week);
-                } else {
-                    return Array(1 + div).fill(week);
-                }
-            }).flat();
-        }
+      plan = plan
+        .map((week, ind) => {
+          if (ind === plan.length - 1) {
+            return Array(week);
+          } else if (plan.length - mod - 1 <= ind) {
+            return Array(2 + div).fill(week);
+          } else {
+            return Array(1 + div).fill(week);
+          }
+        })
+        .flat();
     }
+  }
+
+  
+  let times = plan.map((arr) => arr.map(() => ""));
+  let combinedArray = plan.map((mileArray, index) => {
+    let timeArray = times[index];
+    return mileArray.map((mile, i) => ({ mile, time: timeArray[i] }));
+  });
+  plan = combinedArray;
 
     let plans = user.trainingPlans;
     plans[`${raceId}`] = plan;
@@ -474,7 +542,7 @@ const addTrainingPlan = async (username, raceId, maxMileageYet) => {
 
                 if (val[val.length - 1][6].mile === plan[1][plan[1].length - 1][6].mile) {
                     plan = r1.raceDate < r2.raceDate ? [key, val] : plan;
-                } else {z
+                } else {
                     plan = val[val.length - 1][6].mile > plan[1][plan[1].length - 1][6].mile ? [key, val] : plan;
                 }
             }
@@ -685,20 +753,4 @@ export const checkUser = async (username, path) => {
     }
 }
 
-export {
-  create,
-  getAll,
-  get,
-  updateEmail,
-  updateState,
-  updateGender,
-  updateSocial,
-  updateSystem,
-  updatePassword,
-  registerRace,
-  unregisterRace,
-  addTrainingPlan,
-  removeTrainingPlan,
-  updateTrainingTimes,
-  check,
-};
+export { deleteProfile, updateTrainingTimes, create, getAll, get, updateEmail, updateState, updatePrivacy, updateGender, updatePlatform, updateHandle, updateSystem, updatePassword, registerRace, unregisterRace, addTrainingPlan, removeTrainingPlan, check };

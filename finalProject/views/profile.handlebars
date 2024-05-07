@@ -17,7 +17,7 @@
     </ul>
 
     {{#if owner}}
-        <form action="/editProfile" method="GET" class="editProfile">
+        <form action="/editProfile/{{username}}" method="GET" class="editProfile">
         <button type="submit">EDIT</button>
         </form>
         <form action="/profile/delete/{{username}}" method="POST" class="editProfile">
