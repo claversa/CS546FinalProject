@@ -129,5 +129,16 @@ router.route('/editPrivacy/:id').post(async (req, res) => {
   }
 });
 
+router.route('/editPassword/:id').post(async (req, res) => {
+  try {
+    const newPassword = xss(req.body.password);
+    const username = xss(req.params.id);
+    await data.updatePassword(username, newPassword);      
+    res.status(200).json({ message: "Privacy updated successfully" });
+  } catch (e) {
+    res.status(400).json({ error: "Invalid Password" });
+  }
+});
+
 //export router
 export default router;

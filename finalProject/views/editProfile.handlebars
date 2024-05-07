@@ -109,6 +109,12 @@
     <button type="submit">Save</button>
 </form>
 
+<form class="profile-form" action="/profile/editPassword/{{username}}">
+    <label for="password">CHANGE PASSWORD:</label>
+    <input name="password" type="password" id="password" class="password">
+    <button type="submit">Save</button>
+</form>
+<br><br> <div id="response"></div><br><br>
 <br><br> <a href="/profile/{{username}}">Return to Profile</a>
 </div>
 
@@ -123,7 +129,6 @@
         $(this).find('input, select').each(function() {
             formData[$(this).attr('name')] = $(this).val();
         });
-        console.log(formData)
             $.ajax({
                 url: action,
                 method: 'POST',
@@ -133,7 +138,10 @@
                         location.reload();
                     },
                 error: function(jqXHR, textStatus, errorThrown) {
-                    $('#response').text(errorThrown);
+                    if (jqXHR.responseJSON && jqXHR.responseJSON.error) {
+                        const errorMessage = jqXHR.responseJSON.error;
+                        $('#response').text(errorMessage);
+                    }
                 }
             });
         });

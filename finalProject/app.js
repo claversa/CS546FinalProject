@@ -76,6 +76,86 @@ app.use(async (req, res, next) => {
                 return res.redirect('/error?message=Cannot find race');
             }
         }
+        else {
+            res.redirect('/error?message=Access Denied');
+        }
+    }
+    next();
+});
+
+app.use(async (req, res, next) => {
+    if (req.path.startsWith('/race/delete')) {
+        if (req.session.user) {   
+            try {
+                const ok = await user.checkUser(req.session.user.username, req.path)
+                if (!ok) {
+                    return res.redirect('/error?message=Access Denied');
+                }
+            } catch {
+                return res.redirect('/error?message=Cannot find race');
+            }
+        }
+        else {
+            res.redirect('/error?message=Access Denied');
+        }
+    }
+    next();
+});
+
+app.use(async (req, res, next) => {
+    if (req.path.startsWith('/profile/delete')) {
+        if (req.session.user) {   
+            try {
+                const pathArray = req.path.split('/');
+                const username = pathArray[pathArray.length - 1];
+                if (!(req.session.user.username === username)) {
+                    return res.redirect('/error?message=Access Denied');
+                }
+            } catch {
+                return res.redirect('/error?message=Cannot find user');
+            }
+        } else {
+            res.redirect('/error?message=Access Denied');
+        }
+    }
+    next();
+});
+
+app.use(async (req, res, next) => {
+    if (req.path.startsWith('/profile/edit')) {
+        if (req.session.user) {   
+            try {
+                const pathArray = req.path.split('/');
+                const username = pathArray[pathArray.length - 1];
+                if (!(req.session.user.username === username)) {
+                    return res.redirect('/error?message=Access Denied');
+                }
+            } catch {
+                return res.redirect('/error?message=Cannot find user');
+            }
+        } else {
+            res.redirect('/error?message=Access Denied');
+        }
+    }
+    next();
+});
+
+app.use(async (req, res, next) => {
+    if (req.path.startsWith('/editProfile')) {
+        if (req.session.user) {   
+            try {
+                const pathArray = req.path.split('/');
+                const username = pathArray[pathArray.length - 1];
+                console.log(username)
+                if (!(req.session.user.username === username)) {
+                    return res.redirect('/error?message=Access Denied');
+                }
+            } catch {
+                return res.redirect('/error?message=Cannot find user');
+            }
+        } else {
+            res.redirect('/error?message=Access Denied');
+        }
     }
     next();
 });
