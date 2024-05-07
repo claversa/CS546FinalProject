@@ -37,7 +37,7 @@ const create = async (
         username = help.notStringOrEmpty(username, "username");
         username = help.validUsername(username);
     } catch (e) {
-        errors.push(`invalid username: username must have between 2 and 10 characters`);
+        errors.push(`invalid username: username must have between 2 and 10 letters`);
     }
 
     try {

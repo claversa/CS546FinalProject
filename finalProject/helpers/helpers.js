@@ -15,11 +15,11 @@ export let isValidNumber = (val, undef) => {
 }
 
 export let validDate = (date) => { // got this function from https://www.freecodecamp.org/news/how-to-validate-a-date-in-javascript/
-    const dateFormatRegex = /^\d{4}-\d{2}-\d{2}$/;
+    const dateFormatRegex = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/;
     if (!dateFormatRegex.test(date)) throw "Error: Invalid date format";
-    const [month, day, year] = date.split('/').map(Number);
-    const dateObject = new Date(year, month - 1, day);
-    return !isNaN(dateObject.getTime()) && dateObject.getFullYear() === year && dateObject.getMonth() === month - 1 && dateObject.getDate() === day;
+    // const [month, day, year] = date.split('/').map(Number);
+    // const dateObject = new Date(year, month - 1, day);
+    // return !isNaN(dateObject.getTime()) && dateObject.getFullYear() === year && dateObject.getMonth() === month - 1 && dateObject.getDate() === day;
 }
 
 export let isDateAfterToday = (date, militaryTime) => {

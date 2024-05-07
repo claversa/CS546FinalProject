@@ -194,7 +194,7 @@ router
       username = help.notStringOrEmpty(username, "username");
       username = help.validUsername(username);
     } catch (e) {
-      errors.push(`invalid username: username must have between 2 and 10 characters`);
+      errors.push(`invalid username: username must have between 2 and 10 letters`);
     }
 
     try {
@@ -380,7 +380,7 @@ router.route("/training").post(async (req, res) => {
       otherCSS: "/public/error.css",
     });
   }
-  
+
   user = await data.updateTrainingTimes(
     req.session.user.username,
     req.body.times

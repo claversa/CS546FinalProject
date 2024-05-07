@@ -99,24 +99,7 @@ router.route('/editCity/:raceId').post(async (req, res) => {
   }
 });
 
-router.route('/editDate/:raceId').post(async (req, res) => {
-  try {
-    let date = xss(req.body.raceDate);
-    date = help.validDate(date)
-    const raceId = xss(req.params.raceId);
-    if (!ObjectId.isValid(raceId)) throw 'invalid race ID';
-    await data.updateDate(raceId, date);
-    res.redirect(`/race/edit/${raceId}`);
-    // res.render('editRace', { title: raceData.raceName, name: raceData.raceName, user: req.session.user, error: "", name: raceData.raceName, city: raceData.raceCity, state: raceData.raceState, date: raceData.raceDate, time: raceData.raceTime, distance: raceData.distance, terrain: raceData.terrain, URL: raceData.raceUrl, otherCSS: "/public/editRace.css", raceId });
-  }
-  catch (e) {
-    const raceId = xss(req.params.raceId);
-    req.session.errorMessage = "Error: invalid date"
-    res.redirect(`/race/edit/${raceId}`);
-    // res.status(404).render('editRace', { title: "Error", class: "not-found", error: "Error: invalid date", user: req.session.user, otherCSS: "/public/editRace.css" });
-    // res.status(404).render('error', { title: "Error", class: "not-found", error: e.toString(), user: req.session.user, otherCSS: "/public/error.css" });
-  }
-});
+
 
 router.route('/editTime/:raceId').post(async (req, res) => {
   try {
@@ -137,27 +120,6 @@ router.route('/editTime/:raceId').post(async (req, res) => {
   }
 });
 
-// router.route('/editDistance/:raceId').post(async (req, res) => {
-//   try {
-//     const distance = xss(req.body.distance);
-//     let validDist = ["5K", "Half Marathon", "Marathon"];
-//     if (!(validDist.includes(distance))) {
-//       throw "Error: Invalid distance";
-//     }
-//     const raceId = xss(req.params.raceId);
-//     if (!ObjectId.isValid(raceId)) throw 'invalid race ID';
-//     await data.updateDistance(raceId, distance);
-//     res.redirect(`/race/edit/${raceId}`);
-//     // res.render('editRace', { title: raceData.raceName, name: raceData.raceName, user: req.session.user, error: "", name: raceData.raceName, city: raceData.raceCity, state: raceData.raceState, date: raceData.raceDate, time: raceData.raceTime, distance: raceData.distance, terrain: raceData.terrain, URL: raceData.raceUrl, otherCSS: "/public/editRace.css", raceId });
-//   }
-//   catch (e) {
-//     const raceId = xss(req.params.raceId);
-//     req.session.errorMessage = "Error: invalid distance"
-//     res.redirect(`/race/edit/${raceId}`);
-//     // res.status(404).render('editRace', { title: "Error", class: "not-found", error: "Error: invalid distance", user: req.session.user, otherCSS: "/public/editRace.css" });
-//     // res.status(404).render('error', { title: "Error", class: "not-found", error: e.toString(), user: req.session.user, otherCSS: "/public/error.css" });
-//   }
-// });
 
 router.route('/editTerrain/:raceId').post(async (req, res) => {
   let raceInfo = req.body;
