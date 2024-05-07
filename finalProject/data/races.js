@@ -53,7 +53,6 @@ export const create = async (
     let validTerrain = ["Street", "Grass", "Beach", "Rocky", "Inclined", "Muddy"];
     try {
         if (!Array.isArray(terrain) || terrain.size === 1) {
-            console.log("2");
 
             terrain = [terrain];
             if (!(validTerrain.includes(terrain))) throw "Error: Invalid terrain";
@@ -62,10 +61,8 @@ export const create = async (
         else {
             terrain = help.arraysWithStringElem(terrain, "terrain");
             for (let ter of terrain) {
-                console.log("3");
 
                 if (!(validTerrain.includes(ter))) {
-                    console.log("4");
 
                     throw "Error: Invalid terrain";
                 }
@@ -556,22 +553,3 @@ export const isCompleted = async (raceId) => {
         return race.raceName;
     }
 }
-// create("ur dadadadadad", "6621885fabed8ccf023bea58", "New York", "NY", "01/20/2024", "15:30", 100, ["rocky"], "www.apple.com")
-//     .then((result) => {
-//         // This function will execute when the promise is resolved
-//         console.log(result); // Print the resolved value
-//     })
-//     .catch((error) => {
-//         // This function will execute if the promise is rejected
-//         console.error("Error occurred:", error);
-//     });
-
-// updateDistance('663452fbbc795a9b3e203939', 1)
-// .then((result) => {
-//     // This function will execute when the promise is resolved
-//     console.log(result); // Print the resolved value
-// })
-// .catch((error) => {
-//     // This function will execute if the promise is rejected
-//     console.error("Error occurred:", error);
-// });

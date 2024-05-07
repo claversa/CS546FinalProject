@@ -160,19 +160,12 @@ router.route('/editTime/:raceId').post(async (req, res) => {
 // });
 
 router.route('/editTerrain/:raceId').post(async (req, res) => {
-  let terrain = [];
-  try {
-    for (let x of req.body.terrain) {
-      let value = xss(x);
-      terrain.push(value);
-    }
-  } catch (e) {
-    throw "invalid terrain 2";
-  }
+  let raceInfo = req.body;
+  let terrain = raceInfo.terrain && raceInfo.terrain.length > 0 ? xss(raceInfo.terrain).split(',') : [];
+  if (!terrain) throw "invalid terrain";
+
   try {
     let validTerrain = ["Street", "Grass", "Beach", "Rocky", "Inclined", "Muddy"];
-    // let terrain = xss(req.body.terrain);
-    if (!terrain) throw "Terrain cannot be null";
     if (!Array.isArray(terrain)) {
       terrain = [terrain];
       if (!(validTerrain.includes(ter))) throw "Error: Invalid terrain";
@@ -233,16 +226,8 @@ router.route('/addrace')
     let raceDate = xss(raceInfo.raceDate);
     let raceTime = xss(raceInfo.raceTime);
     let distance = xss(raceInfo.distance);
-    let terrain = [];
-    let emptyT = false;
-    try {
-      for (let x of raceInfo.terrain) {
-        let value = xss(x);
-        terrain.push(value);
-      }
-    } catch (e) {
-      emptyT = true;
-    }
+    let terrain = raceInfo.terrain && raceInfo.terrain.length > 0 ? xss(raceInfo.terrain).split(',') : [];
+    if (!terrain) errors.push("terrain can not be empty");
     let raceUrl = xss(raceInfo.raceUrl);
 
 
@@ -287,9 +272,7 @@ router.route('/addrace')
         }
       }
     } catch (e) {
-      console.log(e);
-      if (emptyT) errors.push("terrain can not be empty");
-      else errors.push(`invalid terrain 4`);
+      errors.push(`invalid terrain`);
     }
 
     try {
