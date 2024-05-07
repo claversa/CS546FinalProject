@@ -230,25 +230,6 @@ export const updateState = async (id, newState) => {
     return updatedInfo;
 };
 
-export const updateDate = async (id, newDate) => {
-    id = help.notStringOrEmpty(id, 'id');
-    if (!ObjectId.isValid(id)) throw 'invalid object ID'; // check for valid id
-    newDate = help.notStringOrEmpty(newDate, 'newDate');
-    const raceCollection = await races();
-    const race = await raceCollection.findOne({ _id: new ObjectId(id) });
-    if (!help.isDateAfterToday(newDate, race.raceTime)) throw "Error: Race is not after today's current date and time."
-    if (newDate === race.raceDate) throw `Error: Race date is already ${race.raceDate}`
-    const updatedInfo = await raceCollection.findOneAndUpdate(
-        { _id: new ObjectId(id) },
-        { $set: { raceDate: newDate } },
-        { returnDocument: 'after' }
-    );
-    if (!updatedInfo) {
-        throw 'could not update date successfully';
-    }
-    updatedInfo._id = updatedInfo._id.toString();
-    return updatedInfo;
-};
 
 export const updateTime = async (id, newTime) => {
     id = help.notStringOrEmpty(id, 'id');
@@ -270,24 +251,6 @@ export const updateTime = async (id, newTime) => {
     return updatedInfo;
 };
 
-export const updateDistance = async (id, newDistance) => {
-    id = help.notStringOrEmpty(id, 'id');
-    if (!ObjectId.isValid(id)) throw 'invalid object ID'; // check for valid id
-    newDistance = help.notStringOrEmpty(newDistance, 'newDistance');
-    const raceCollection = await races();
-    const race = await raceCollection.findOne({ _id: new ObjectId(id) });
-    if (newDistance === race.distance) throw `Error: Race distance is already ${race.distance}`
-    const updatedInfo = await raceCollection.findOneAndUpdate(
-        { _id: new ObjectId(id) },
-        { $set: { distance: newDistance } },
-        { returnDocument: 'after' }
-    );
-    if (!updatedInfo) {
-        throw 'could not update distance successfully';
-    }
-    updatedInfo._id = updatedInfo._id.toString();
-    return updatedInfo;
-};
 
 export const updateTerrain = async (id, newTerrain) => {
     id = help.notStringOrEmpty(id, 'id');

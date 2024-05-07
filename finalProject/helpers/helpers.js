@@ -15,11 +15,11 @@ export let isValidNumber = (val, undef) => {
 }
 
 export let validDate = (date) => { // got this function from https://www.freecodecamp.org/news/how-to-validate-a-date-in-javascript/
-    const dateFormatRegex = /^\d{4}-\d{2}-\d{2}$/;
+    const dateFormatRegex = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/;
     if (!dateFormatRegex.test(date)) throw "Error: Invalid date format";
-    const [month, day, year] = date.split('/').map(Number);
-    const dateObject = new Date(year, month - 1, day);
-    return !isNaN(dateObject.getTime()) && dateObject.getFullYear() === year && dateObject.getMonth() === month - 1 && dateObject.getDate() === day;
+    // const [month, day, year] = date.split('/').map(Number);
+    // const dateObject = new Date(year, month - 1, day);
+    // return !isNaN(dateObject.getTime()) && dateObject.getFullYear() === year && dateObject.getMonth() === month - 1 && dateObject.getDate() === day;
 }
 
 export let isDateAfterToday = (date, militaryTime) => {
@@ -133,8 +133,15 @@ export let validPassword = (password) => {
     return password;
 };
 
+
 export let validUsername = (username) => {
     const usernameRegex = /^[a-zA-Z]{2,10}$/;
-    if (!usernameRegex.test(username)) { throw "Error: Please provide a valid username with between 2-10 characters" };
+    if (!usernameRegex.test(username)) { throw "Error: Please provide a valid username with between 2-10 letters" };
     return username.toLowerCase();
+};
+
+export let validSocial = (social) => {
+    const socialRegex = /^@\w{1,12}$/;
+    if (!socialRegex.test(social)) { throw "Error: Please provide a valid social media tag with '@' and less than 13 characters" };
+    return social;
 };

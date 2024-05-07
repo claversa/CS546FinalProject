@@ -22,9 +22,15 @@ router.route("/").get(async (req, res) => {
   }); // NO ERROR
 });
 
-router.route('/editProfile').get(async (req, res) => {
-  res.render('editProfile', { title: "Edit Profile", user: req.session.user, error: "", otherCSS: "" });
-});
+router.route('/editProfile/:id').get(async (req, res) => {
+  const username = xss(req.params.id);
+  try {
+    const user = await data.get(username);
+    res.render('editProfile', { privacy: user.private, otherCSS: "/public/editProfile.css", username, title: "Edit Profile", user: req.session.user, error: "", gender: user.gender.toUpperCase(), system: user.system.toUpperCase(), state: user.state.toUpperCase(), socialHandle: user.socialHandle, socialPlatform: user.socialPlatform.toUpperCase(), private: user.private, user: req.session.user,  });
+  } catch{ 
+
+  }
+  });
 
 router.route('/comment/:raceId').post(async (req, res) => {
   try {
@@ -194,7 +200,7 @@ router
       username = help.notStringOrEmpty(username, "username");
       username = help.validUsername(username);
     } catch (e) {
-      errors.push(`invalid username: username must have between 2 and 10 characters`);
+      errors.push(e);
     }
 
     try {
@@ -232,8 +238,10 @@ router
 
     try {
       socialHandle = help.notStringOrEmpty(socialHandle, "social handle");
+      socialHandle = help.validSocial(socialHandle);
+
     } catch (e) {
-      errors.push(`invalid social handle`);
+      errors.push(e);
     }
 
     try {
@@ -284,7 +292,7 @@ router
         system,
         password
       ); // create user
-      console.log(newUser);
+
       // take user to homepage but now logged in
       res.redirect("./home");
     } catch (e) {
@@ -381,7 +389,7 @@ router.route("/training").post(async (req, res) => {
       otherCSS: "/public/error.css",
     });
   }
-  
+
   user = await data.updateTrainingTimes(
     req.session.user.username,
     req.body.times

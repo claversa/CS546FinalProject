@@ -20,99 +20,100 @@ const create = async (
   password
 ) => {
 
-    const errors = [];
-    try {
-        firstName = help.notStringOrEmpty(firstName, "firstName");
-    } catch (e) {
-        errors.push(`invalid firstName`);
-    }
+  const errors = [];
+  try {
+    firstName = help.notStringOrEmpty(firstName, "firstName");
+  } catch (e) {
+    errors.push(`invalid firstName`);
+  }
 
-    try {
-        lastName = help.notStringOrEmpty(lastName, "lastName");
-    } catch (e) {
-        errors.push(`invalid lastName`);
-    }
+  try {
+    lastName = help.notStringOrEmpty(lastName, "lastName");
+  } catch (e) {
+    errors.push(`invalid lastName`);
+  }
 
-    try {
-        username = help.notStringOrEmpty(username, "username");
-        username = help.validUsername(username);
-    } catch (e) {
-        errors.push(`invalid username: username must have between 2 and 10 characters`);
-    }
+  try {
+    username = help.notStringOrEmpty(username, "username");
+    username = help.validUsername(username);
+  } catch (e) {
+    errors.push(e);
+  }
 
-    try {
-        email = help.notStringOrEmpty(email, "email");
-        email = help.validEmail(email);
-    } catch (e) {
-        errors.push(`invalid email`);
-    }
+  try {
+    email = help.notStringOrEmpty(email, "email");
+    email = help.validEmail(email);
+  } catch (e) {
+    errors.push(`invalid email`);
+  }
 
-    try {
-        state = help.notStringOrEmpty(state, "state");
-        state = help.validState(state);
-    } catch (e) {
-        errors.push(`invalid state`);
-    }
+  try {
+    state = help.notStringOrEmpty(state, "state");
+    state = help.validState(state);
+  } catch (e) {
+    errors.push(`invalid state`);
+  }
 
-    try {
-        gender = help.notStringOrEmpty(gender, "gender");
-        if (gender !== "male" && gender !== "female" && gender !== "other" && gender !== "preferNot") {
-            errors.push('invalid gender response');
-        }
-    } catch (e) {
-        errors.push(`invalid gender`);
+  try {
+    gender = help.notStringOrEmpty(gender, "gender");
+    if (gender !== "male" && gender !== "female" && gender !== "other" && gender !== "preferNot") {
+      errors.push('invalid gender response');
     }
+  } catch (e) {
+    errors.push(`invalid gender`);
+  }
 
-    try {
-        socialPlatform = help.notStringOrEmpty(socialPlatform, "social platform");
-        const validPlatforms = ["twitter", "facebook", "instagram"];
-        if (!validPlatforms.includes(socialPlatform)) {
-            errors.push('invalid social platform');
-        }
-    } catch (e) {
-        errors.push(`invalid social platform`);
+  try {
+    socialPlatform = help.notStringOrEmpty(socialPlatform, "social platform");
+    const validPlatforms = ["twitter", "facebook", "instagram"];
+    if (!validPlatforms.includes(socialPlatform)) {
+      errors.push('invalid social platform');
     }
+  } catch (e) {
+    errors.push(`invalid social platform`);
+  }
 
-    try {
-        socialHandle = help.notStringOrEmpty(socialHandle, "social handle");
-    } catch (e) {
-        errors.push(`invalid social handle`);
+  try {
+    socialHandle = help.notStringOrEmpty(socialHandle, "social handle");
+    socialHandle = help.validSocial(socialHandle);
+  } catch (e) {
+    errors.push(e);
+  }
+
+  try {
+    system = help.notStringOrEmpty(system, "system");
+    if (system !== "metric" && system !== "imperial") {
+      errors.push('invalid measurement system');
     }
+  } catch (e) {
+    errors.push(`invalid system`);
+  }
 
-    try {
-        system = help.notStringOrEmpty(system, "system");
-        if (system !== "metric" && system !== "imperial") {
-            errors.push('invalid measurement system');
-        }
-    } catch (e) {
-        errors.push(`invalid system`);
+  try {
+    password = help.notStringOrEmpty(password, "password");
+    password = help.validPassword(password);
+  } catch (e) {
+    errors.push(`invalid password: password must have at least 8 characters with at least 1 uppercase letter, number, and special character`);
+  }
+
+  let age;
+  try {
+    birthdate = help.notStringOrEmpty(birthdate, "birthdate");
+    help.validBirthdate(birthdate);
+    age = help.calculateAge(birthdate);
+    if (age < 13) {
+      errors.push("Age must be above 13 to register");
     }
-
-    try {
-        password = help.notStringOrEmpty(password, "password");
-        password = help.validPassword(password);
-    } catch (e) {
-        errors.push(`invalid password: password must have at least 8 characters with at least 1 uppercase letter, number, and special character`);
-    }
-
-    let age;
-    try {
-        birthdate = help.notStringOrEmpty(birthdate, "birthdate");
-        help.validBirthdate(birthdate);
-        age = help.calculateAge(birthdate);
-        if (age < 13) {
-            errors.push("Age must be above 13 to register");
-        }
-    } catch (e) {
-        errors.push(`invalid birthdate`);
-    }
+  } catch (e) {
+    errors.push(`invalid birthdate`);
+  }
 
 
-    if (errors.length > 0) {
-        // If there are errors, handle them accordingly
-        // console.log('Errors found:', errors);
-        throw (`Errors: ${errors}`);
-    }
+  if (errors.length > 0) {
+    // If there are errors, handle them accordingly
+    // console.log('Errors found:', errors);
+    throw (`Errors: ${errors}`);
+  }
 
 
   //make empty arrays for registered races and training plans that will be filled in later
@@ -120,73 +121,91 @@ const create = async (
   let currPlan = [];
   let trainingPlans = {};
 
-    let hashedPW = await pw.hashPassword(password);
-    let newUser = {
-        firstName,
-        lastName,
-        username,
-        email,
-        state,
-        gender,
-        age,
-        socialPlatform,
-        socialHandle,
-        system,
-        hashedPW,
-        registeredRaces,
-        currPlan,
-        trainingPlans,
-        private: false
-    };
-    const userCollection = await users();
-    const existUsername = await userCollection.findOne({ username: username });
-    if (existUsername) throw 'username taken';
-    const existEmail = await userCollection.findOne({ email: email });
-    if (existEmail) throw 'email already in use';
-    const insertInfo = await userCollection.insertOne(newUser);
-    if (!insertInfo.acknowledged || !insertInfo.insertedId) throw 'Could not add user';
-    const user = await get(username);
-    return user;
+  let hashedPW = await pw.hashPassword(password);
+  let newUser = {
+    firstName,
+    lastName,
+    username,
+    email,
+    state,
+    gender,
+    age,
+    socialPlatform,
+    socialHandle,
+    system,
+    hashedPW,
+    registeredRaces,
+    currPlan,
+    trainingPlans,
+    private: false
+  };
+  const userCollection = await users();
+  const existUsername = await userCollection.findOne({ username: username });
+  if (existUsername) throw 'username taken';
+  const existEmail = await userCollection.findOne({ email: email });
+  if (existEmail) throw 'email already in use';
+  const insertInfo = await userCollection.insertOne(newUser);
+  if (!insertInfo.acknowledged || !insertInfo.insertedId) throw 'Could not add user';
+  const user = await get(username);
+  return user;
 };
 
 // get all users
 const getAll = async () => {
-    const userCollection = await users();
-    let userList = await userCollection.find({}).toArray(); // get all users, put in array
-    if (!userList) throw 'Could not get all users';
-    userList = userList.map((element) => {
-        element._id = element._id.toString();
-        return element;
-    });
-    return userList;
+  const userCollection = await users();
+  let userList = await userCollection.find({}).toArray(); // get all users, put in array
+  if (!userList) throw 'Could not get all users';
+  userList = userList.map((element) => {
+    element._id = element._id.toString();
+    return element;
+  });
+  return userList;
 };
 
 // get specific user
 const get = async (username) => {
-    username = help.notStringOrEmpty(username, 'username');
-    const userCollection = await users();
-    const user = await userCollection.findOne({ username: username });
-    if (user === null) throw `No user named ${username}`;
-    return user;
-};
-
-const updateSystem = async (username) => {
-  username = help.notStringOrEmpty(username, "username)");
+  username = help.notStringOrEmpty(username, 'username');
   const userCollection = await users();
   const user = await userCollection.findOne({ username: username });
-  if (!user) throw "User not found"; // checks if user is not found
-  let newSystem = user.system === "metric" ? "imperial" : "metric"; // swap system val
-
-  const updatedInfo = await userCollection.findOneAndUpdate(
-    { username: username },
-    { $set: { system: newSystem } },
-    { returnDocument: "after" }
-  );
-  if (!updatedInfo) {
-    throw "could not update user successfully";
-  }
-  return updatedInfo;
+  if (user === null) throw `No user named ${username}`;
+  return user;
 };
+
+
+const updateSystem = async (username, system) => {
+    username = help.notStringOrEmpty(username, 'username)');
+    system = help.notStringOrEmpty(system, 'system');
+    if (system != "imperial" && system != "metric") throw 'Error: not a valid system!'
+    const userCollection = await users();
+    const user = await userCollection.findOne({ username: username });
+    if (!user) throw 'User not found' // checks if user is not found
+    if (user.system === system) throw "Error: same system as before"
+
+    const updatedInfo = await userCollection.findOneAndUpdate(
+        { username: username },
+        { $set: { system: system } },
+        { returnDocument: 'after' }
+    );
+    if (!updatedInfo) {
+        throw 'could not update user successfully';
+    }
+    return updatedInfo;
+};
+
+const deleteProfile = async (username) => {
+    const userCollection = await users();
+    try {
+        const deletedUser = await userCollection.deleteOne({ username: username });
+
+        if (deletedUser.deletedCount === 0) {
+            throw 'User not found or could not be deleted';
+        }
+
+        return { success: true, message: 'User deleted successfully' };
+    } catch (error) {
+        throw error;
+    }
+}
 
 // remove user ????
 // const remove = async (id) => {
@@ -253,16 +272,36 @@ const updateState = async (username, newState) => {
 };
 
 const updateGender = async (username, newGender) => {
+  username = help.notStringOrEmpty(username, 'username');
+  newGender = help.notStringOrEmpty(newGender, 'new gender');
+  if (newGender != "male" && newGender != "female" && newGender != "other" && newGender != "preferNot") throw 'Error: not a valid response (gender)!'
+  const userCollection = await users();
+  const user = await userCollection.findOne({ username: username });
+  if (!user) throw 'User not found'
+  if (newGender === user.gender) throw `Error: Gender is already ${user.gender}`
+  const updatedInfo = await userCollection.findOneAndUpdate(
+    { username: username },
+    { $set: { gender: newGender } },
+    { returnDocument: 'after' }
+  );
+  if (!updatedInfo) {
+    throw 'could not update user successfully';
+  }
+  updatedInfo._id = updatedInfo._id.toString();
+  return updatedInfo;
+};
+
+const updatePrivacy = async (username, newPrivacy) => {
     username = help.notStringOrEmpty(username, 'username');
-    newGender = help.notStringOrEmpty(newGender, 'new gender');
-    if (newGender != "male" && newGender != "female" && newGender != "other" && newGender != "preferNot") throw 'Error: not a valid response (gender)!'
+    newPrivacy = help.notStringOrEmpty(newPrivacy, 'new privacy');
     const userCollection = await users();
     const user = await userCollection.findOne({ username: username });
-    if (!user) throw 'User not found' 
-    if (newGender === user.gender) throw `Error: Gender is already ${user.gender}`
+    if (!user) throw 'User not found' // checks if user is not found
+    if (newPrivacy !== "true" && newPrivacy !== "false") throw 'Error: not a valid privacy!'
+    if (newPrivacy === user.privacy) throw `Error: privacy is already ${user.private}`
     const updatedInfo = await userCollection.findOneAndUpdate(
         { username: username },
-        { $set: { gender: newGender } },
+        { $set: { private: newPrivacy } },
         { returnDocument: 'after' }
     );
     if (!updatedInfo) {
@@ -272,25 +311,43 @@ const updateGender = async (username, newGender) => {
     return updatedInfo;
 };
 
-const updateSocial = async (username, newSocial) => {
-  username = help.notStringOrEmpty(username, "username");
-  newSocial = help.notStringOrEmpty(newSocial, "new social");
-  const userCollection = await users();
-  const user = await userCollection.findOne({ username: username });
-  if (!user) throw "User not found"; // checks if user is not found
-  // already set
-  if (newSocial.toLowerCase() === user.social.toLowerCase())
-    throw `Error: Social is already ${user.social}`;
-  const updatedInfo = await userCollection.findOneAndUpdate(
-    { username: username },
-    { $set: { social: newSocial } },
-    { returnDocument: "after" }
-  );
-  if (!updatedInfo) {
-    throw "could not update user successfully";
-  }
-  updatedInfo._id = updatedInfo._id.toString();
-  return updatedInfo;
+const updatePlatform = async (username, newPlatform) => {
+    username = help.notStringOrEmpty(username, 'username');
+    newPlatform = help.notStringOrEmpty(newPlatform, 'new platform');
+    const userCollection = await users();
+    const user = await userCollection.findOne({ username: username });
+    if (!user) throw 'User not found' // checks if user is not found
+    if (newPlatform != "instagram" && newPlatform != "facebook" && newPlatform != "twitter") throw 'Error: not a valid platform!'
+    if (newPlatform.toLowerCase() === user.socialPlatform.toLowerCase()) throw `Error: Social is already ${user.socialPlatform}`
+    const updatedInfo = await userCollection.findOneAndUpdate(
+        { username: username },
+        { $set: { socialPlatform: newPlatform } },
+        { returnDocument: 'after' }
+    );
+    if (!updatedInfo) {
+        throw 'could not update user successfully';
+    }
+    updatedInfo._id = updatedInfo._id.toString();
+    return updatedInfo;
+};
+
+const updateHandle = async (username, newHandle) => {
+    username = help.notStringOrEmpty(username, 'username');
+    newHandle = help.notStringOrEmpty(newHandle, 'new handle');
+    const userCollection = await users();
+    const user = await userCollection.findOne({ username: username });
+    if (!user) throw 'User not found' // checks if user is not found
+    if (newHandle.toLowerCase() === user.socialHandle.toLowerCase()) throw `Error: Social is already ${user.socialPlatform}`
+    const updatedInfo = await userCollection.findOneAndUpdate(
+        { username: username },
+        { $set: { socialHandle: newHandle } },
+        { returnDocument: 'after' }
+    );
+    if (!updatedInfo) {
+        throw 'could not update user successfully';
+    }
+    updatedInfo._id = updatedInfo._id.toString();
+    return updatedInfo;
 };
 
 const updatePassword = async (username, newPassword) => {
@@ -342,14 +399,14 @@ const registerRace = async (username, raceId) => {
 };
 
 const unregisterRace = async (username, raceId) => {
-    username = help.notStringOrEmpty(username, 'username');
-    if (!ObjectId.isValid(raceId)) throw 'invalid object ID';
-    raceId = help.notStringOrEmpty(raceId, 'raceId');
-    const userCollection = await users();
-    const user = await userCollection.findOne({ username: username });
-    if (!Array.isArray(user.registeredRaces)) {
-        user.registeredRaces = [];
-    }
+  username = help.notStringOrEmpty(username, 'username');
+  if (!ObjectId.isValid(raceId)) throw 'invalid object ID';
+  raceId = help.notStringOrEmpty(raceId, 'raceId');
+  const userCollection = await users();
+  const user = await userCollection.findOne({ username: username });
+  if (!Array.isArray(user.registeredRaces)) {
+    user.registeredRaces = [];
+  }
 
   user.registeredRaces = user.registeredRaces.filter((id) => id !== raceId);
   const updatedUser = {
@@ -368,32 +425,32 @@ const unregisterRace = async (username, raceId) => {
 };
 
 const addTrainingPlan = async (username, raceId, maxMileageYet) => {
-    username = help.notStringOrEmpty(username, 'username');
-    if (!ObjectId.isValid(raceId)) throw 'invalid object ID';
-    raceId = help.notStringOrEmpty(raceId, 'raceId');
+  username = help.notStringOrEmpty(username, 'username');
+  if (!ObjectId.isValid(raceId)) throw 'invalid object ID';
+  raceId = help.notStringOrEmpty(raceId, 'raceId');
 
-    const userCollection = await users();
-    const user = await userCollection.findOne({ username: username });
-    if (!user) throw 'User not found' // checks if user is not found
-    // user.registeredRaces = user.registeredRaces.filter(id => id !== raceId);
-    if (!maxMileageYet) {
-        maxMileageYet = 0
-    } else {
-        maxMileageYet = help.isValidNumber(maxMileageYet, 'max mileage yet');
-    }
+  const userCollection = await users();
+  const user = await userCollection.findOne({ username: username });
+  if (!user) throw 'User not found' // checks if user is not found
+  // user.registeredRaces = user.registeredRaces.filter(id => id !== raceId);
+  if (!maxMileageYet) {
+    maxMileageYet = 0
+  } else {
+    maxMileageYet = help.isValidNumber(maxMileageYet, 'max mileage yet');
+  }
 
-    const {
-        raceName,
-        raceCreator,
-        raceCity,
-        raceState,
-        raceDate,
-        raceTime,
-        distance,
-        terrain,
-        raceUrl,
-        registeredUsers
-    } = await race.get(raceId);
+  const {
+    raceName,
+    raceCreator,
+    raceCity,
+    raceState,
+    raceDate,
+    raceTime,
+    distance,
+    terrain,
+    raceUrl,
+    registeredUsers
+  } = await race.get(raceId);
 
     // 4 weeks
     let base5k = [[0, 1, 1, 1, 0, 1, 2], [0, 1, 2, 1, 0, 1, 2], [0, 1, 2, 1, 0, 1, 2.5], [0, 2, 2, 1, 0, 2, 3.1]];
@@ -424,19 +481,19 @@ const addTrainingPlan = async (username, raceId, maxMileageYet) => {
       );
     }
 
-    if (maxMileageYet >= plan[1][6]) {
-        for (let i = 0; i < plan.length; i++) {
-            if (maxMileageYet <= plan[i][6]) {
-                plan = plan.slice(i, plan.length);
-                break;
-            } else if (i === plan.length - 1) {
-                plan = plan.slice(i, plan.length);
-            }
-        }
+  if (maxMileageYet >= plan[1][6]) {
+    for (let i = 0; i < plan.length; i++) {
+      if (maxMileageYet <= plan[i][6]) {
+        plan = plan.slice(i, plan.length);
+        break;
+      } else if (i === plan.length - 1) {
+        plan = plan.slice(i, plan.length);
+      }
     }
+  }
 
-    let weeksUntil = Math.floor((new Date(raceDate) - Date.now()) / 1000 / 60 / 60 / 24 / 7);
-    let errorMsg = "";
+  let weeksUntil = Math.floor((new Date(raceDate) - Date.now()) / 1000 / 60 / 60 / 24 / 7);
+  let errorMsg = "";
 
   if (weeksUntil <= 0) {
     plan = [];
@@ -471,24 +528,24 @@ const addTrainingPlan = async (username, raceId, maxMileageYet) => {
   });
   plan = combinedArray;
 
-    let plans = user.trainingPlans;
-    plans[`${raceId}`] = plan;
-    if (Object.keys(plans).length === 0) {
-        plan = [];
-    } else if (Object.keys(plans).length === 1) {
-        plan = Object.values(plans)[0];
-    } else {
-        plan = [0, [[0, 0, 0, 0, 0, 0, 0]]];
-        for (const [key, val] of Object.entries(plans)) {
-            if (plan[1].join() === [[0, 0, 0, 0, 0, 0, 0]].join()) {
-                plan = [key, val];
-            } else {
-                let r1 = await race.get(key);
-                let r2 = await race.get(plan[0]);
+  let plans = user.trainingPlans;
+  plans[`${raceId}`] = plan;
+  if (Object.keys(plans).length === 0) {
+    plan = [];
+  } else if (Object.keys(plans).length === 1) {
+    plan = Object.values(plans)[0];
+  } else {
+    plan = [0, [[0, 0, 0, 0, 0, 0, 0]]];
+    for (const [key, val] of Object.entries(plans)) {
+      if (plan[1].join() === [[0, 0, 0, 0, 0, 0, 0]].join()) {
+        plan = [key, val];
+      } else {
+        let r1 = await race.get(key);
+        let r2 = await race.get(plan[0]);
 
                 if (val[val.length - 1][6].mile === plan[1][plan[1].length - 1][6].mile) {
                     plan = r1.raceDate < r2.raceDate ? [key, val] : plan;
-                } else {z
+                } else {
                     plan = val[val.length - 1][6].mile > plan[1][plan[1].length - 1][6].mile ? [key, val] : plan;
                 }
             }
@@ -496,46 +553,46 @@ const addTrainingPlan = async (username, raceId, maxMileageYet) => {
         plan = plan[1];
     }
 
-    const updatedInfo = await userCollection.findOneAndUpdate(
-        { username: username },
-        {
-            $set: {
-                currPlan: plan,
-                trainingPlans: plans
-            }
-        },
-        { returnDocument: 'after' }
-    );
-    if (!updatedInfo) {
-        throw 'could not update user successfully';
-    }
-    return updatedInfo;
+  const updatedInfo = await userCollection.findOneAndUpdate(
+    { username: username },
+    {
+      $set: {
+        currPlan: plan,
+        trainingPlans: plans
+      }
+    },
+    { returnDocument: 'after' }
+  );
+  if (!updatedInfo) {
+    throw 'could not update user successfully';
+  }
+  return updatedInfo;
 };
 
 const removeTrainingPlan = async (username, raceId) => {
-    username = help.notStringOrEmpty(username, 'username');
-    if (!ObjectId.isValid(raceId)) throw 'invalid object ID';
-    raceId = help.notStringOrEmpty(raceId, 'raceId');
+  username = help.notStringOrEmpty(username, 'username');
+  if (!ObjectId.isValid(raceId)) throw 'invalid object ID';
+  raceId = help.notStringOrEmpty(raceId, 'raceId');
 
   const userCollection = await users();
   const user = await userCollection.findOne({ username: username });
   if (!user) throw "User not found"; // checks if user is not found
 
-    let plan;
-    let plans = user.trainingPlans;
-    delete plans[`${raceId}`];
-    if (Object.keys(plans).length === 0) {
-        plan = [];
-    } else if (Object.keys(plans).length === 1) {
-        plan = Object.values(plans)[0];
-    } else {
-        plan = [0, [[0, 0, 0, 0, 0, 0, 0]]];
-        for (const [key, val] of Object.entries(plans)) {
-            if (plan[1].join() === [[0, 0, 0, 0, 0, 0, 0]].join()) {
-                plan = [key, val];
-            } else {
-                let r1 = await race.get(key);
-                let r2 = await race.get(plan[0]);
+  let plan;
+  let plans = user.trainingPlans;
+  delete plans[`${raceId}`];
+  if (Object.keys(plans).length === 0) {
+    plan = [];
+  } else if (Object.keys(plans).length === 1) {
+    plan = Object.values(plans)[0];
+  } else {
+    plan = [0, [[0, 0, 0, 0, 0, 0, 0]]];
+    for (const [key, val] of Object.entries(plans)) {
+      if (plan[1].join() === [[0, 0, 0, 0, 0, 0, 0]].join()) {
+        plan = [key, val];
+      } else {
+        let r1 = await race.get(key);
+        let r2 = await race.get(plan[0]);
 
         if (
           val[val.length - 1][6].mile === plan[1][plan[1].length - 1][6].mile
@@ -549,20 +606,20 @@ const removeTrainingPlan = async (username, raceId) => {
     plan = plan[1];
   }
 
-    const updatedInfo = await userCollection.findOneAndUpdate(
-        { username: username },
-        {
-            $set: {
-                currPlan: plan,
-                trainingPlans: plans
-            }
-        },
-        { returnDocument: 'after' }
-    );
-    if (!updatedInfo) {
-        throw 'could not update user successfully';
-    }
-    return updatedInfo;
+  const updatedInfo = await userCollection.findOneAndUpdate(
+    { username: username },
+    {
+      $set: {
+        currPlan: plan,
+        trainingPlans: plans
+      }
+    },
+    { returnDocument: 'after' }
+  );
+  if (!updatedInfo) {
+    throw 'could not update user successfully';
+  }
+  return updatedInfo;
 };
 
 const updateTrainingTimes = async (username, plan) => {
@@ -618,27 +675,27 @@ const check = async (username, password) => {
 };
 
 export const addReview = async (username, raceId, comment, rating) => {
-    const userCollection = await users();
-    try {
-        comment = help.notStringOrEmpty(comment, 'comment');
-        if (comment.length > 200) {
-            throw ('Review must be less than 200 characters long');
-        }
-        const user = await userCollection.findOne({ username: username });
-        if (!Array.isArray(user.reviews)) {
-            user.reviews = [];
-        }
-        const raceCollection = await races();
-        const race = await raceCollection.findOne({ _id: new ObjectId(raceId) });
-        const raceName = race.raceName
-        const newComment = { username, raceName, raceId, comment, rating };
-        if (user) {
-            user.reviews.push(newComment)
-        }
+  const userCollection = await users();
+  try {
+    comment = help.notStringOrEmpty(comment, 'comment');
+    if (comment.length > 200) {
+      throw ('Review must be less than 200 characters long');
+    }
+    const user = await userCollection.findOne({ username: username });
+    if (!Array.isArray(user.reviews)) {
+      user.reviews = [];
+    }
+    const raceCollection = await races();
+    const race = await raceCollection.findOne({ _id: new ObjectId(raceId) });
+    const raceName = race.raceName
+    const newComment = { username, raceName, raceId, comment, rating };
+    if (user) {
+      user.reviews.push(newComment)
+    }
 
-        const updatedUser = {
-            reviews: user.reviews
-        };
+    const updatedUser = {
+      reviews: user.reviews
+    };
 
     const updatedInfo = await userCollection.findOneAndUpdate(
       { username: username },
@@ -656,63 +713,47 @@ export const addReview = async (username, raceId, comment, rating) => {
 };
 
 export const removeReview = async (username, raceId, comment, rating) => {
-    const userCollection = await users();
-    try {
-        comment = help.notStringOrEmpty(comment, 'comment');
-        const user = await userCollection.findOne({ username: username });
+  const userCollection = await users();
+  try {
+    comment = help.notStringOrEmpty(comment, 'comment');
+    const user = await userCollection.findOne({ username: username });
 
-        const indexToRemove = user.reviews.findIndex(item => item.username === username && item.comment === comment && item.rating === rating && item.raceId === raceId);
-        if (indexToRemove !== -1) {
-            user.reviews.splice(indexToRemove, 1);
-        }
-        const updatedUser = {
-            reviews: user.reviews
-        };
-
-        const updatedInfo = await userCollection.findOneAndUpdate(
-            { username: username },
-            { $set: updatedUser },
-            { returnDocument: 'after' }
-        );
-        if (!updatedInfo) {
-            throw 'could not update race successfully';
-        }
-        updatedInfo._id = updatedInfo._id.toString();
-        return updatedInfo;
-    } catch (error) {
-        throw error;
+    const indexToRemove = user.reviews.findIndex(item => item.username === username && item.comment === comment && item.rating === rating && item.raceId === raceId);
+    if (indexToRemove !== -1) {
+      user.reviews.splice(indexToRemove, 1);
     }
+    const updatedUser = {
+      reviews: user.reviews
+    };
+
+    const updatedInfo = await userCollection.findOneAndUpdate(
+      { username: username },
+      { $set: updatedUser },
+      { returnDocument: 'after' }
+    );
+    if (!updatedInfo) {
+      throw 'could not update race successfully';
+    }
+    updatedInfo._id = updatedInfo._id.toString();
+    return updatedInfo;
+  } catch (error) {
+    throw error;
+  }
 }
 
 export const checkUser = async (username, path) => {
-    try {
-        const pathArray = path.split('/');
-        const raceId = pathArray[pathArray.length - 1];
-        const raceCollection = await races();
-        const race = await raceCollection.findOne({ _id: new ObjectId(raceId) });
-        if (race.username === username) {
-            return true;
-        }
-        return false;
-    } catch (error) {
-        throw error;
+  try {
+    const pathArray = path.split('/');
+    const raceId = pathArray[pathArray.length - 1];
+    const raceCollection = await races();
+    const race = await raceCollection.findOne({ _id: new ObjectId(raceId) });
+    if (race.username === username) {
+      return true;
     }
+    return false;
+  } catch (error) {
+    throw error;
+  }
 }
 
-export {
-  create,
-  getAll,
-  get,
-  updateEmail,
-  updateState,
-  updateGender,
-  updateSocial,
-  updateSystem,
-  updatePassword,
-  registerRace,
-  unregisterRace,
-  addTrainingPlan,
-  removeTrainingPlan,
-  updateTrainingTimes,
-  check,
-};
+export { deleteProfile, updateTrainingTimes, create, getAll, get, updateEmail, updateState, updatePrivacy, updateGender, updatePlatform, updateHandle, updateSystem, updatePassword, registerRace, unregisterRace, addTrainingPlan, removeTrainingPlan, check };

@@ -1,130 +1,147 @@
 <div class="container">
     <h1>Edit Profile</h1>
 
-    <form method="POST" class="profile-form" action="/editGender/{{username}}">
-        <label for="gender">GENDER:</label>
-        <select id="gender" class="gender">
-            <option value="placeholder" selected>CLICK TO SELECT</option>
-            <option value="male">MALE</option>
-            <option value="female">FEMALE</option>
-            <option value="other">OTHER</option>
-            <option value="preferNot">PREFER NOT TO SAY</option>
-        </select>
-        <button type="submit">Save</button>
-    </form>
+<form class="profile-form" action="/profile/editGender/{{username}}">
+    <label for="gender">CURRENT GENDER: {{{gender}}}</label>
+    <select id="gender" name="gender" class="gender">
+        <option value="placeholder" selected>CLICK TO SELECT</option>
+        <option value="male">MALE</option>
+        <option value="female">FEMALE</option>
+        <option value="other">OTHER</option>
+        <option value="preferNot">PREFER NOT TO SAY</option>
+    </select>
+    <button type="submit">Save</button>
+</form>
 
-    <form method="POST" class="profile-form">
-        <label for="system">MEASUREMENT SYSTEM:</label>
-        <select id="system" class="system">
-            <option value="placeholder" selected>CLICK TO SELECT</option>
-            <option value="metric">METRIC</option>
-            <option value="imperial">IMPERIAL</option>
-        </select>
-        <button type="submit">Save</button>
-    </form>
+<form class="profile-form" action="/profile/editMeasurement/{{username}}">
+    <label for="system">CURRENT MEASUREMENT SYSTEM: {{{system}}}</label>
+    <select id="system" name="system" class="system">
+        <option value="placeholder" selected>CLICK TO SELECT</option>
+        <option value="metric">METRIC</option>
+        <option value="imperial">IMPERIAL</option>
+    </select>
+    <button type="submit">Save</button>
+</form>
 
-    <form method="POST" class="profile-form">
-        <label for="state">HOMESTATE:</label>
-        <select id="state" class="state">
-            <option value="placeholder" selected>CLICK TO SELECT</option>
-            <option value="AL">AL</option>
-            <option value="AK">AK</option>
-            <option value="AZ">AZ</option>
-            <option value="AR">AR</option>
-            <option value="CA">CA</option>
-            <option value="CO">CO</option>
-            <option value="CT">CT</option>
-            <option value="DE">DE</option>
-            <option value="DC">DC</option>
-            <option value="FL">FL</option>
-            <option value="GA">GA</option>
-            <option value="HI">HI</option>
-            <option value="ID">ID</option>
-            <option value="IL">IL</option>
-            <option value="IN">IN</option>
-            <option value="IA">IA</option>
-            <option value="KS">KS</option>
-            <option value="KY">KY</option>
-            <option value="LA">LA</option>
-            <option value="ME">ME</option>
-            <option value="MD">MD</option>
-            <option value="MA">MA</option>
-            <option value="MI">MI</option>
-            <option value="MN">MN</option>
-            <option value="MS">MS</option>
-            <option value="MO">MO</option>
-            <option value="MT">MT</option>
-            <option value="NE">NE</option>
-            <option value="NV">NV</option>
-            <option value="NH">NH</option>
-            <option value="NJ">NJ</option>
-            <option value="NM">NM</option>
-            <option value="NY">NY</option>
-            <option value="NC">NC</option>
-            <option value="ND">ND</option>
-            <option value="OH">OH</option>
-            <option value="OK">OK</option>
-            <option value="OR">OR</option>
-            <option value="PA">PA</option>
-            <option value="RI">RI</option>
-            <option value="SC">SC</option>
-            <option value="SD">SD</option>
-            <option value="TN">TN</option>
-            <option value="TX">TX</option>
-            <option value="UT">UT</option>
-            <option value="VT">VT</option>
-            <option value="VA">VA</option>
-            <option value="WA">WA</option>
-            <option value="WV">WV</option>
-            <option value="WI">WI</option>
-            <option value="WY">WY</option>
-        </select>
-        <button type="submit">Save</button>
-    </form>
+<form class="profile-form" action="/profile/editState/{{username}}">
+    <label for="state">CURRENT HOMESTATE: {{{state}}}</label>
+    <select id="state" name="state" class="state">
+        <option value="placeholder" selected>CLICK TO SELECT</option>
+        <option value="AL">AL</option>
+        <option value="AK">AK</option>
+        <option value="AZ">AZ</option>
+        <option value="AR">AR</option>
+        <option value="CA">CA</option>
+        <option value="CO">CO</option>
+        <option value="CT">CT</option>
+        <option value="DE">DE</option>
+        <option value="DC">DC</option>
+        <option value="FL">FL</option>
+        <option value="GA">GA</option>
+        <option value="HI">HI</option>
+        <option value="ID">ID</option>
+        <option value="IL">IL</option>
+        <option value="IN">IN</option>
+        <option value="IA">IA</option>
+        <option value="KS">KS</option>
+        <option value="KY">KY</option>
+        <option value="LA">LA</option>
+        <option value="ME">ME</option>
+        <option value="MD">MD</option>
+        <option value="MA">MA</option>
+        <option value="MI">MI</option>
+        <option value="MN">MN</option>
+        <option value="MS">MS</option>
+        <option value="MO">MO</option>
+        <option value="MT">MT</option>
+        <option value="NE">NE</option>
+        <option value="NV">NV</option>
+        <option value="NH">NH</option>
+        <option value="NJ">NJ</option>
+        <option value="NM">NM</option>
+        <option value="NY">NY</option>
+        <option value="NC">NC</option>
+        <option value="ND">ND</option>
+        <option value="OH">OH</option>
+        <option value="OK">OK</option>
+        <option value="OR">OR</option>
+        <option value="PA">PA</option>
+        <option value="RI">RI</option>
+        <option value="SC">SC</option>
+        <option value="SD">SD</option>
+        <option value="TN">TN</option>
+        <option value="TX">TX</option>
+        <option value="UT">UT</option>
+        <option value="VT">VT</option>
+        <option value="VA">VA</option>
+        <option value="WA">WA</option>
+        <option value="WV">WV</option>
+        <option value="WI">WI</option>
+        <option value="WY">WY</option>
+    </select>
+    <button type="submit">Save</button>
+</form>
 
-    <form method="POST" class="profile-form">
-        <label for="social_platform">SOCIAL MEDIA PLATFORM</label>
-        <select name="social_platform" id="social_platform" class="social_platform">
-            <option value="placeholder" selected>CLICK TO SELECT</option>
-            <option value="instagram">INSTAGRAM</option>
-            <option value="facebook">FACEBOOK</option>
-            <option value="twitter">TWITTER</option>
-        </select>
-        <button type="submit">Save</button>
-    </form>
+<form class="profile-form" action="/profile/editPlatform/{{username}}">
+    <label for="social_platform">CURRENT SOCIAL MEDIA PLATFORM: {{{socialPlatform}}}</label>
+    <select name="social_platform" id="social_platform" class="social_platform">
+        <option value="placeholder" selected>CLICK TO SELECT</option>
+        <option value="instagram">INSTAGRAM</option>
+        <option value="facebook">FACEBOOK</option>
+        <option value="twitter">TWITTER</option>
+    </select>
+    <button type="submit">Save</button>
+</form>
 
-    <form method="POST" class="profile-form">
-        <label for="social_handle">SOCIAL MEDIA HANDLE</label>
-        <input type="text" id="social_handle" class="social_handle">
-        <button type="submit">Save</button>
-    </form>
+<form class="profile-form" action="/profile/editHandle/{{username}}">
+    <label for="social_handle">CURRENT SOCIAL MEDIA HANDLE: {{{socialHandle}}}</label>
+    <input name="social_handle" type="text" id="social_handle" class="social_handle">
+    <button type="submit">Save</button>
+</form>
 
-    <form method="POST" class="profile-form">
-        <label for="privacy_setting">PRIVACY SETTING</label>
-        <input type="checkbox" id="privacy_setting" class="privacy_setting" value="true">
-        <button type="submit">Save</button>
-    </form>
+<form class="profile-form" action="/profile/editPrivacy/{{username}}">
+    <label for="privacy_setting">PRIVATE: {{{privacy}}}</label>
+    <select name="privacy_setting" id="privacy_setting" class="privacy_setting">
+        <option value="placeholder" selected>CLICK TO SELECT</option>
+        <option value="true">PRIVATE</option>
+        <option value="false">PUBLIC</option>
+    </select>
+    <button type="submit">Save</button>
+</form>
 
-    <div id="response"></div>
+<form class="profile-form" action="/profile/editPassword/{{username}}">
+    <label for="password">CHANGE PASSWORD:</label>
+    <input name="password" type="password" id="password" class="password">
+    <button type="submit">Save</button>
+</form>
+<br><br> <div id="response"></div><br><br>
+<br><br> <a href="/profile/{{username}}">Return to Profile</a>
 </div>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function () {
         $('.profile-form').on('submit', function (event) {
             event.preventDefault();
 
-            let formData = $(this).serialize();
-            let action = $(this).attr('action');
-
+            let action = $(this).attr('action'); 
+             let formData = {};
+        $(this).find('input, select').each(function() {
+            formData[$(this).attr('name')] = $(this).val();
+        });
             $.ajax({
                 url: action,
                 method: 'POST',
                 data: formData,
-                success: function (response) {
-                    $('#response').text(response.message);
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    $('#response').text('Error: ' + errorThrown);
+                success:
+                    function(response) {
+                        location.reload();
+                    },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    if (jqXHR.responseJSON && jqXHR.responseJSON.error) {
+                        const errorMessage = jqXHR.responseJSON.error;
+                        $('#response').text(errorMessage);
+                    }
                 }
             });
         });

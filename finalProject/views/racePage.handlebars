@@ -19,17 +19,18 @@
 
 {{!-- Registrants list --}}
 {{!-- Style with CSS to make it trail off (show more?) --}}
-
-{{#if registered}}
-<form action="/unregister/{{raceId}}" method="POST" class="unregister">
-    <button type="submit">Unregister</button>
-</form>
-{{else}}
-<form action="/register/{{raceId}}" method="POST" class="register">
-    <label for="maxMileageYet">What is the maximum amount of miles you ran in the past week, this will be the basis for your training plan:</label><br>
-    <input type="text" id="maxMileageYet" name="maxMileageYet"><br>
-    <button type="submit">Register</button>
-</form>
+{{#if passed}}
+    {{#if registered}}
+    <form action="/unregister/{{raceId}}" method="POST" class="unregister">
+        <button type="submit">Unregister</button>
+    </form>
+    {{else}}
+    <form action="/register/{{raceId}}" method="POST" class="register">
+        <label for="maxMileageYet">What is the maximum amount of miles you ran in the past week, this will be the basis for your training plan:</label><br>
+        <input type="text" id="maxMileageYet" name="maxMileageYet"><br>
+        <button type="submit">Register</button>
+    </form>
+    {{/if}}
 {{/if}}
 
 <h4>REGISTRANTS:</h4>
