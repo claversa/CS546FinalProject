@@ -37,11 +37,29 @@ router.route('/:id').get(async (req, res) => {
 
       if (user.username === req.session.user.username) owner = true;
       let completedRaces = await races.getRaceNamesByIds(racesCompleted)
-      res.render("profile", { owner, completedRaces: completedRaces, reviews: user.reviews, registeredRaces: registeredRaces, title: 'Profile', first: user.firstName.toUpperCase(), privacy: user.private, last: user.lastName.toUpperCase(), username: user.username, email: user.email.toUpperCase(), gender: user.gender.toUpperCase(), system: user.system.toUpperCase(), state: user.state.toUpperCase(), age: user.age, socialHandle: user.socialHandle, socialPlatform: user.socialPlatform.toUpperCase(), password: user.password, user: req.session.user, otherCSS: "/public/profile.css" })
+      let privacy = undefined
+      if (user.private === "true") {
+        privacy = true;
+      } else {
+        privacy = false;
+      }
+      res.render("profile", { private: privacy, owner, completedRaces: completedRaces, reviews: user.reviews, registeredRaces: registeredRaces, title: 'Profile', first: user.firstName.toUpperCase(), privacy: user.private, last: user.lastName.toUpperCase(), username: user.username, email: user.email.toUpperCase(), gender: user.gender.toUpperCase(), system: user.system.toUpperCase(), state: user.state.toUpperCase(), age: user.age, socialHandle: user.socialHandle, socialPlatform: user.socialPlatform.toUpperCase(), password: user.password, user: req.session.user, otherCSS: "/public/profile.css" })
     }
   }
   catch (e) {
     res.status(404).render('error', { title: "Error", class: "not-found", error: e.toString(), otherCSS: "/public/error.css" });
+  }
+});
+
+router.route('/delete/:id').post(async (req, res) => {
+  try {
+    const username = xss(req.params.id);
+    await data.deleteProfile(username);
+    delete req.session.user;
+    res.redirect("./home");
+  }
+  catch (e) {
+    res.status(404).render('error', { title: "Error", class: "not-found", error: e.toString(), user: req.session.user, otherCSS: "/public/error.css" });
   }
 });
 

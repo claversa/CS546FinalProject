@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router } from "express";
 const router = Router();
 // Data file for the data functions
 import * as racesFuns from '../data/races.js'; // need stuff from race db
@@ -7,20 +7,26 @@ import * as data from '../data/users.js';
 import { ObjectId } from "mongodb";
 import xss from 'xss';
 
-router.route('/').get(async (req, res) => {
+router.route("/").get(async (req, res) => {
   //render the home handlebars file
   let loggedIn = false;
   if (req.session.user) {
     loggedIn = true;
   }
-  res.render('home', { title: "Homepage", user: req.session.user, error: "", loggedIn: loggedIn, otherCSS: "/public/home.css" }); // NO ERROR
+  res.render("home", {
+    title: "Homepage",
+    user: req.session.user,
+    error: "",
+    loggedIn: loggedIn,
+    otherCSS: "/public/home.css",
+  }); // NO ERROR
 });
 
 router.route('/editProfile/:id').get(async (req, res) => {
   const username = xss(req.params.id);
   try {
     const user = await data.get(username);
-    res.render('editProfile', { username, title: "Edit Profile", user: req.session.user, error: "", gender: user.gender.toUpperCase(), system: user.system.toUpperCase(), state: user.state.toUpperCase(), socialHandle: user.socialHandle, socialPlatform: user.socialPlatform.toUpperCase(), private: user.private, user: req.session.user });
+    res.render('editProfile', { privacy: user.private, otherCSS: "/public/editProfile.css", username, title: "Edit Profile", user: req.session.user, error: "", gender: user.gender.toUpperCase(), system: user.system.toUpperCase(), state: user.state.toUpperCase(), socialHandle: user.socialHandle, socialPlatform: user.socialPlatform.toUpperCase(), private: user.private, user: req.session.user,  });
   } catch{ 
 
   }
@@ -35,11 +41,16 @@ router.route('/comment/:raceId').post(async (req, res) => {
     await racesFuns.addComment(req.session.user.username, raceId, comment)
     res.redirect(`/race/${raceId}`)
   } catch (error) {
-    res.status(403).render('error', { title: "Error", error, user: req.session.user, otherCSS: "/public/error.css" });
+    res.status(403).render("error", {
+      title: "Error",
+      error,
+      user: req.session.user,
+      otherCSS: "/public/error.css",
+    });
   }
 });
 
-router.route('/uncomment/:raceId').post(async (req, res) => {
+router.route("/uncomment/:raceId").post(async (req, res) => {
   try {
     const raceId = xss(req.params.raceId);
     if (!ObjectId.isValid(raceId)) throw 'invalid race ID';
@@ -48,11 +59,16 @@ router.route('/uncomment/:raceId').post(async (req, res) => {
     await racesFuns.removeComment(req.session.user.username, raceId, comment)
     res.redirect(`/race/${raceId}`)
   } catch (error) {
-    res.status(403).render('error', { title: "Error", error, user: req.session.user, otherCSS: "/public/error.css" });
+    res.status(403).render("error", {
+      title: "Error",
+      error,
+      user: req.session.user,
+      otherCSS: "/public/error.css",
+    });
   }
 });
 
-router.route('/review/:raceId').post(async (req, res) => {
+router.route("/review/:raceId").post(async (req, res) => {
   try {
     const raceId = xss(req.params.raceId);
     if (!ObjectId.isValid(raceId)) throw 'invalid race ID';
@@ -65,11 +81,16 @@ router.route('/review/:raceId').post(async (req, res) => {
     await data.addReview(req.session.user.username, raceId, comment, rating)
     res.redirect(`/race/${raceId}`)
   } catch (error) {
-    res.status(403).render('error', { title: "Error", error, user: req.session.user, otherCSS: "/public/error.css" });
+    res.status(403).render("error", {
+      title: "Error",
+      error,
+      user: req.session.user,
+      otherCSS: "/public/error.css",
+    });
   }
 });
 
-router.route('/removeReview/:raceId').post(async (req, res) => {
+router.route("/removeReview/:raceId").post(async (req, res) => {
   try {
     const raceId = xss(req.params.raceId);
     if (!ObjectId.isValid(raceId)) throw 'invalid race ID';
@@ -82,25 +103,38 @@ router.route('/removeReview/:raceId').post(async (req, res) => {
     await data.removeReview(req.session.user.username, raceId, comment, rating)
     res.redirect(`/race/${raceId}`)
   } catch (error) {
-    res.status(403).render('error', { title: "Error", error, user: req.session.user, otherCSS: "/public/error.css" });
+    res.status(403).render("error", {
+      title: "Error",
+      error,
+      user: req.session.user,
+      otherCSS: "/public/error.css",
+    });
   }
 });
 
-router.route('/register/:raceId').post(async (req, res) => {
+router.route("/register/:raceId").post(async (req, res) => {
   try {
     const raceId = xss(req.params.raceId);
     if (!ObjectId.isValid(raceId)) throw 'invalid race ID';
     await racesFuns.registerUser(req.session.user.username, raceId);
     await data.registerRace(req.session.user.username, raceId);
-    await data.addTrainingPlan(req.session.user.username, raceId, req.body.maxMileageYet);
+    await data.addTrainingPlan(
+      req.session.user.username,
+      raceId,
+      req.body.maxMileageYet
+    );
     res.redirect(`/race/${raceId}`);
-    // res.render("./training", { title: "Training Program", otherCSS: "/public/training.css", plans: user.currPlan });
   } catch (error) {
-    res.status(403).render('error', { title: "Error", error, user: req.session.user, otherCSS: "/public/error.css" });
+    res.status(403).render("error", {
+      title: "Error",
+      error,
+      user: req.session.user,
+      otherCSS: "/public/error.css",
+    });
   }
 });
 
-router.route('/unregister/:raceId').post(async (req, res) => {
+router.route("/unregister/:raceId").post(async (req, res) => {
   try {
     const raceId = xss(req.params.raceId);
     if (!ObjectId.isValid(raceId)) throw 'invalid race ID';
@@ -108,9 +142,13 @@ router.route('/unregister/:raceId').post(async (req, res) => {
     await data.unregisterRace(req.session.user.username, raceId);
     await data.removeTrainingPlan(req.session.user.username, raceId);
     res.redirect(`/race/${raceId}`);
-    // res.render("./training", { title: "Training Program", otherCSS: "/public/training.css", plans: user.currPlan });
   } catch (error) {
-    res.status(403).render('error', { title: "Error", error, user: req.session.user, otherCSS: "/public/error.css" });
+    res.status(403).render("error", {
+      title: "Error",
+      error,
+      user: req.session.user,
+      otherCSS: "/public/error.css",
+    });
   }
 });
 
@@ -119,10 +157,16 @@ router.route('/error').get(async (req, res) => {
   res.status(403).render('error', { title: "Error", error, user: req.session.user, otherCSS: "/public/error.css" });
 });
 
-router.route('/createProfile')
+router
+  .route("/createProfile")
   .get(async (req, res) => {
     //render the home handlebars file
-    res.render('createProfile', { title: "Create Profile", user: req.session.user, error: "", otherCSS: "/public/createProfile.css" });
+    res.render("createProfile", {
+      title: "Create Profile",
+      user: req.session.user,
+      error: "",
+      otherCSS: "/public/createProfile.css",
+    });
   })
   .post(async (req, res) => {
     //code here for POST this is where profile form will be submitting new user and then call your data function passing in the profile info   and then rendering the search results of up to 20 Movies.
@@ -233,7 +277,8 @@ router.route('/createProfile')
     }
 
     try {
-      let newUser = await data.create(first,
+      let newUser = await data.create(
+        first,
         last,
         username,
         email,
@@ -243,25 +288,35 @@ router.route('/createProfile')
         socialPlatform,
         socialHandle,
         system,
-        password); // create user
-      console.log(newUser)
+        password
+      ); // create user
+      console.log(newUser);
       // take user to homepage but now logged in
-      res.redirect('./home');
-    }
-    catch (e) {
-      res.render('createProfile', { title: "Create Profile", user: req.session.user, error: e, otherCSS: "/public/createProfile.css" });
+      res.redirect("./home");
+    } catch (e) {
+      res.render("createProfile", {
+        title: "Create Profile",
+        user: req.session.user,
+        error: e,
+        otherCSS: "/public/createProfile.css",
+      });
     }
   });
 
-router.route('/logout').get(async (req, res) => {
-  delete req.session.user
-  res.redirect('./home');
+router.route("/logout").get(async (req, res) => {
+  delete req.session.user;
+  res.redirect("./home");
 });
 
-router.route('/login')
+router
+  .route("/login")
   .get(async (req, res) => {
     //render the home handlebars file
-    res.render('login', { title: "Login", user: req.session.user, otherCSS: "/public/login.css" });
+    res.render("login", {
+      title: "Login",
+      user: req.session.user,
+      otherCSS: "/public/login.css",
+    });
   })
   .post(async (req, res) => {
     const loginInfo = req.body; // form info!
@@ -284,44 +339,91 @@ router.route('/login')
       if (validation) {
         req.session.user = { username: username };
         // take user to homepage but now logged in
-        res.redirect('./home');
+        res.redirect("./home");
       } else {
-        throw "Username or Password is incorrect"
+        throw "Username or Password is incorrect";
       }
-    }
-    catch (e) {
-      res.render('login', { title: "Login", user: req.session.user, error: e, otherCSS: "/public/login.css" });
+    } catch (e) {
+      res.render("login", {
+        title: "Login",
+        user: req.session.user,
+        error: e,
+        otherCSS: "/public/login.css",
+      });
     }
   });
 
-router.route('/training').get(async (req, res) => {
+router.route("/training").get(async (req, res) => {
   let user = undefined;
   try {
     user = await data.get(req.session.user.username);
+  } catch (e) {
+    res.render("error", {
+      title: "Error",
+      user: req.session.user,
+      error: e,
+      otherCSS: "/public/error.css",
+    });
   }
-  catch (e) {
-    res.render("error", { title: "Error", user: req.session.user, error: e, otherCSS: "/public/error.css" })
-  }
-  res.render("./training", { title: "Training Program", otherCSS: "/public/training.css", user: req.session.user, plans: user.currPlan });
-
+  res.render("./training", {
+    title: "Training Program",
+    otherCSS: "/public/training.css",
+    user: req.session.user,
+    plans: user.currPlan,
+    othArr: JSON.stringify(user.currPlan)
+  });
 });
 
-router.route('/countdown').get(async (req, res) => {
+router.route("/training").post(async (req, res) => {
+  let user = undefined;
+  try {
+    user = await data.get(req.session.user.username);
+  } catch (e) {
+    res.render("error", {
+      title: "Error",
+      user: req.session.user,
+      error: e,
+      otherCSS: "/public/error.css",
+    });
+  }
+  
+  user = await data.updateTrainingTimes(
+    req.session.user.username,
+    req.body.times
+  );
+  res.render("./training", {
+    title: "Training Program",
+    otherCSS: "/public/training.css",
+    user: req.session.user,
+    plans: user.currPlan,
+    othArr: JSON.stringify(user.currPlan)
+  });
+});
+
+router.route("/countdown").get(async (req, res) => {
   let user = undefined;
   try {
     user = await data.get(req.session.user.username); // get user
-  }
-  catch (e) {
-    return res.render("error", { title: "Error", user: req.session.user, error: e, otherCSS: "/public/error.css" })
+  } catch (e) {
+    return res.render("error", {
+      title: "Error",
+      user: req.session.user,
+      error: e,
+      otherCSS: "/public/error.css",
+    });
   }
   // get races
   let races = user.registeredRaces;
 
-
   if (races.length === 0) {
-    return res.render("countdown", { title: "Race Day Countdown", user: req.session.user, error: "", hasRaces: false, otherCSS: "/public/countdown.css" });
-  }
-  else {
+    return res.render("countdown", {
+      title: "Race Day Countdown",
+      user: req.session.user,
+      error: "",
+      hasRaces: false,
+      otherCSS: "/public/countdown.css",
+    });
+  } else {
     let farAway = Infinity;
     let race, date, time;
     let countdownDates = [];

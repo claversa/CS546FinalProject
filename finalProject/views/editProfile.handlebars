@@ -1,4 +1,5 @@
-<h1>Edit Profile</h1>
+<div class="container">
+    <h1>Edit Profile</h1>
 
 <form class="profile-form" action="/profile/editGender/{{username}}">
     <label for="gender">CURRENT GENDER: {{{gender}}}</label>
@@ -99,16 +100,17 @@
 </form>
 
 <form class="profile-form" action="/profile/editPrivacy/{{username}}">
-    <label for="privacy_setting">PRIVATE:</label>
-    {{#if private}}
-    <input type="checkbox" id="privacy_setting" class="privacy_setting" value="true" name="privacy_setting">
-    {{else}}
-    <input type="checkbox" id="privacy_setting" class="privacy_setting" value="false" name="privacy_setting">
-    {{/if}}
+    <label for="privacy_setting">PRIVATE: {{{privacy}}}</label>
+    <select name="privacy_setting" id="privacy_setting" class="privacy_setting">
+        <option value="placeholder" selected>CLICK TO SELECT</option>
+        <option value="true">PRIVATE</option>
+        <option value="false">PUBLIC</option>
+    </select>
     <button type="submit">Save</button>
 </form>
 
-<div id="response"></div>
+<br><br> <a href="/profile/{{username}}">Return to Profile</a>
+</div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
@@ -121,6 +123,7 @@
         $(this).find('input, select').each(function() {
             formData[$(this).attr('name')] = $(this).val();
         });
+        console.log(formData)
             $.ajax({
                 url: action,
                 method: 'POST',
@@ -133,6 +136,6 @@
                     $('#response').text(errorThrown);
                 }
             });
-        }); 
+        });
     });
 </script>
