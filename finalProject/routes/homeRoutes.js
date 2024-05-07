@@ -200,7 +200,7 @@ router
       username = help.notStringOrEmpty(username, "username");
       username = help.validUsername(username);
     } catch (e) {
-      errors.push(`invalid username: username must have between 2 and 10 characters`);
+      errors.push(e);
     }
 
     try {
@@ -238,8 +238,10 @@ router
 
     try {
       socialHandle = help.notStringOrEmpty(socialHandle, "social handle");
+      socialHandle = help.validSocial(socialHandle);
+
     } catch (e) {
-      errors.push(`invalid social handle`);
+      errors.push(e);
     }
 
     try {
@@ -386,7 +388,7 @@ router.route("/training").post(async (req, res) => {
       otherCSS: "/public/error.css",
     });
   }
-  
+
   user = await data.updateTrainingTimes(
     req.session.user.username,
     req.body.times
