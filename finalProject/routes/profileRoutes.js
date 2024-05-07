@@ -56,5 +56,60 @@ router.route('/editGender/:id').post(async (req, res) => {
   }
 });
 
+router.route('/editMeasurement/:id').post(async (req, res) => {
+  try {
+    const newSystem = xss(req.body.system);
+    const username = xss(req.params.id);
+    await data.updateSystem(username, newSystem);      
+    res.status(200).json({ message: "Measurement updated successfully" });
+  } catch (e) {
+    res.status(400).json({ error: "Invalid measurement system" });
+  }
+});
+
+router.route('/editState/:id').post(async (req, res) => {
+  try {
+    const newState = xss(req.body.state);
+    const username = xss(req.params.id);
+    await data.updateState(username, newState);      
+    res.status(200).json({ message: "State updated successfully" });
+  } catch (e) {
+    res.status(400).json({ error: "Invalid state" });
+  }
+});
+
+router.route('/editPlatform/:id').post(async (req, res) => {
+  try {
+    const newPlatform = xss(req.body.social_platform);
+    const username = xss(req.params.id);
+    await data.updatePlatform(username, newPlatform);      
+    res.status(200).json({ message: "Platform updated successfully" });
+  } catch (e) {
+    res.status(400).json({ error: "Invalid platform" });
+  }
+});
+
+router.route('/editHandle/:id').post(async (req, res) => {
+  try {
+    const newHandle = xss(req.body.social_handle);
+    const username = xss(req.params.id);
+    await data.updateHandle(username, newHandle);      
+    res.status(200).json({ message: "Handle updated successfully" });
+  } catch (e) {
+    res.status(400).json({ error: "Invalid handle" });
+  }
+});
+
+router.route('/editPrivacy/:id').post(async (req, res) => {
+  try {
+    const newPrivacy = xss(req.body.privacy_setting);
+    const username = xss(req.params.id);
+    await data.updatePrivacy(username, newPrivacy);      
+    res.status(200).json({ message: "Privacy updated successfully" });
+  } catch (e) {
+    res.status(400).json({ error: "Invalid privacy" });
+  }
+});
+
 //export router
 export default router;

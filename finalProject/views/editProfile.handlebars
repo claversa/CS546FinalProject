@@ -1,8 +1,8 @@
 <h1>Edit Profile</h1>
 
-<form method="POST" class="profile-form" action="/editGender/{{username}}">
-    <label for="gender">GENDER:</label>
-    <select id="gender" class="gender">
+<form class="profile-form" action="/profile/editGender/{{username}}">
+    <label for="gender">CURRENT GENDER: {{{gender}}}</label>
+    <select id="gender" name="gender" class="gender">
         <option value="placeholder" selected>CLICK TO SELECT</option>
         <option value="male">MALE</option>
         <option value="female">FEMALE</option>
@@ -12,9 +12,9 @@
     <button type="submit">Save</button>
 </form>
 
-<form method="POST" class="profile-form">
-    <label for="system">MEASUREMENT SYSTEM:</label>
-    <select id="system" class="system">
+<form class="profile-form" action="/profile/editMeasurement/{{username}}">
+    <label for="system">CURRENT MEASUREMENT SYSTEM: {{{system}}}</label>
+    <select id="system" name="system" class="system">
         <option value="placeholder" selected>CLICK TO SELECT</option>
         <option value="metric">METRIC</option>
         <option value="imperial">IMPERIAL</option>
@@ -22,9 +22,9 @@
     <button type="submit">Save</button>
 </form>
 
-<form method="POST" class="profile-form">
-    <label for="state">HOMESTATE:</label>
-    <select id="state" class="state">
+<form class="profile-form" action="/profile/editState/{{username}}">
+    <label for="state">CURRENT HOMESTATE: {{{state}}}</label>
+    <select id="state" name="state" class="state">
         <option value="placeholder" selected>CLICK TO SELECT</option>
         <option value="AL">AL</option>
         <option value="AK">AK</option>
@@ -81,8 +81,8 @@
     <button type="submit">Save</button>
 </form>
 
-<form method="POST" class="profile-form">
-    <label for="social_platform">SOCIAL MEDIA PLATFORM</label>
+<form class="profile-form" action="/profile/editPlatform/{{username}}">
+    <label for="social_platform">CURRENT SOCIAL MEDIA PLATFORM: {{{socialPlatform}}}</label>
     <select name="social_platform" id="social_platform" class="social_platform">
         <option value="placeholder" selected>CLICK TO SELECT</option>
         <option value="instagram">INSTAGRAM</option>
@@ -92,37 +92,45 @@
     <button type="submit">Save</button>
 </form>
 
-<form method="POST" class="profile-form">
-    <label for="social_handle">SOCIAL MEDIA HANDLE</label>
-    <input type="text" id="social_handle" class="social_handle">
+<form class="profile-form" action="/profile/editHandle/{{username}}">
+    <label for="social_handle">CURRENT SOCIAL MEDIA HANDLE: {{{socialHandle}}}</label>
+    <input name="social_handle" type="text" id="social_handle" class="social_handle">
     <button type="submit">Save</button>
 </form>
 
-<form method="POST" class="profile-form">
-    <label for="privacy_setting">PRIVACY SETTING</label>
-    <input type="checkbox" id="privacy_setting" class="privacy_setting" value="true">
+<form class="profile-form" action="/profile/editPrivacy/{{username}}">
+    <label for="privacy_setting">PRIVATE:</label>
+    {{#if private}}
+    <input type="checkbox" id="privacy_setting" class="privacy_setting" value="true" name="privacy_setting">
+    {{else}}
+    <input type="checkbox" id="privacy_setting" class="privacy_setting" value="false" name="privacy_setting">
+    {{/if}}
     <button type="submit">Save</button>
 </form>
 
 <div id="response"></div>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function () {
         $('.profile-form').on('submit', function (event) {
             event.preventDefault();
 
-            let formData = $(this).serialize();
             let action = $(this).attr('action'); 
-
+             let formData = {};
+        $(this).find('input, select').each(function() {
+            formData[$(this).attr('name')] = $(this).val();
+        });
             $.ajax({
                 url: action,
                 method: 'POST',
                 data: formData,
-                success: function(response) {
-                    $('#response').text(response.message);
-                },
+                success:
+                    function(response) {
+                        location.reload();
+                    },
                 error: function(jqXHR, textStatus, errorThrown) {
-                    $('#response').text('Error: ' + errorThrown);
+                    $('#response').text(errorThrown);
                 }
             });
         }); 

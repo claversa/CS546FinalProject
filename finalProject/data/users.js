@@ -172,16 +172,18 @@ const get = async (username) => {
 };
 
 
-const updateSystem = async (username) => {
+const updateSystem = async (username, system) => {
     username = help.notStringOrEmpty(username, 'username)');
+    system = help.notStringOrEmpty(system, 'system');
+    if (system != "imperial" && system != "metric") throw 'Error: not a valid system!'
     const userCollection = await users();
     const user = await userCollection.findOne({ username: username });
     if (!user) throw 'User not found' // checks if user is not found
-    let newSystem = (user.system === 'metric') ? 'imperial' : 'metric'; // swap system val
+    if (user.system === system) throw "Error: same system as before"
 
     const updatedInfo = await userCollection.findOneAndUpdate(
         { username: username },
-        { $set: { system: newSystem } },
+        { $set: { system: system } },
         { returnDocument: 'after' }
     );
     if (!updatedInfo) {
@@ -274,17 +276,56 @@ const updateGender = async (username, newGender) => {
     return updatedInfo;
 };
 
-const updateSocial = async (username, newSocial) => {
+const updatePrivacy = async (username, newPrivacy) => {
     username = help.notStringOrEmpty(username, 'username');
-    newSocial = help.notStringOrEmpty(newSocial, 'new social');
+    newPrivacy = help.notStringOrEmpty(newPrivacy, 'new privacy');
     const userCollection = await users();
     const user = await userCollection.findOne({ username: username });
     if (!user) throw 'User not found' // checks if user is not found
-    // already set
-    if (newSocial.toLowerCase() === user.social.toLowerCase()) throw `Error: Social is already ${user.social}`
+    
+    if (newPrivacy === user.privacy) throw `Error: privacy is already ${user.private}`
     const updatedInfo = await userCollection.findOneAndUpdate(
         { username: username },
-        { $set: { social: newSocial } },
+        { $set: { private: newPrivacy } },
+        { returnDocument: 'after' }
+    );
+    if (!updatedInfo) {
+        throw 'could not update user successfully';
+    }
+    updatedInfo._id = updatedInfo._id.toString();
+    return updatedInfo;
+};
+
+const updatePlatform = async (username, newPlatform) => {
+    username = help.notStringOrEmpty(username, 'username');
+    newPlatform = help.notStringOrEmpty(newPlatform, 'new platform');
+    const userCollection = await users();
+    const user = await userCollection.findOne({ username: username });
+    if (!user) throw 'User not found' // checks if user is not found
+    if (newPlatform != "instagram" && newPlatform != "facebook" && newPlatform != "twitter") throw 'Error: not a valid platform!'
+    if (newPlatform.toLowerCase() === user.socialPlatform.toLowerCase()) throw `Error: Social is already ${user.socialPlatform}`
+    const updatedInfo = await userCollection.findOneAndUpdate(
+        { username: username },
+        { $set: { socialPlatform: newPlatform } },
+        { returnDocument: 'after' }
+    );
+    if (!updatedInfo) {
+        throw 'could not update user successfully';
+    }
+    updatedInfo._id = updatedInfo._id.toString();
+    return updatedInfo;
+};
+
+const updateHandle = async (username, newHandle) => {
+    username = help.notStringOrEmpty(username, 'username');
+    newHandle = help.notStringOrEmpty(newHandle, 'new handle');
+    const userCollection = await users();
+    const user = await userCollection.findOne({ username: username });
+    if (!user) throw 'User not found' // checks if user is not found
+    if (newHandle.toLowerCase() === user.socialHandle.toLowerCase()) throw `Error: Social is already ${user.socialPlatform}`
+    const updatedInfo = await userCollection.findOneAndUpdate(
+        { username: username },
+        { $set: { socialHandle: newHandle } },
         { returnDocument: 'after' }
     );
     if (!updatedInfo) {
@@ -649,4 +690,4 @@ export const checkUser = async (username, path) => {
     }
 }
 
-export { create, getAll, get, updateEmail, updateState, updateGender, updateSocial, updateSystem, updatePassword, registerRace, unregisterRace, addTrainingPlan, removeTrainingPlan, check };
+export { create, getAll, get, updateEmail, updateState, updatePrivacy, updateGender, updatePlatform, updateHandle, updateSystem, updatePassword, registerRace, unregisterRace, addTrainingPlan, removeTrainingPlan, check };
