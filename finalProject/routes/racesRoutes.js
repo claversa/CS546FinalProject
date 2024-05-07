@@ -160,17 +160,22 @@ router.route('/editTime/:raceId').post(async (req, res) => {
 // });
 
 router.route('/editTerrain/:raceId').post(async (req, res) => {
+  let raceInfo = req.body;
+  let terrain = raceInfo.terrain && raceInfo.terrain.length > 0 ? xss(raceInfo.terrain).split(',') : [];
+  if (!terrain) throw "invalid terrain";
+
   try {
-    let terrain = xss(req.body.terrain);
-    if (!terrain) throw "Array cannot be empty";
+    let validTerrain = ["Street", "Grass", "Beach", "Rocky", "Inclined", "Muddy"];
     if (!Array.isArray(terrain)) {
       terrain = [terrain];
+      if (!(validTerrain.includes(ter))) throw "Error: Invalid terrain";
     }
-    terrain = help.arraysWithStringElem(terrain, "terrain");
-    let validTerrain = ["Street", "Grass", "Beach", "Rocky", "Inclined", "Muddy"];
-    for (let ter of terrain) {
-      if (!(validTerrain.includes(ter))) {
-        throw "Error: Invalid terrain";
+    else {
+      terrain = help.arraysWithStringElem(terrain, "terrain");
+      for (let ter of terrain) {
+        if (!(validTerrain.includes(ter))) {
+          throw "Error: Invalid terrain";
+        }
       }
     }
     const raceId = xss(req.params.raceId);
@@ -221,22 +226,10 @@ router.route('/addrace')
     let raceDate = xss(raceInfo.raceDate);
     let raceTime = xss(raceInfo.raceTime);
     let distance = xss(raceInfo.distance);
-    let terrain = [];
-    let emptyT = false;
-    try {
-      for (let x of raceInfo.terrain) {
-        let value = xss(x);
-        terrain.push(value);
-      }
-    } catch (e) {
-      emptyT = true;
-    }
+    let terrain = raceInfo.terrain && raceInfo.terrain.length > 0 ? xss(raceInfo.terrain).split(',') : [];
+    if (!terrain) errors.push("terrain can not be empty");
     let raceUrl = xss(raceInfo.raceUrl);
 
-
-    if (typeof terrain === 'string') {
-      terrain = [terrain];
-    }
 
     try {
       raceName = help.notStringOrEmpty(raceName, "race name");
@@ -265,16 +258,21 @@ router.route('/addrace')
     }
 
     try {
-      terrain = help.arraysWithStringElem(terrain, "terrain");
       let validTerrain = ["Street", "Grass", "Beach", "Rocky", "Inclined", "Muddy"];
-      for (let ter of terrain) {
-        if (!(validTerrain.includes(ter))) {
-          throw "Error: Invalid terrain";
+      if (!Array.isArray(terrain)) {
+        terrain = [terrain];
+        if (!(validTerrain.includes(terrain))) throw "Error: Invalid terrain";
+      }
+      else {
+        terrain = help.arraysWithStringElem(terrain, "terrain");
+        for (let ter of terrain) {
+          if (!(validTerrain.includes(ter))) {
+            throw "Error: Invalid terrain";
+          }
         }
       }
     } catch (e) {
-      if (emptyT) errors.push("terrain can not be empty");
-      else errors.push(`invalid terrain`);
+      errors.push(`invalid terrain`);
     }
 
     try {

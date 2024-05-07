@@ -489,29 +489,41 @@ const addTrainingPlan = async (username, raceId, maxMileageYet) => {
     let weeksUntil = Math.floor((new Date(raceDate) - Date.now()) / 1000 / 60 / 60 / 24 / 7);
     let errorMsg = "";
 
-    if (weeksUntil <= 0) {
-        plan = [];
-        errorMsg = `This race data already passed.`;
-    } else if (weeksUntil < plan.length) {
-        plan = plan.slice(0, weeksUntil);
-        errorMsg = `You can not safely train for the entire ${distance} mile race. Train up until ${plan[plan.length - 1][6]} miles and then you have to walk.`;
+  if (weeksUntil <= 0) {
+    plan = [];
+    errorMsg = `This race data already passed.`;
+  } else if (weeksUntil < plan.length) {
+    plan = plan.slice(0, weeksUntil);
+    errorMsg = `You can not safely train for the entire ${distance} mile race. Train up until ${
+      plan[plan.length - 1][6]
+    } miles and then you have to walk.`;
+  } else {
+    let div = Math.floor((weeksUntil - plan.length) / plan.length);
+    let mod = weeksUntil % plan.length;
+    if (plan.length === 1) {
+      plan = Array(weeksUntil).fill(plan[0]);
     } else {
-        let div = Math.floor((weeksUntil - plan.length) / plan.length);
-        let mod = weeksUntil % plan.length;
-        if (plan.length === 1) {
-            plan = Array(weeksUntil).fill(plan[0]);
-        } else {
-            plan = plan.map((week, ind) => {
-                if (ind === plan.length - 1) {
-                    return Array(week);
-                } else if (plan.length - mod - 1 <= ind) {
-                    return Array(2 + div).fill(week);
-                } else {
-                    return Array(1 + div).fill(week);
-                }
-            }).flat();
-        }
+      plan = plan
+        .map((week, ind) => {
+          if (ind === plan.length - 1) {
+            return Array(week);
+          } else if (plan.length - mod - 1 <= ind) {
+            return Array(2 + div).fill(week);
+          } else {
+            return Array(1 + div).fill(week);
+          }
+        })
+        .flat();
     }
+  }
+
+  
+  let times = plan.map((arr) => arr.map(() => ""));
+  let combinedArray = plan.map((mileArray, index) => {
+    let timeArray = times[index];
+    return mileArray.map((mile, i) => ({ mile, time: timeArray[i] }));
+  });
+  plan = combinedArray;
 
     let plans = user.trainingPlans;
     plans[`${raceId}`] = plan;
@@ -530,7 +542,7 @@ const addTrainingPlan = async (username, raceId, maxMileageYet) => {
 
                 if (val[val.length - 1][6].mile === plan[1][plan[1].length - 1][6].mile) {
                     plan = r1.raceDate < r2.raceDate ? [key, val] : plan;
-                } else {z
+                } else {
                     plan = val[val.length - 1][6].mile > plan[1][plan[1].length - 1][6].mile ? [key, val] : plan;
                 }
             }
